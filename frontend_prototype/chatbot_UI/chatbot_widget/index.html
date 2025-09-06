@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Siksha Sathi - Embeddable AI Educational Assistant Widget">
+    <title>Siksha Sathi Widget</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+</head>
+<body>
+    <!-- Preload images -->
+    <div style="display:none;">
+        <img src="assets/sun.png" alt="preload">
+        <img src="assets/moon.png" alt="preload">
+    </div>
+
+    <!-- Widget Container - Only the chatbot container extracted from main chatbot.html -->
+    <div class="widget-chatbot-container" id="widgetContainer">
+        <div class="chatbot-header">
+            <div class="header-controls">
+                <div class="menu-button" id="menuButton">
+                    <div class="menu-icon">
+                        <div class="menu-line"></div>
+                        <div class="menu-line"></div>
+                        <div class="menu-line"></div>
+                    </div>
+                </div>
+                <button class="theme-mode-btn" id="themeModeBtn" title="Toggle theme">
+                    <img src="assets/sun.png" alt="Sun icon" class="theme-mode-icon sun-icon">
+                    <img src="assets/moon.png" alt="Moon icon" class="theme-mode-icon moon-icon">
+                </button>
+            </div>
+
+            <div class="header-title">
+                <h1>Siksha Sathi</h1>
+            </div>
+
+            <div class="beta-badge">
+                <a href="https://github.com/monojitgoswami69/Siksha_Sathi" target="_blank" rel="noopener noreferrer" class="beta-link">
+                    <span class="beta-text">BETA</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <div class="welcome-avatar">
+                    <span class="avatar-icon">🎓</span>
+                </div>
+                <h2>Welcome to Siksha Sathi</h2>
+                <p>Ask Your Doubts!</p>
+                <div class="welcome-suggestions">
+                    <button class="suggestion-chip" data-suggestion="Explain photosynthesis">Explain photosynthesis</button>
+                    <button class="suggestion-chip" data-suggestion="Solve 2x + 3 = 7">Solve 2x + 3 = 7</button>
+                    <button class="suggestion-chip" data-suggestion="What is machine learning?">What is machine learning?</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input pane integrated into the container -->
+        <div class="input-pane" id="inputPane">
+            <div class="input-overlay" id="inputOverlay">
+                <div class="input-field" id="overlayInput" contenteditable="true" aria-label="Message input" data-placeholder="Type your querry..."></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="widget.js"></script>
+</body>
+</html>

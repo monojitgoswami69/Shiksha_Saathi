@@ -1,0 +1,70 @@
+/* Siksha Sathi Widget - Unified Theme Styles */
+
+/* Common variables that do not change between themes */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #00ff88;
+    --error-color: #ef4444;
+    --on-primary: #ffffff;
+    --overlay-border-width: 1px;
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --border-radius-lg: 16px;
+    --toggle-thumb-color: #667eea;
+}
+
+/* Light theme variables (default) */
+html,
+html[data-theme='light'] {
+    --bg-page: #ffffff;
+    --text-primary: #0d1117;
+    --text-secondary: #6b7280;
+    --text-muted: #4b5563;
+    --bg-primary: rgba(13, 17, 23, 0.04);
+    --bg-secondary: rgba(13, 17, 23, 0.02);
+    --border-color: rgba(13, 17, 23, 0.08);
+    --input-pane-bg: #f9fafb;
+    --overlay-1: rgba(13, 17, 23, 0.02);
+    --overlay-2: rgba(13, 17, 23, 0.03);
+    --overlay-3: rgba(13, 17, 23, 0.04);
+    --overlay-4: rgba(13, 17, 23, 0.06);
+    --overlay-5: rgba(13, 17, 23, 0.08);
+    --overlay-6: rgba(13, 17, 23, 0.10);
+    --overlay-7: rgba(13, 17, 23, 0.12);
+    --overlay-border-inactive: rgba(13, 17, 23, 0.1);
+    --overlay-border-active: rgba(102, 126, 234, 0.18);
+    --shadow-strong: rgba(0, 0, 0, 0.06);
+    --shadow-medium: rgba(0, 0, 0, 0.06);
+    --popup-backdrop: rgba(0, 0, 0, 0.3);
+    --popup-shadow: rgba(0, 0, 0, 0.08);
+    --scrollbar-thumb: rgba(13, 17, 23, 0.1);
+    --toggle-bg-color: #e5e7eb;
+}
+
+/* Dark theme variables */
+html[data-theme='dark'] {
+    --bg-page: #0d1117;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --bg-primary: rgba(255, 255, 255, 0.045);
+    --bg-secondary: rgba(255, 255, 255, 0.02);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --input-pane-bg: #12161c;
+    --overlay-1: rgba(255, 255, 255, 0.02);
+    --overlay-2: rgba(255, 255, 255, 0.04);
+    --overlay-3: rgba(255, 255, 255, 0.06);
+    --overlay-4: rgba(255, 255, 255, 0.08);
+    --overlay-5: rgba(255, 255, 255, 0.10);
+    --overlay-6: rgba(255, 255, 255, 0.12);
+    --overlay-7: rgba(255, 255, 255, 0.16);
+    --overlay-border-inactive: rgba(255, 255, 255, 0.1);
+    --overlay-border-active: rgba(102, 126, 234, 0.28);
+    --shadow-strong: rgba(0, 0, 0, 0.45);
+    --shadow-medium: rgba(0, 0, 0, 0.25);
+    --popup-backdrop: rgba(0, 0, 0, 0.6);
+    --popup-shadow: rgba(0, 0, 0, 0.4);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+    --toggle-bg-color: #2e3440;
+}

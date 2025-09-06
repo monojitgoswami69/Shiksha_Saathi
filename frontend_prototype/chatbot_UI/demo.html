@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siksha Sathi - AI Educational Assistant Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 60px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .main-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .main-content .subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 3rem;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .features li {
+            padding: 0.8rem 0;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .features li::before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Chatbot Popup Styles */
+        .chatbot-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transform: translateY(100vh);
+            opacity: 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .chatbot-popup.open {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chatbot-popup iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1001;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .chat-toggle.close-btn {
+            background: #e74c3c;
+        }
+
+        .demo-note {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 40px 30px;
+            }
+            
+            .main-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .chatbot-popup {
+                width: calc(100vw - 20px);
+                height: calc(100vh - 100px);
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+            }
+
+            .chat-toggle {
+                bottom: 30px;
+                right: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-note">DEMO</div>
+
+    <div class="main-content">
+        <h1>🎓 Siksha Sathi</h1>
+        <p class="subtitle">Your AI-powered educational assistant that helps students learn and understand complex topics through interactive conversations.</p>
+        
+        <ul class="features">
+            <li>Ask questions about any subject</li>
+            <li>Get step-by-step explanations</li>
+            <li>Solve math problems</li>
+            <li>Learn new concepts interactively</li>
+            <li>Available 24/7 for learning support</li>
+        </ul>
+
+        <button class="cta-button" onclick="openChat()">
+            Start Learning Now
+        </button>
+        
+        <p style="margin-top: 2rem; color: #888; font-size: 0.9rem;">
+            Click the chat button in the bottom right to begin!
+        </p>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        💬
+    </button>
+
+    <!-- Chatbot Popup -->
+    <div class="chatbot-popup" id="chatbotPopup">
+        <iframe 
+            src="chatbot_widget/index.html" 
+            title="Siksha Sathi Chatbot Widget">
+        </iframe>
+    </div>
+
+    <script>
+        let chatOpen = false;
+
+        function toggleChat() {
+            const popup = document.getElementById('chatbotPopup');
+            const toggle = document.getElementById('chatToggle');
+            
+            if (chatOpen) {
+                popup.classList.remove('open');
+                toggle.innerHTML = '💬';
+                toggle.classList.remove('close-btn');
+                chatOpen = false;
+            } else {
+                popup.classList.add('open');
+                toggle.innerHTML = '✕';
+                toggle.classList.add('close-btn');
+                chatOpen = true;
+            }
+        }
+
+        function openChat() {
+            if (!chatOpen) {
+                toggleChat();
+            }
+        }
+
+        // Close chat when clicking outside (optional)
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('chatbotPopup');
+            const toggle = document.getElementById('chatToggle');
+            
+            if (chatOpen && !popup.contains(event.target) && !toggle.contains(event.target)) {
+                // Uncomment the line below if you want to close chat when clicking outside
+                // toggleChat();
+            }
+        });
+    </script>
+</body>
+</html>
