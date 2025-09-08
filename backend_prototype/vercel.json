@@ -2,7 +2,7 @@
     "version": 2,
     "functions": {
         "main.py": {
-            "runtime": "python3.9"
+            "runtime": "python3.10"
         }
     },
     "routes": [
