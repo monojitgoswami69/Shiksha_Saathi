@@ -10,12 +10,9 @@ class SikshaSathiWidget {
         this.isEmbedded = this.detectEmbedMode();
         this.isOpen = true;
         this.messages = [];
-        this.chatHistory = [];
-        this.currentChatId = null;
         this.messageCount = 0;
         this.isWaitingForResponse = false;
         this.currentTheme = 'dark'; // Initialize theme
-        this.sessionId = null; // For backend session management
     // Configurable synthetic response delay (ms). Set to 0 to disable artificial delay.
     this.simulatedResponseDelay = 0;
 
@@ -24,7 +21,6 @@ class SikshaSathiWidget {
     this.initializeElements();
     this.setupEventListeners();
     this.setupEmbedCommunication();
-    this.loadChatHistory();
 
     // Notify parent if embedded
         if (this.isEmbedded) {
@@ -326,10 +322,6 @@ class SikshaSathiWidget {
         this.messagesContainer.appendChild(messageElement);
         this.scrollToBottom();
         
-        // The history is now managed centrally after backend response,
-        // so we don't push individual messages here anymore.
-        // This method is now purely for rendering.
-        
         return messageElement;
     }
 
@@ -473,15 +465,14 @@ class SikshaSathiWidget {
         console.log('Sending message to Gemini backend:', userMessage);
         
         try {
-            // Call your backend with the message and the current history
+            // Call your backend with just the message (no history)
             const response = await fetch(`${backendUrl}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    message: userMessage,
-                    history: this.chatHistory, // Send current history
+                    message: userMessage
                 })
             });
 
@@ -497,13 +488,7 @@ class SikshaSathiWidget {
             // Add the bot's response to the UI
             this.addMessage(data.response, 'bot');
             
-            // IMPORTANT: Update the local history with the one from the backend
-            this.chatHistory = data.history;
-            
-            // Save the updated history to localStorage
-            this.saveCurrentChat();
-            
-            console.log('Gemini response received and history updated.');
+            console.log('Gemini response received.');
             
         } catch (error) {
             console.error('Failed to get response from backend:', error);
@@ -524,23 +509,13 @@ class SikshaSathiWidget {
 
     // Generate or retrieve session ID for backend communication
     getSessionId() {
-        if (!this.sessionId) {
-            this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            console.log('Generated new session ID:', this.sessionId);
-        }
-        return this.sessionId;
+        // No longer needed for stateless backend
+        return null;
     }
 
-    // Method to clear the current chat session on backend
+    // Method to clear the current chat session
     async clearBackendSession() {
-        // This method is no longer needed with the stateless backend
-        console.log("Clearing chat history locally.");
-        this.messages = [];
-        this.chatHistory = [];
-        this.currentChatId = null;
-        this.saveCurrentChat(); // This will effectively clear it in localStorage
-        
-        // Optionally, reload the page or clear the UI
+        // Simply reload the page to clear the UI
         window.location.reload();
     }
 
@@ -743,82 +718,7 @@ class SikshaSathiWidget {
         this.notifyParent('theme-changed', { theme });
     }
     
-    // Chat history management
-    loadChatHistory() {
-        try {
-            const chatList = JSON.parse(localStorage.getItem('siksha-sathi-chatlist') || '[]');
-            if (chatList.length > 0) {
-                // Load the most recent chat
-                const mostRecentChatId = chatList[0];
-                const chatData = JSON.parse(localStorage.getItem(mostRecentChatId) || '{}');
-                
-                if (chatData.history) {
-                    this.currentChatId = mostRecentChatId;
-                    this.chatHistory = chatData.history;
-                    
-                    // Re-render the messages from history
-                    this.messagesContainer.innerHTML = ''; // Clear existing messages
-                    this.chatHistory.forEach(entry => {
-                        const role = entry.role;
-                        const content = entry.parts.map(part => part.text).join('');
-                        if (role === 'user' || role === 'model') {
-                            this.addMessage(content, role === 'model' ? 'bot' : 'user');
-                        }
-                    });
-                    
-                    console.log(`Loaded chat ${this.currentChatId} with ${this.chatHistory.length} entries.`);
-                }
-            }
-        } catch (error) {
-            console.error('Error loading chat history:', error);
-            this.chatHistory = [];
-        }
-    }
-    
-    saveCurrentChat() {
-        if (!this.currentChatId) {
-            this.currentChatId = 'chat_' + Date.now();
-        }
-        
-        const chatData = {
-            id: this.currentChatId,
-            title: this.generateChatTitle(),
-            // The history from the backend is the source of truth
-            history: this.chatHistory,
-            timestamp: new Date().toISOString(),
-        };
-        
-        try {
-            // Save the entire conversation object to localStorage
-            localStorage.setItem(this.currentChatId, JSON.stringify(chatData));
-            
-            // Also update a list of chat IDs to easily find them later
-            let chatList = JSON.parse(localStorage.getItem('siksha-sathi-chatlist') || '[]');
-            if (!chatList.includes(this.currentChatId)) {
-                chatList.unshift(this.currentChatId);
-                // Keep only the last 10 chats
-                chatList = chatList.slice(0, 10);
-                localStorage.setItem('siksha-sathi-chatlist', JSON.stringify(chatList));
-            }
-            
-        } catch (error) {
-            console.error('Error saving chat history:', error);
-        }
-    }
-    
-    generateChatTitle() {
-        if (this.chatHistory.length === 0) return 'New Chat';
-        
-        // Find the first user message in the history for the title
-        const firstUserMessage = this.chatHistory.find(entry => entry.role === 'user');
-        if (firstUserMessage && firstUserMessage.parts) {
-            const content = firstUserMessage.parts.find(part => part.text)?.text || '';
-            const title = content.substring(0, 30);
-            return title.length < content.length ? title + '...' : title;
-        }
-        
-        return 'New Chat';
-    }
+    // No chat history management needed for stateless chat
     
     // Utility methods
     debounce(func, wait) {
@@ -865,7 +765,6 @@ class SikshaSathiWidget {
 
         // Clear references
         this.messages = [];
-        this.chatHistory = [];
     }
 }
 

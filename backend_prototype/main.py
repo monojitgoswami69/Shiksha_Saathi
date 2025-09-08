@@ -48,13 +48,9 @@ app.add_middleware(
 # Pydantic models for request and response body validation
 class ChatRequest(BaseModel):
     message: str
-    # The history is now sent with each request from the client
-    history: List[Dict[str, Any]] = Field(default_factory=list)
 
 class ChatResponse(BaseModel):
     response: str
-    # The updated history is sent back to the client
-    history: List[Dict[str, Any]]
 
 @app.get("/", tags=["Health"])
 def root():
@@ -69,28 +65,16 @@ def health_check():
 @app.post("/chat", response_model=ChatResponse, tags=["Chat"])
 async def chat(request: ChatRequest):
     """
-    Handles a chat message, maintains conversation history, and returns a bot response.
-    The client is responsible for sending the history with each request and storing the updated history.
+    Handles a chat message and returns a bot response.
+    This is now a stateless API - each request is independent.
     """
     try:
         user_message = request.message
-        history = request.history
         
-        logger.info(f"Received message: '{user_message}' with history length: {len(history)}")
+        logger.info(f"Received message: '{user_message}'")
 
-        # Convert our simplified history format to Gemini's expected format
-        gemini_history = []
-        for item in history:
-            if isinstance(item, dict) and 'role' in item and 'text' in item:
-                # Convert our simplified format to Gemini's format
-                gemini_item = {
-                    'role': item['role'],
-                    'parts': [{'text': item['text']}]
-                }
-                gemini_history.append(gemini_item)
-
-        # Start a new chat session with the provided history
-        chat_session = model.start_chat(history=gemini_history)
+        # Start a fresh chat session for each request (stateless)
+        chat_session = model.start_chat()
 
         # Send the user's message to Gemini
         response = await chat_session.send_message_async(user_message)
@@ -98,23 +82,7 @@ async def chat(request: ChatRequest):
         
         logger.info(f"Generated Gemini response.")
         
-        # Convert the new history back to our simplified format for JSON serialization
-        new_history = []
-        for content in chat_session.history:
-            if hasattr(content, 'role') and hasattr(content, 'parts'):
-                # Extract text from parts
-                text_parts = []
-                for part in content.parts:
-                    if hasattr(part, 'text'):
-                        text_parts.append(part.text)
-                
-                history_item = {
-                    "role": content.role,
-                    "text": "".join(text_parts)
-                }
-                new_history.append(history_item)
-        
-        return ChatResponse(response=bot_response, history=new_history)
+        return ChatResponse(response=bot_response)
     
     except Exception as e:
         logger.error(f"An error occurred in the chat endpoint: {e}", exc_info=True)
