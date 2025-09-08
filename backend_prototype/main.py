@@ -63,27 +63,30 @@ def health_check():
     return {"status": "healthy", "message": "Shiksha Saathi Gemini API is running"}
 
 @app.post("/chat", response_model=ChatResponse, tags=["Chat"])
-async def chat(request: ChatRequest):
+def chat(request: ChatRequest):
     """
     Handles a chat message and returns a bot response.
-    This is now a stateless API - each request is independent.
+    This handler is synchronous to avoid event-loop issues in some serverless
+    environments (the Gemini client can use gRPC which may conflict with the
+    runtime event loop when used with async handlers). Each request is
+    independent (stateless).
     """
     try:
         user_message = request.message
-        
+
         logger.info(f"Received message: '{user_message}'")
 
         # Start a fresh chat session for each request (stateless)
         chat_session = model.start_chat()
 
-        # Send the user's message to Gemini
-        response = await chat_session.send_message_async(user_message)
+        # Use the synchronous send_message call to avoid asyncio event-loop problems
+        response = chat_session.send_message(user_message)
         bot_response = response.text
-        
+
         logger.info(f"Generated Gemini response.")
-        
+
         return ChatResponse(response=bot_response)
-    
+
     except Exception as e:
         logger.error(f"An error occurred in the chat endpoint: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"An internal server error occurred: {e}")
