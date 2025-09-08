@@ -13,15 +13,18 @@ class SikshaSathiWidget {
         this.messageCount = 0;
         this.isWaitingForResponse = false;
         this.currentTheme = 'dark'; // Initialize theme
+        this.sessionId = null; // For backend session management
+    // Configurable synthetic response delay (ms). Set to 0 to disable artificial delay.
+    this.simulatedResponseDelay = 0;
 
         // Initialize widget
-        this.initializeElements();
-        this.setupEventListeners();
-        this.setupEmbedCommunication();
-        this.loadChatHistory();
-        this.initializeTheme(); // Set initial theme
+    this.initializeTheme();
+    this.initializeElements();
+    this.setupEventListeners();
+    this.setupEmbedCommunication();
+    this.loadChatHistory();
 
-        // Notify parent if embedded
+    // Notify parent if embedded
         if (this.isEmbedded) {
             this.notifyParent('widget-ready', {
                 type: 'iframe-ready',
@@ -36,126 +39,114 @@ class SikshaSathiWidget {
         });
     }
     
+    // Detect embed mode (iframe or URL param)
     detectEmbedMode() {
-        // Check if running in iframe
         const inIframe = window.self !== window.top;
-        
-        // Check URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const embedParam = urlParams.get('embed') === '1';
         const openParam = urlParams.get('open') === '1';
-        
-        if (openParam) {
-            this.isOpen = true;
-        }
-        
+
+        if (openParam) this.isOpen = true;
         return inIframe || embedParam;
     }
     
+    // Initialize DOM element references
     initializeElements() {
-        // Core elements
         this.chatContainer = document.querySelector('.widget-chatbot-container');
         this.messagesContainer = document.querySelector('.chat-messages');
-    // Legacy chatInput removed; overlayInput is the canonical input element
-    this.chatInput = null;
-    // send button removed
-        
-        // Header elements
-        this.menuButton = document.querySelector('#menuButton');
+        this.chatInput = null;
+        this.sendBtn = document.querySelector('#sendBtn');
+
         this.headerTitle = document.querySelector('.header-title h1');
-            this.themeModeBtn = document.querySelector('#themeModeBtn');
-            this.sunIcon = document.querySelector('.theme-mode-icon.sun-icon');
-            this.moonIcon = document.querySelector('.theme-mode-icon.moon-icon');
-        
-        // Popup elements
-        this.menuPopup = document.querySelector('#menuPopup');
-        this.historyPopup = document.querySelector('.history-popup');
-        this.popupOverlay = document.querySelector('.popup-overlay');
-        
-        // Suggestion chips
-    this.suggestionChips = document.querySelectorAll('.suggestion-chip');
-    this.overlayInput = document.querySelector('#overlayInput');
-        
-        // Initialize input hint and contenteditable behavior
-        if (this.overlayInput) {
-            // Set up contenteditable behavior
-            this.setupContentEditableInput();
+        this.themeModeBtn = document.querySelector('#themeModeBtn');
+        this.sunIcon = document.querySelector('.theme-mode-icon.sun-icon');
+        this.moonIcon = document.querySelector('.theme-mode-icon.moon-icon');
+
+        this.suggestionChips = document.querySelectorAll('.suggestion-chip');
+        this.overlayInput = document.querySelector('#overlayInput');
+
+        if (this.sendBtn && this.overlayInput) {
+            this.sendBtn.addEventListener('click', () => {
+                if (!this.isWaitingForResponse && !this.sendBtn.classList.contains('inactive')) {
+                    this.handleSendMessage();
+                }
+            });
+            this.updateSendBtnState();
         }
-        // Initialize theme icon to reflect current theme
-            // set initial active class based on saved or default theme
-            const current = document.documentElement.getAttribute('data-theme') || 'dark';
-            if (this.themeModeBtn) {
-                this.themeModeBtn.classList.remove('sun-active', 'moon-active', 'rotating');
-                if (current === 'dark') this.themeModeBtn.classList.add('moon-active');
-                else this.themeModeBtn.classList.add('sun-active');
-            }
-    // Removed chatInput placeholder initialization
-        
-    // message counter removed
+
+        if (this.overlayInput) this.setupContentEditableInput();
+
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        if (this.themeModeBtn) {
+            this.themeModeBtn.classList.remove('sun-active', 'moon-active', 'rotating');
+            if (current === 'dark') this.themeModeBtn.classList.add('moon-active');
+            else this.themeModeBtn.classList.add('sun-active');
+        }
     }
     
+    // Setup contenteditable input behavior and handlers
     setupContentEditableInput() {
         if (!this.overlayInput) return;
 
-        // Handle input events
-        this.overlayInput.addEventListener('input', () => {
-            this.autoResizeInput();
-            this.notifyHeightChange();
-        });
+        let inputTimeout;
+        const debouncedInputHandler = () => {
+            clearTimeout(inputTimeout);
+            inputTimeout = setTimeout(() => {
+                this.autoResizeInput();
+                this.updateSendBtnState();
+                this.updatePlaceholderVisibility();
+                this.notifyHeightChange();
+            }, 50);
+        };
 
-        // Handle Enter key
+        this.overlayInput.addEventListener('input', debouncedInputHandler);
+
         this.overlayInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (!this.isWaitingForResponse) {
-                    this.handleSendMessage();
-                }
+                if (!this.isWaitingForResponse) this.handleSendMessage();
             }
         });
 
-        // Paste handling to keep text only
         this.overlayInput.addEventListener('paste', (e) => {
             e.preventDefault();
             const text = (e.clipboardData || window.clipboardData).getData('text');
-            document.execCommand('insertText', false, text);
+            if (typeof Selection !== 'undefined' && typeof Range !== 'undefined') {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(document.createTextNode(text));
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            } else {
+                document.execCommand('insertText', false, text);
+            }
         });
 
-        // Initialize
         this.autoResizeInput();
     }
     
+    // Register UI event listeners
     setupEventListeners() {
-        // Send message events
-        // (Removed send button and keydown handling - now handled in setupContentEditableInput)
-        
-        // Header controls
-        if (this.menuButton) {
-            this.menuButton.addEventListener('click', () => this.toggleMenuDropdown());
-        }
-
         if (this.themeModeBtn) {
-                this.themeModeBtn.addEventListener('click', () => {
-                    // Trigger rotation animation immediately
-                    this.themeModeBtn.classList.add('rotating');
-
-                    const nextTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
-                    // Update active class to show the target icon
-                    if (nextTheme === 'dark') {
-                        this.themeModeBtn.classList.remove('sun-active');
-                        this.themeModeBtn.classList.add('moon-active');
-                    } else {
-                        this.themeModeBtn.classList.remove('moon-active');
-                        this.themeModeBtn.classList.add('sun-active');
-                    }
-
-                    this.setTheme(nextTheme);
-
-                    // Remove rotating class after animation duration
-                    setTimeout(() => this.themeModeBtn.classList.remove('rotating'), 520);
-                });
+            this.themeModeBtn.addEventListener('click', () => {
+                this.themeModeBtn.classList.add('rotating');
+                const nextTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+                if (nextTheme === 'dark') {
+                    this.themeModeBtn.classList.remove('sun-active');
+                    this.themeModeBtn.classList.add('moon-active');
+                } else {
+                    this.themeModeBtn.classList.remove('moon-active');
+                    this.themeModeBtn.classList.add('sun-active');
+                }
+                this.setTheme(nextTheme);
+                setTimeout(() => this.themeModeBtn.classList.remove('rotating'), 520);
+            });
         }
-        
-        // Suggestion chips
+
         this.suggestionChips.forEach(chip => {
             chip.addEventListener('click', () => {
                 if (!this.isWaitingForResponse) {
@@ -165,52 +156,28 @@ class SikshaSathiWidget {
                 }
             });
         });
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeMenuDropdown();
-            }
-        });
-        
-        // Window resize for responsive updates
-        window.addEventListener('resize', () => {
-            this.notifyHeightChange();
-        });
+
+        window.addEventListener('resize', () => this.notifyHeightChange());
     }
     
+    // Embed communication (postMessage)
     setupEmbedCommunication() {
         if (!this.isEmbedded) return;
-        
-        // Listen for messages from parent window
         window.addEventListener('message', (event) => {
             if (!event.data || !event.data.type) return;
-            
             switch (event.data.type) {
-                case 'open-widget':
-                    this.openWidget();
-                    break;
-                case 'close-widget':
-                    this.closeWidget();
-                    break;
-                case 'toggle-widget':
-                    this.toggleWidget();
-                    break;
+                case 'open-widget': this.openWidget(); break;
+                case 'close-widget': this.closeWidget(); break;
+                case 'toggle-widget': this.toggleWidget(); break;
                 case 'send-message':
                     if (event.data.message && this.overlayInput) {
                         this.overlayInput.textContent = event.data.message;
                         this.handleSendMessage();
                     }
                     break;
-                case 'set-theme':
-                    this.setTheme(event.data.theme);
-                    break;
+                case 'set-theme': this.setTheme(event.data.theme); break;
                 case 'get-status':
-                    this.notifyParent('status-response', {
-                        isOpen: this.isOpen,
-                        messageCount: this.messageCount,
-                        hasUnread: false
-                    });
+                    this.notifyParent('status-response', { isOpen: this.isOpen, messageCount: this.messageCount, hasUnread: false });
                     break;
             }
         });
@@ -218,26 +185,14 @@ class SikshaSathiWidget {
     
     notifyParent(type, data = {}) {
         if (!this.isEmbedded) return;
-        
-        const message = {
-            type: type,
-            source: 'siksha-sathi-widget',
-            timestamp: new Date().toISOString(),
-            ...data
-        };
-        
+        const message = { type, source: 'siksha-sathi-widget', timestamp: new Date().toISOString(), ...data };
         window.parent.postMessage(message, '*');
     }
     
+    // Notify parent with updated height
     notifyHeightChange() {
         if (!this.isEmbedded) return;
-        
-        // Calculate total content height
-        const height = Math.max(
-            this.chatContainer.scrollHeight,
-            400 // minimum height
-        );
-        
+        const height = Math.max(this.chatContainer.scrollHeight, 400);
         this.notifyParent('height-changed', { height });
     }
     
@@ -264,14 +219,19 @@ class SikshaSathiWidget {
         // Clear input after message is added
         this.overlayInput.textContent = '';
         this.autoResizeInput();
+        this.updateSendBtnState();
+        this.updatePlaceholderVisibility();
         
         // Show typing indicator immediately
         this.showTypingIndicator();
         
-        // Simulate bot response
-        setTimeout(() => {
+        // Simulate bot response (configurable). If delay is 0, call immediately.
+        const delay = Number.isFinite(this.simulatedResponseDelay) ? this.simulatedResponseDelay : 0;
+        if (delay > 0) {
+            setTimeout(() => this.simulateBotResponse(message), delay);
+        } else {
             this.simulateBotResponse(message);
-        }, 1000 + Math.random() * 1000);
+        }
         
         // Notify parent about message sent
         this.notifyParent('message-sent', {
@@ -280,20 +240,37 @@ class SikshaSathiWidget {
         });
         
         this.notifyHeightChange();
-    }    addMessage(content, sender = 'bot', options = {}) {
+    }
+    
+    addMessage(content, sender = 'bot', options = {}) {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${sender}`;
         
         const now = new Date();
         const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
+        // Process content based on sender
+        let processedContent;
+        if (sender === 'bot') {
+            // Render markdown for bot messages
+            processedContent = this.renderMarkdown(content);
+        } else {
+            // Escape HTML for user messages to prevent XSS
+            processedContent = this.escapeHtml(content);
+        }
+        
         messageElement.innerHTML = `
-            <div class="message-content">${this.escapeHtml(content)}</div>
+            <div class="message-content">${processedContent}</div>
             <div class="message-meta">
                 <span class="meta-username">${sender === 'user' ? 'You' : 'Siksha Sathi'}</span>
                 <span class="meta-timestamp">${timestamp}</span>
             </div>
         `;
+        
+        // Add copy buttons to code blocks if this is a bot message
+        if (sender === 'bot') {
+            this.addCodeCopyButtons(messageElement);
+        }
         
         // Hide welcome message if it exists
         const welcomeMessage = this.messagesContainer.querySelector('.welcome-message');
@@ -320,7 +297,116 @@ class SikshaSathiWidget {
         
         return messageElement;
     }
-    
+
+    // Render markdown content with safety measures
+    renderMarkdown(content) {
+        if (typeof marked === 'undefined') {
+            console.warn('Marked library not loaded, falling back to escaped HTML');
+            return this.escapeHtml(content);
+        }
+
+        try {
+            // Configure marked with safe options
+            marked.setOptions({
+                breaks: true, // Enable line breaks
+                gfm: true,    // GitHub Flavored Markdown
+                sanitize: false, // We'll handle sanitization manually
+                highlight: function(code, lang) {
+                    // Simple syntax highlighting placeholder
+                    return code;
+                }
+            });
+
+            // Render markdown to HTML
+            let html = marked.parse(content);
+            
+            // Basic XSS protection - remove dangerous elements
+            html = this.sanitizeHtml(html);
+            
+            return html;
+        } catch (error) {
+            console.error('Markdown rendering failed:', error);
+            return this.escapeHtml(content);
+        }
+    }
+
+    // Basic HTML sanitization
+    sanitizeHtml(html) {
+        // Remove script tags and event handlers
+        html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+        html = html.replace(/on\w+\s*=\s*"[^"]*"/g, '');
+        html = html.replace(/on\w+\s*=\s*'[^']*'/g, '');
+        html = html.replace(/javascript:/gi, '');
+        
+        return html;
+    }
+
+    // Add copy buttons to code blocks
+    addCodeCopyButtons(messageElement) {
+        const codeBlocks = messageElement.querySelectorAll('pre code');
+        codeBlocks.forEach((codeBlock, index) => {
+            const pre = codeBlock.parentElement;
+            
+            // Wrap pre in container for positioning
+            const container = document.createElement('div');
+            container.className = 'code-block-container';
+            pre.parentNode.insertBefore(container, pre);
+            container.appendChild(pre);
+            
+            // Create copy button
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'code-copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.setAttribute('data-code-index', index);
+            
+            copyBtn.addEventListener('click', () => {
+                this.copyCodeToClipboard(codeBlock.textContent, copyBtn);
+            });
+            
+            container.appendChild(copyBtn);
+        });
+    }
+
+    // Copy code to clipboard
+    async copyCodeToClipboard(code, button) {
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(code);
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+            
+            // Show feedback
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.background = 'var(--primary-color)';
+            button.style.color = 'white';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+                button.style.color = '';
+            }, 2000);
+            
+        } catch (err) {
+            console.error('Failed to copy code: ', err);
+            button.textContent = 'Failed';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+    }
+
     showTypingIndicator() {
         const chatMessages = document.getElementById('chatMessages');
         
@@ -348,31 +434,96 @@ class SikshaSathiWidget {
         }
     }
     
-    simulateBotResponse(userMessage) {
-        console.log('Simulating bot response for:', userMessage);
+    async simulateBotResponse(userMessage) {
+        console.log('Sending message to Gemini backend:', userMessage);
         
-        // Wait a bit to show the typing indicator, then respond
-        setTimeout(() => {
+        try {
+            // Call your Flask backend
+            const response = await fetch('http://localhost:5000/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: userMessage,
+                    session_id: this.getSessionId()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
             // Remove typing indicator
             this.hideTypingIndicator();
             
-            // Generate and add bot response
-            const responses = this.generateBotResponse(userMessage);
-            const response = responses[Math.floor(Math.random() * responses.length)];
-            
-            this.addMessage(response, 'bot');
-            
-            // Re-enable sending after bot responds
-            this.isWaitingForResponse = false;
-            if (this.overlayInput) {
-                this.overlayInput.focus(); // Focus back to input
+            if (data.status === 'success') {
+                // Add the real Gemini response
+                this.addMessage(data.response, 'bot');
+                console.log('Gemini response received:', data.response.substring(0, 100) + '...');
+            } else {
+                // Handle error response
+                this.addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Backend error:', data.error);
             }
             
-            this.notifyHeightChange();
-            console.log('Bot response completed');
-        }, 1500 + Math.random() * 1000); // Show typing indicator for 1.5-2.5 seconds
+        } catch (error) {
+            console.error('Failed to get response from backend:', error);
+            
+            // Remove typing indicator
+            this.hideTypingIndicator();
+            
+            // Fallback to local response
+            const fallbackResponse = "I'm having trouble connecting to my brain right now. Please check if the backend server is running and try again.";
+            this.addMessage(fallbackResponse, 'bot');
+        }
+        
+        // Re-enable sending after bot responds
+        this.isWaitingForResponse = false;
+        this.updateSendBtnState();
+        if (this.overlayInput) {
+            this.overlayInput.focus(); // Focus back to input
+        }
+        
+        this.notifyHeightChange();
+        console.log('Bot response completed');
     }
-    
+
+    // Generate or retrieve session ID for backend communication
+    getSessionId() {
+        if (!this.sessionId) {
+            // Generate a unique session ID
+            this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            console.log('Generated new session ID:', this.sessionId);
+        }
+        return this.sessionId;
+    }
+
+    // Method to clear the current chat session on backend
+    async clearBackendSession() {
+        try {
+            const response = await fetch('http://localhost:5000/clear_session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    session_id: this.getSessionId()
+                })
+            });
+            
+            if (response.ok) {
+                console.log('Backend session cleared successfully');
+                // Generate new session ID for next conversation
+                this.sessionId = null;
+            }
+        } catch (error) {
+            console.error('Failed to clear backend session:', error);
+        }
+    }
+
     generateBotResponse(userMessage) {
         const message = userMessage.toLowerCase();
         
@@ -480,100 +631,36 @@ class SikshaSathiWidget {
         this.notifyHeightChange();
     }
     
+    updateSendBtnState() {
+        if (!this.sendBtn || !this.overlayInput) return;
+        
+        const hasContent = this.overlayInput.textContent.trim().length > 0;
+        const isButtonActive = hasContent && !this.isWaitingForResponse;
+        
+        if (isButtonActive) {
+            this.sendBtn.classList.remove('inactive');
+            this.sendBtn.removeAttribute('disabled');
+        } else {
+            this.sendBtn.classList.add('inactive');
+            this.sendBtn.setAttribute('disabled', 'disabled');
+        }
+    }
+    
+    updatePlaceholderVisibility() {
+        if (!this.overlayInput) return;
+        
+        // Check if input is truly empty (no text content, even after trimming)
+        const isEmpty = this.overlayInput.textContent.trim() === '';
+        
+        if (isEmpty) {
+            // Clear any leftover whitespace or empty nodes
+            this.overlayInput.innerHTML = '';
+        }
+    }
+    
     // send button logic removed
     
     // message counter functionality removed
-    
-    // Popup Management
-    toggleMenuDropdown() {
-        const dropdown = document.querySelector('.menu-dropdown');
-        if (dropdown && dropdown.classList.contains('active')) {
-            this.closeMenuDropdown();
-        } else {
-            this.showMenuDropdown();
-        }
-    }
-
-    showMenuDropdown() {
-        this.closeMenuDropdown();
-        
-        // Create dropdown if it doesn't exist
-        let dropdown = document.querySelector('.menu-dropdown');
-        if (!dropdown) {
-            dropdown = document.createElement('div');
-            dropdown.className = 'menu-dropdown';
-            this.menuButton.parentNode.appendChild(dropdown);
-        }
-        
-        // Update dropdown content
-        dropdown.innerHTML = `
-            <div class="menu-dropdown-item" data-action="export">
-                <span class="menu-dropdown-item-icon">📤</span>
-                <span>Export Chat</span>
-            </div>
-            <div class="menu-dropdown-item" data-action="clear">
-                <span class="menu-dropdown-item-icon">🗑️</span>
-                <span>Clear Chat</span>
-            </div>
-        `;
-
-        // Add event listeners to menu items
-        const exportItem = dropdown.querySelector('[data-action="export"]');
-        const clearItem = dropdown.querySelector('[data-action="clear"]');
-
-        if (exportItem) {
-            exportItem.addEventListener('click', () => {
-                this.exportChat();
-                this.closeMenuDropdown();
-            });
-        }
-
-        if (clearItem) {
-            clearItem.addEventListener('click', () => {
-                this.clearChat();
-                this.closeMenuDropdown();
-            });
-        }
-
-        // Show dropdown
-        dropdown.classList.add('active');
-        
-        // Add click outside listener
-        setTimeout(() => {
-            document.addEventListener('click', this.handleClickOutside);
-        }, 10);
-    }
-    
-    closeMenuDropdown() {
-        const dropdown = document.querySelector('.menu-dropdown');
-        if (dropdown) {
-            dropdown.classList.remove('active');
-        }
-        document.removeEventListener('click', this.handleClickOutside);
-    }
-    
-    handleClickOutside = (event) => {
-        const dropdown = document.querySelector('.menu-dropdown');
-        const menuButton = document.getElementById('menuButton');
-        
-        if (dropdown && menuButton && 
-            !dropdown.contains(event.target) && 
-            !menuButton.contains(event.target)) {
-            this.closeMenuDropdown();
-        }
-    }
-    
-    showPopup(popup) {
-        this.closeMenuDropdown();
-        if (popup && this.popupOverlay) {
-            popup.style.display = 'block';
-            this.popupOverlay.classList.add('active');
-        }
-    }
-    
-    closeAllPopups() {
-        this.closeMenuDropdown();
-    }
     
     // Widget state management
     openWidget() {
@@ -620,13 +707,23 @@ class SikshaSathiWidget {
         // With a single stylesheet, just set the data-theme attribute
         document.documentElement.setAttribute('data-theme', theme);
 
+        // Update the visual state of the theme button if present
         try {
             localStorage.setItem('siksha-sathi-theme', theme);
         } catch (error) {
             console.error('Error saving theme preference:', error);
         }
+
+        if (this.themeModeBtn) {
+            this.themeModeBtn.classList.remove('sun-active', 'moon-active');
+            if (theme === 'dark') this.themeModeBtn.classList.add('moon-active');
+            else this.themeModeBtn.classList.add('sun-active');
+        }
+
         this.notifyParent('theme-changed', { theme });
-    }    // Chat history management
+    }
+    
+    // Chat history management
     loadChatHistory() {
         try {
             const history = localStorage.getItem('siksha-sathi-history');
@@ -683,68 +780,6 @@ class SikshaSathiWidget {
         return 'New Chat';
     }
     
-    exportChat() {
-        try {
-            const chatData = {
-                timestamp: new Date().toISOString(),
-                messages: this.messages,
-                messageCount: this.messageCount
-            };
-
-            const dataStr = JSON.stringify(chatData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `siksha-sathi-chat-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Show success message
-            this.addMessage('Chat exported successfully! 📤', 'bot');
-        } catch (error) {
-            console.error('Error exporting chat:', error);
-            this.addMessage('Failed to export chat. Please try again.', 'bot');
-        }
-    }
-
-    clearChat() {
-        try {
-            // Clear messages from UI by removing only message elements
-            const messages = this.messagesContainer.querySelectorAll('.message');
-            messages.forEach(msg => msg.remove());
-
-            // Show the welcome message again
-            const welcomeMessage = this.messagesContainer.querySelector('.welcome-message');
-            if (welcomeMessage) {
-                welcomeMessage.style.display = 'block';
-            }
-
-            // Clear messages array and reset counters
-            this.messages = [];
-            this.messageCount = 0;
-
-            // Clear localStorage for the current chat session
-            try {
-                // A more robust way would be to remove the specific chat from history
-                // For now, we clear the whole history as per original logic, but this could be improved
-                localStorage.removeItem('siksha-sathi-history');
-            } catch (error) {
-                console.error('Error clearing localStorage:', error);
-            }
-
-            // Reset current chat ID
-            this.currentChatId = null;
-
-            // Add a confirmation message to the UI
-            this.addMessage('Chat cleared successfully! 🗑️', 'bot');
-        } catch (error) {
-            console.error('Error clearing chat:', error);
-            this.addMessage('Failed to clear chat. Please try again.', 'bot');
-        }
-    }
-    
     // Utility methods
     debounce(func, wait) {
         let timeout;
@@ -769,6 +804,28 @@ class SikshaSathiWidget {
                 timestamp: new Date().toISOString()
             });
         }
+    }
+
+    // Cleanup method to prevent memory leaks
+    destroy() {
+        // Clear any running timeouts
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+        }
+        if (this.typingTimeout) {
+            clearTimeout(this.typingTimeout);
+        }
+
+        // Remove event listeners
+        if (this.overlayInput) {
+            this.overlayInput.removeEventListener('input', this.debouncedInputHandler);
+            this.overlayInput.removeEventListener('keydown', this.keydownHandler);
+            this.overlayInput.removeEventListener('paste', this.pasteHandler);
+        }
+
+        // Clear references
+        this.messages = [];
+        this.chatHistory = [];
     }
 }
 

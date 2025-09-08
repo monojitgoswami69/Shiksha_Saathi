@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    
+    <!-- Markdown parsing library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <!-- Preload images -->
@@ -16,17 +19,10 @@
         <img src="assets/moon.png" alt="preload">
     </div>
 
-    <!-- Widget Container - Only the chatbot container extracted from main chatbot.html -->
+    <!-- Widget Container -->
     <div class="widget-chatbot-container" id="widgetContainer">
         <div class="chatbot-header">
             <div class="header-controls">
-                <div class="menu-button" id="menuButton">
-                    <div class="menu-icon">
-                        <div class="menu-line"></div>
-                        <div class="menu-line"></div>
-                        <div class="menu-line"></div>
-                    </div>
-                </div>
                 <button class="theme-mode-btn" id="themeModeBtn" title="Toggle theme">
                     <img src="assets/sun.png" alt="Sun icon" class="theme-mode-icon sun-icon">
                     <img src="assets/moon.png" alt="Moon icon" class="theme-mode-icon moon-icon">
@@ -59,10 +55,13 @@
             </div>
         </div>
 
-        <!-- Input pane integrated into the container -->
+    <!-- Input pane -->
         <div class="input-pane" id="inputPane">
             <div class="input-overlay" id="inputOverlay">
-                <div class="input-field" id="overlayInput" contenteditable="true" aria-label="Message input" data-placeholder="Type your querry..."></div>
+                <div class="input-field" id="overlayInput" contenteditable="true" aria-label="Message input" data-placeholder="Type your query..."></div>
+                <button class="send-btn" id="sendBtn" type="button" aria-label="Send message">
+                    <img src="assets/send_button.png" alt="Send" class="send-btn-img" />
+                </button>
             </div>
         </div>
     </div>
