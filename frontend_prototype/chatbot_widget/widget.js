@@ -129,6 +129,21 @@ class SikshaSathiWidget {
         });
 
         this.autoResizeInput();
+        
+        // Add mobile-specific focus handling for better keyboard behavior
+        this.overlayInput.addEventListener('focus', () => {
+            // Delay to ensure keyboard is shown
+            setTimeout(() => {
+                this.handleMobileViewportChange();
+            }, 300);
+        });
+        
+        this.overlayInput.addEventListener('blur', () => {
+            // Reset container height when keyboard hides
+            if ('visualViewport' in window && this.chatContainer) {
+                this.chatContainer.style.height = '';
+            }
+        });
     }
     
     // Register UI event listeners
@@ -160,6 +175,21 @@ class SikshaSathiWidget {
         });
 
         window.addEventListener('resize', () => this.notifyHeightChange());
+        
+        // Mobile viewport handling - listen for visual viewport changes
+        if ('visualViewport' in window) {
+            window.visualViewport.addEventListener('resize', () => {
+                this.handleMobileViewportChange();
+            });
+        }
+        
+        // Orientation change handling for mobile
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.handleMobileViewportChange();
+                this.notifyHeightChange();
+            }, 100);
+        });
     }
     
     // Embed communication (postMessage)
@@ -196,6 +226,29 @@ class SikshaSathiWidget {
         if (!this.isEmbedded) return;
         const height = Math.max(this.chatContainer.scrollHeight, 400);
         this.notifyParent('height-changed', { height });
+    }
+    
+    // Handle mobile viewport changes (keyboard show/hide)
+    handleMobileViewportChange() {
+        // Ensure input remains visible when keyboard appears
+        if (this.overlayInput && document.activeElement === this.overlayInput) {
+            // Small delay to let the keyboard animation finish
+            setTimeout(() => {
+                this.overlayInput.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 50);
+        }
+        
+        // Update container height to accommodate keyboard
+        if ('visualViewport' in window) {
+            const viewportHeight = window.visualViewport.height;
+            const containerElement = this.chatContainer;
+            if (containerElement && viewportHeight) {
+                containerElement.style.height = `${viewportHeight}px`;
+            }
+        }
     }
     
     handleSendMessage() {

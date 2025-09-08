@@ -6,6 +6,14 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Any
 import logging
 
+# Try to load environment variables from .env file for local development
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not installed, skip loading .env file
+    pass
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,11 +23,11 @@ api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
     # This will fail during Vercel build if the key is not set, which is good.
-    raise RuntimeError("GEMINI_API_KEY not found in environment variables. Please set it in your Vercel project settings.")
+    raise RuntimeError("GEMINI_API_KEY not found in environment variables. Please set it in your Vercel project settings or create a .env file with GEMINI_API_KEY=your_key_here")
 
 # Configure Gemini API and model
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-1.5-flash') # Using a standard model name
+model = genai.GenerativeModel('gemini-2.5-flash-lite') # Using a standard model name
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -49,6 +57,11 @@ class ChatResponse(BaseModel):
     history: List[Dict[str, Any]]
 
 @app.get("/", tags=["Health"])
+def root():
+    """Root endpoint that serves as a health check."""
+    return {"status": "healthy", "message": "Shiksha Saathi Gemini API is running"}
+
+@app.get("/health", tags=["Health"])  
 def health_check():
     """Health check endpoint to confirm the server is running."""
     return {"status": "healthy", "message": "Shiksha Saathi Gemini API is running"}
@@ -65,8 +78,19 @@ async def chat(request: ChatRequest):
         
         logger.info(f"Received message: '{user_message}' with history length: {len(history)}")
 
+        # Convert our simplified history format to Gemini's expected format
+        gemini_history = []
+        for item in history:
+            if isinstance(item, dict) and 'role' in item and 'text' in item:
+                # Convert our simplified format to Gemini's format
+                gemini_item = {
+                    'role': item['role'],
+                    'parts': [{'text': item['text']}]
+                }
+                gemini_history.append(gemini_item)
+
         # Start a new chat session with the provided history
-        chat_session = model.start_chat(history=history)
+        chat_session = model.start_chat(history=gemini_history)
 
         # Send the user's message to Gemini
         response = await chat_session.send_message_async(user_message)
@@ -74,8 +98,21 @@ async def chat(request: ChatRequest):
         
         logger.info(f"Generated Gemini response.")
         
-        # The new history is the old history plus the user message and the bot response
-        new_history = chat_session.history
+        # Convert the new history back to our simplified format for JSON serialization
+        new_history = []
+        for content in chat_session.history:
+            if hasattr(content, 'role') and hasattr(content, 'parts'):
+                # Extract text from parts
+                text_parts = []
+                for part in content.parts:
+                    if hasattr(part, 'text'):
+                        text_parts.append(part.text)
+                
+                history_item = {
+                    "role": content.role,
+                    "text": "".join(text_parts)
+                }
+                new_history.append(history_item)
         
         return ChatResponse(response=bot_response, history=new_history)
     
