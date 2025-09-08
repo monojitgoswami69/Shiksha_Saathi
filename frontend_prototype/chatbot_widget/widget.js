@@ -3,6 +3,8 @@
  * Provides core chat functionality and postMessage API for iframe integration
  */
 
+const backendUrl = "https://shiksha-saathi-backend.vercel.app";
+
 class SikshaSathiWidget {
     constructor() {
         this.isEmbedded = this.detectEmbedMode();
@@ -249,30 +251,20 @@ class SikshaSathiWidget {
         const now = new Date();
         const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
-        // Process content based on sender
-        let processedContent;
-        if (sender === 'bot') {
-            // Render markdown for bot messages
-            processedContent = this.renderMarkdown(content);
-        } else {
-            // Escape HTML for user messages to prevent XSS
-            processedContent = this.escapeHtml(content);
-        }
+        let processedContent = sender === 'bot' ? this.renderMarkdown(content) : this.escapeHtml(content);
         
         messageElement.innerHTML = `
             <div class="message-content">${processedContent}</div>
             <div class="message-meta">
-                <span class="meta-username">${sender === 'user' ? 'You' : 'Siksha Sathi'}</span>
+                <span class="meta-username">${sender === 'user' ? 'You' : 'Siksha Saathi'}</span>
                 <span class="meta-timestamp">${timestamp}</span>
             </div>
         `;
         
-        // Add copy buttons to code blocks if this is a bot message
         if (sender === 'bot') {
             this.addCodeCopyButtons(messageElement);
         }
         
-        // Hide welcome message if it exists
         const welcomeMessage = this.messagesContainer.querySelector('.welcome-message');
         if (welcomeMessage) {
             welcomeMessage.style.display = 'none';
@@ -281,19 +273,9 @@ class SikshaSathiWidget {
         this.messagesContainer.appendChild(messageElement);
         this.scrollToBottom();
         
-        // Store message
-        const messageData = {
-            id: Date.now() + Math.random(),
-            content,
-            sender,
-            timestamp: now.toISOString()
-        };
-        
-        this.messages.push(messageData);
-        this.messageCount++;
-        
-        // Save to localStorage
-        this.saveCurrentChat();
+        // The history is now managed centrally after backend response,
+        // so we don't push individual messages here anymore.
+        // This method is now purely for rendering.
         
         return messageElement;
     }
@@ -438,53 +420,49 @@ class SikshaSathiWidget {
         console.log('Sending message to Gemini backend:', userMessage);
         
         try {
-            // Call your Flask backend
-            const response = await fetch('http://localhost:5000/chat', {
+            // Call your backend with the message and the current history
+            const response = await fetch(`${backendUrl}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     message: userMessage,
-                    session_id: this.getSessionId()
+                    history: this.chatHistory, // Send current history
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(`HTTP error! status: ${response.status}, details: ${errorData.detail}`);
             }
 
             const data = await response.json();
             
-            // Remove typing indicator
             this.hideTypingIndicator();
             
-            if (data.status === 'success') {
-                // Add the real Gemini response
-                this.addMessage(data.response, 'bot');
-                console.log('Gemini response received:', data.response.substring(0, 100) + '...');
-            } else {
-                // Handle error response
-                this.addMessage('Sorry, I encountered an error. Please try again.', 'bot');
-                console.error('Backend error:', data.error);
-            }
+            // Add the bot's response to the UI
+            this.addMessage(data.response, 'bot');
+            
+            // IMPORTANT: Update the local history with the one from the backend
+            this.chatHistory = data.history;
+            
+            // Save the updated history to localStorage
+            this.saveCurrentChat();
+            
+            console.log('Gemini response received and history updated.');
             
         } catch (error) {
             console.error('Failed to get response from backend:', error);
-            
-            // Remove typing indicator
             this.hideTypingIndicator();
-            
-            // Fallback to local response
             const fallbackResponse = "I'm having trouble connecting to my brain right now. Please check if the backend server is running and try again.";
             this.addMessage(fallbackResponse, 'bot');
         }
         
-        // Re-enable sending after bot responds
         this.isWaitingForResponse = false;
         this.updateSendBtnState();
         if (this.overlayInput) {
-            this.overlayInput.focus(); // Focus back to input
+            this.overlayInput.focus();
         }
         
         this.notifyHeightChange();
@@ -494,7 +472,6 @@ class SikshaSathiWidget {
     // Generate or retrieve session ID for backend communication
     getSessionId() {
         if (!this.sessionId) {
-            // Generate a unique session ID
             this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             console.log('Generated new session ID:', this.sessionId);
         }
@@ -503,25 +480,15 @@ class SikshaSathiWidget {
 
     // Method to clear the current chat session on backend
     async clearBackendSession() {
-        try {
-            const response = await fetch('http://localhost:5000/clear_session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    session_id: this.getSessionId()
-                })
-            });
-            
-            if (response.ok) {
-                console.log('Backend session cleared successfully');
-                // Generate new session ID for next conversation
-                this.sessionId = null;
-            }
-        } catch (error) {
-            console.error('Failed to clear backend session:', error);
-        }
+        // This method is no longer needed with the stateless backend
+        console.log("Clearing chat history locally.");
+        this.messages = [];
+        this.chatHistory = [];
+        this.currentChatId = null;
+        this.saveCurrentChat(); // This will effectively clear it in localStorage
+        
+        // Optionally, reload the page or clear the UI
+        window.location.reload();
     }
 
     generateBotResponse(userMessage) {
@@ -726,9 +693,28 @@ class SikshaSathiWidget {
     // Chat history management
     loadChatHistory() {
         try {
-            const history = localStorage.getItem('siksha-sathi-history');
-            if (history) {
-                this.chatHistory = JSON.parse(history);
+            const chatList = JSON.parse(localStorage.getItem('siksha-sathi-chatlist') || '[]');
+            if (chatList.length > 0) {
+                // Load the most recent chat
+                const mostRecentChatId = chatList[0];
+                const chatData = JSON.parse(localStorage.getItem(mostRecentChatId) || '{}');
+                
+                if (chatData.history) {
+                    this.currentChatId = mostRecentChatId;
+                    this.chatHistory = chatData.history;
+                    
+                    // Re-render the messages from history
+                    this.messagesContainer.innerHTML = ''; // Clear existing messages
+                    this.chatHistory.forEach(entry => {
+                        const role = entry.role;
+                        const content = entry.parts.map(part => part.text).join('');
+                        if (role === 'user' || role === 'model') {
+                            this.addMessage(content, role === 'model' ? 'bot' : 'user');
+                        }
+                    });
+                    
+                    console.log(`Loaded chat ${this.currentChatId} with ${this.chatHistory.length} entries.`);
+                }
             }
         } catch (error) {
             console.error('Error loading chat history:', error);
@@ -737,44 +723,45 @@ class SikshaSathiWidget {
     }
     
     saveCurrentChat() {
-        if (this.messages.length === 0) return;
-        
-        const chatData = {
-            id: this.currentChatId || Date.now(),
-            title: this.generateChatTitle(),
-            messages: this.messages,
-            timestamp: new Date().toISOString(),
-            messageCount: this.messageCount
-        };
-        
-        // Update or add chat to history
-        const existingIndex = this.chatHistory.findIndex(chat => chat.id === chatData.id);
-        if (existingIndex >= 0) {
-            this.chatHistory[existingIndex] = chatData;
-        } else {
-            this.chatHistory.unshift(chatData);
-            this.currentChatId = chatData.id;
+        if (!this.currentChatId) {
+            this.currentChatId = 'chat_' + Date.now();
         }
         
-        // Keep only last 10 chats
-        this.chatHistory = this.chatHistory.slice(0, 10);
+        const chatData = {
+            id: this.currentChatId,
+            title: this.generateChatTitle(),
+            // The history from the backend is the source of truth
+            history: this.chatHistory,
+            timestamp: new Date().toISOString(),
+        };
         
         try {
-            localStorage.setItem('siksha-sathi-history', JSON.stringify(this.chatHistory));
+            // Save the entire conversation object to localStorage
+            localStorage.setItem(this.currentChatId, JSON.stringify(chatData));
+            
+            // Also update a list of chat IDs to easily find them later
+            let chatList = JSON.parse(localStorage.getItem('siksha-sathi-chatlist') || '[]');
+            if (!chatList.includes(this.currentChatId)) {
+                chatList.unshift(this.currentChatId);
+                // Keep only the last 10 chats
+                chatList = chatList.slice(0, 10);
+                localStorage.setItem('siksha-sathi-chatlist', JSON.stringify(chatList));
+            }
+            
         } catch (error) {
             console.error('Error saving chat history:', error);
         }
     }
     
     generateChatTitle() {
-        if (this.messages.length === 0) return 'New Chat';
+        if (this.chatHistory.length === 0) return 'New Chat';
         
-        // Get the first user message for the title
-        const firstUserMessage = this.messages.find(msg => msg.sender === 'user');
-        if (firstUserMessage) {
-            // Truncate to 30 characters
-            const title = firstUserMessage.content.substring(0, 30);
-            return title.length < firstUserMessage.content.length ? title + '...' : title;
+        // Find the first user message in the history for the title
+        const firstUserMessage = this.chatHistory.find(entry => entry.role === 'user');
+        if (firstUserMessage && firstUserMessage.parts) {
+            const content = firstUserMessage.parts.find(part => part.text)?.text || '';
+            const title = content.substring(0, 30);
+            return title.length < content.length ? title + '...' : title;
         }
         
         return 'New Chat';
