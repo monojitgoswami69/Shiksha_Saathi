@@ -28,15 +28,12 @@
 
         <main class="chat-messages" id="chatMessages">
             <div class="welcome-message">
-                <div class="welcome-avatar">
-                    <img src="assets/bot_avatar.png" alt="Bot avatar" class="avatar-image">
-                </div>
                 <h2>Welcome to Shiksha Saathi</h2>
                 <p>Your AI-powered learning assistant. Ask me anything!</p>
                 <div class="welcome-suggestions">
-                    <button class="suggestion-chip" data-suggestion="Explain photosynthesis">Explain photosynthesis</button>
-                    <button class="suggestion-chip" data-suggestion="Solve 2x + 3 = 7">Solve 2x + 3 = 7</button>
-                    <button class="suggestion-chip" data-suggestion="What is machine learning?">What is machine learning?</button>
+                    <button class="suggestion-chip" data-suggestion="Who are you?">Who are you?</button>
+                    <button class="suggestion-chip" data-suggestion="Who maintains you?">Who maintains you?</button>
+                    <button class="suggestion-chip" data-suggestion="What can you do?">What can you do?</button>
                 </div>
             </div>
         </main>
@@ -44,9 +41,8 @@
         <footer class="input-pane" id="inputPane">
             <div class="input-overlay">
                 <div class="input-field" id="overlayInput" contenteditable="true" aria-label="Message input" data-placeholder="Type your query..."></div>
-                <button class="send-btn inactive" id="sendBtn" type="button" aria-label="Send message" disabled>
-                    <img src="assets/send_button.png" alt="Send" class="send-btn-img" />
-                </button>
+                <!-- Use the PNG itself as the send control (no wrapping button) -->
+                <img id="sendBtn" src="assets/send_button.png" alt="Send" class="send-btn-img inactive" role="button" aria-label="Send message" aria-disabled="true">
             </div>
         </footer>
     </div>

@@ -34,7 +34,7 @@ class SikshaSathiWidget {
             version: '1.0.1'
         });
     }
-    
+
     // Detect embed mode (iframe or URL param)
     detectEmbedMode() {
         const inIframe = window.self !== window.top;
@@ -42,23 +42,34 @@ class SikshaSathiWidget {
         const embedParam = urlParams.get('embed') === '1';
         return inIframe || embedParam;
     }
-    
+
     // Initialize DOM element references
     initializeElements() {
         this.chatContainer = document.querySelector('.widget-chatbot-container');
         this.messagesContainer = document.querySelector('.chat-messages');
-        this.sendBtn = document.querySelector('#sendBtn');
+        this.sendBtn = document.querySelector('#sendBtn'); // now an <img> acting as button
         this.headerTitle = document.querySelector('.header-title h1');
         this.themeModeBtn = document.querySelector('#themeModeBtn');
         this.suggestionChips = document.querySelectorAll('.suggestion-chip');
         this.overlayInput = document.querySelector('#overlayInput');
 
         if (this.sendBtn && this.overlayInput) {
+            // Click handler for the image acting as button
             this.sendBtn.addEventListener('click', () => {
                 if (!this.isWaitingForResponse && !this.sendBtn.classList.contains('inactive')) {
                     this.handleSendMessage();
                 }
             });
+
+            // Allow keyboard activation when focused
+            this.sendBtn.tabIndex = 0;
+            this.sendBtn.addEventListener('keydown', (e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && !this.sendBtn.classList.contains('inactive')) {
+                    e.preventDefault();
+                    this.handleSendMessage();
+                }
+            });
+
             this.updateSendBtnState();
         }
 
@@ -66,7 +77,7 @@ class SikshaSathiWidget {
 
         this.setTheme(this.currentTheme, true);
     }
-    
+
     // Setup contenteditable input behavior and handlers
     setupContentEditableInput() {
         if (!this.overlayInput) return;
@@ -111,7 +122,7 @@ class SikshaSathiWidget {
             }
         });
     }
-    
+
     // Register UI event listeners
     setupEventListeners() {
         if (this.themeModeBtn) {
@@ -144,7 +155,7 @@ class SikshaSathiWidget {
             }, 100);
         });
     }
-    
+
     // Embed communication (postMessage)
     setupEmbedCommunication() {
         if (!this.isEmbedded) return;
@@ -212,52 +223,87 @@ class SikshaSathiWidget {
         
         this.showTypingIndicator();
         
-        const delay = Number.isFinite(this.simulatedResponseDelay) ? this.simulatedResponseDelay : 0;
-        if (delay > 0) {
-            setTimeout(() => this.simulateBotResponse(message), delay);
-        } else {
-            this.simulateBotResponse(message);
-        }
+        // This now calls the backend directly without an artificial delay
+        this.getBotResponse(message);
         
         this.notifyParent('message-sent', { message });
         this.notifyHeightChange();
     }
     
-    addMessage(content, sender = 'bot') {
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${sender}`;
-        
-        const now = new Date();
-        const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        const processedContent = sender === 'bot' ? this.renderMarkdown(content) : this.escapeHtml(content);
-        
-        const avatarSrc = sender === 'user' ? 'assets/user_avatar.png' : 'assets/bot_avatar.png';
-        const avatarAlt = sender === 'user' ? 'User avatar' : 'Bot avatar';
-        
-        messageElement.innerHTML = `
-            <div class="message-avatar">
-                <img src="${avatarSrc}" alt="${avatarAlt}" class="avatar-image">
-            </div>
-            <div class="message-content">
-                <div class="message-text">${processedContent}</div>
-                <div class="message-timestamp">${timestamp}</div>
-            </div>
-        `;
-        
-        if (sender === 'bot') {
-            this.addCodeCopyButtons(messageElement);
-        }
-        
+    addMessage(content, sender = 'bot', enableStreaming = false) {
+        // Hide welcome message when first message is added
         const welcomeMessage = this.messagesContainer.querySelector('.welcome-message');
         if (welcomeMessage) {
             welcomeMessage.style.display = 'none';
         }
+
+        if (sender === 'user') {
+            // Keep user messages as bubbles
+            const processedContent = this.escapeHtml(content);
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${sender}`;
+            messageElement.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${processedContent}</div>
+                </div>
+            `;
+
+            this.messagesContainer.appendChild(messageElement);
+            this.scrollToBottom();
+            return messageElement;
+        } else {
+            // Render bot responses directly to the page (non-bubbled)
+            const botElement = document.createElement('div');
+            botElement.className = 'bot-response';
+            botElement.innerHTML = `
+                <div class="bot-response-content"></div>
+            `;
+
+            this.messagesContainer.appendChild(botElement);
+            const contentDiv = botElement.querySelector('.bot-response-content');
+
+            if (enableStreaming) {
+                // Stream the response with typing effect
+                this.streamBotResponse(content, contentDiv, botElement);
+            } else {
+                // Show response immediately (non-streaming)
+                const processedContent = this.renderMarkdown(content);
+                contentDiv.innerHTML = processedContent;
+                this.addCodeCopyButtons(botElement);
+            }
+
+            this.scrollToBottom();
+            return botElement;
+        }
+    }
+
+    // Stream bot response with typing effect
+    streamBotResponse(content, contentDiv, botElement) {
+        const chars = content.split('');
+        let currentIndex = 0;
+        let currentText = '';
         
-        this.messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
+        const typeChar = () => {
+            if (currentIndex < chars.length) {
+                currentText += chars[currentIndex];
+                currentIndex++;
+                
+                // Render markdown for the current text
+                const processedContent = this.renderMarkdown(currentText);
+                contentDiv.innerHTML = processedContent;
+                
+                // Scroll to bottom to follow the typing
+                this.scrollToBottom();
+                
+                // Continue typing with a small delay
+                setTimeout(typeChar, 1); // Adjust speed here (1ms = fastest)
+            } else {
+                // Streaming complete - add code copy buttons
+                this.addCodeCopyButtons(botElement);
+            }
+        };
         
-        return messageElement;
+        typeChar();
     }
 
     // Render markdown content with safety measures
@@ -331,25 +377,25 @@ class SikshaSathiWidget {
     }
 
     showTypingIndicator() {
-        const chatMessages = document.getElementById('chatMessages');
-        if (chatMessages.querySelector('.typing-indicator')) return;
+        // CORRECTED: Use this.messagesContainer to find the element
+        if (this.messagesContainer.querySelector('.typing-indicator')) return;
         
         const typingDots = document.createElement('div');
         typingDots.className = 'typing-indicator';
         typingDots.innerHTML = '<span></span><span></span><span></span>';
-        chatMessages.appendChild(typingDots);
+        this.messagesContainer.appendChild(typingDots);
         
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        this.scrollToBottom();
     }
     
     hideTypingIndicator() {
-        const typingIndicator = document.querySelector('.typing-indicator');
+        const typingIndicator = this.messagesContainer.querySelector('.typing-indicator');
         if (typingIndicator) {
             typingIndicator.remove();
         }
     }
     
-    async simulateBotResponse(userMessage) {
+    async getBotResponse(userMessage) {
         try {
             const response = await fetch(`${backendUrl}/chat`, {
                 method: 'POST',
@@ -359,61 +405,26 @@ class SikshaSathiWidget {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(`HTTP error! status: ${response.status}, details: ${errorData.detail}`);
+                // CORRECTED: Use errorData.error to match backend
+                throw new Error(`HTTP error! status: ${response.status}, details: ${errorData.error || 'Unknown error'}`);
             }
 
             const data = await response.json();
             this.hideTypingIndicator();
-            this.addMessage(data.response, 'bot');
+            // CORRECTED: Use data.reply to match backend and enable streaming
+            this.addMessage(data.reply, 'bot', true); // Enable streaming
+
         } catch (error) {
             console.error('Failed to get response from backend:', error);
             this.hideTypingIndicator();
-            const fallbackResponse = "I'm having trouble connecting. Please check the backend server and try again.";
-            this.addMessage(fallbackResponse, 'bot');
+            const fallbackResponse = "I'm having trouble connecting right now. Please try again in a moment.";
+            this.addMessage(fallbackResponse, 'bot', true); // Enable streaming for fallback too
         }
         
         this.isWaitingForResponse = false;
         this.updateSendBtnState();
         if (this.overlayInput) this.overlayInput.focus();
         this.notifyHeightChange();
-    }
-
-    generateBotResponse(userMessage) {
-        const message = userMessage.toLowerCase();
-        const responses = {
-            'assignment': "I'd be happy to help with your assignment! Could you share more details?",
-            'homework': "I'd be happy to help with your assignment! Could you share more details?",
-            'math': "Math is one of my favorite subjects! What problem are you working on?",
-            'calculus': "Math is one of my favorite subjects! What problem are you working on?",
-            'algebra': "Math is one of my favorite subjects! What problem are you working on?",
-            'programming': "Programming is exciting! What language are you using?",
-            'code': "Programming is exciting! What language are you using?",
-            'python': "Programming is exciting! What language are you using?",
-            'javascript': "Programming is exciting! What language are you using?",
-            'science': "Science is fascinating! Which concept would you like to explore?",
-            'physics': "Science is fascinating! Which concept would you like to explore?",
-            'chemistry': "Science is fascinating! Which concept would you like to explore?",
-            'biology': "Science is fascinating! Which concept would you like to explore?",
-            'study': "Effective studying is key! What subject are you preparing for?",
-            'exam': "Effective studying is key! What subject are you preparing for?",
-            'test': "Effective studying is key! What subject are you preparing for?",
-            'help': "I'm here to help! Can you describe what you're having trouble with?",
-            'stuck': "I'm here to help! Can you describe what you're having trouble with?",
-            'confused': "I'm here to help! Can you describe what you're having trouble with?",
-            'hello': "Hello! I'm Siksha Saathi. How can I help you today?",
-            'hi': "Hello! I'm Siksha Saathi. How can I help you today?",
-            'hey': "Hello! I'm Siksha Saathi. How can I help you today?",
-            'how are you': "I'm doing great and ready to help you learn!",
-            'how do you do': "I'm doing great and ready to help you learn!",
-        };
-
-        for (const keyword in responses) {
-            if (message.includes(keyword)) {
-                return responses[keyword];
-            }
-        }
-        
-        return "That's an interesting question! Could you provide a bit more context?";
     }
     
     escapeHtml(text) {
@@ -440,7 +451,8 @@ class SikshaSathiWidget {
         const hasContent = this.overlayInput.textContent.trim().length > 0;
         const isButtonActive = hasContent && !this.isWaitingForResponse;
         this.sendBtn.classList.toggle('inactive', !isButtonActive);
-        this.sendBtn.disabled = !isButtonActive;
+        // Update ARIA state since <img> does not support disabled
+        this.sendBtn.setAttribute('aria-disabled', String(!isButtonActive));
     }
     
     updatePlaceholderVisibility() {
@@ -482,6 +494,25 @@ class SikshaSathiWidget {
         if (theme !== 'light' && theme !== 'dark') return;
         this.currentTheme = theme;
         document.documentElement.setAttribute('data-theme', theme);
+
+        // Runtime enforcement: set inline backgrounds when dark theme is active
+        // This ensures the desired background color applies even if other CSS or inline
+        // styles would otherwise override the CSS variables.
+        try {
+            if (theme === 'dark') {
+                document.documentElement.style.background = '#010409';
+                if (document.body) document.body.style.background = '#010409';
+                const container = document.querySelector('.widget-chatbot-container');
+                if (container) container.style.background = '#010409';
+            } else {
+                document.documentElement.style.background = '';
+                if (document.body) document.body.style.background = '';
+                const container = document.querySelector('.widget-chatbot-container');
+                if (container) container.style.background = '';
+            }
+        } catch (err) {
+            console.warn('Unable to set inline background for theme enforcement', err);
+        }
 
         if (!isInitialization) {
             try {

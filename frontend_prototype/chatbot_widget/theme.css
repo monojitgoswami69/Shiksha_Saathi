@@ -42,7 +42,7 @@ html[data-theme='light'] {
 
 /* Dark theme variables */
 html[data-theme='dark'] {
-    --bg-page: #111827;
+    --bg-page: #010409;
     --text-primary: #f9fafb;
     --text-secondary: #9ca3af;
     --text-muted: #6b7280;
@@ -64,4 +64,9 @@ html[data-theme='dark'] {
     --popup-backdrop: rgba(0, 0, 0, 0.7);
     --popup-shadow: rgba(0, 0, 0, 0.5);
     --scrollbar-thumb: #4b5563;
+}
+
+/* Ensure dark background is applied even if other rules override variable usage */
+html[data-theme='dark'], html[data-theme='dark'] body, html[data-theme='dark'] .widget-chatbot-container {
+    background: #010409 !important;
 }
