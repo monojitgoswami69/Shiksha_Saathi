@@ -1,4 +1,4 @@
-fastapi
-google-generativeai
-uvicorn
+Flask
+Flask-Cors
 python-dotenv
+google-generativeai

@@ -1,92 +1,48 @@
 import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from dotenv import load_dotenv
 import google.generativeai as genai
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any
-import logging
 
-# Try to load environment variables from .env file for local development
+app = Flask(__name__)
+CORS(app)
+
 try:
-    from dotenv import load_dotenv
     load_dotenv()
-except ImportError:
-    # dotenv not installed, skip loading .env file
-    pass
+    gemini_api_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_api_key:
+        raise ValueError("GEMINI_API_KEY not found in .env file")
+    genai.configure(api_key=gemini_api_key)
+    print("GEMINI_API_KEY loaded successfully.")
+except ValueError as e:
+    print(f"Error: {e}")
+    exit()
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+persona_instruction = """
+You are Shiksha Saathi, a friendly and knowledgeable AI educational companion created by Team SegFault Society.
+Your primary goal is to assist students with their academic questions by providing clear, concise, and encouraging answers. Your tone should be supportive and approachable, like a helpful senior student.
+IMPORTANT: You are currently in a general educational assistant mode. You DO NOT have access to specific information about any university campus. If a user asks a campus-specific question, you must politely state this feature is not yet integrated and offer to help with their academic queries instead.
+"""
 
-# Load environment variables from Vercel's dashboard
-api_key = os.getenv("GEMINI_API_KEY")
+model = genai.GenerativeModel('gemini-2.5-flash-lite', system_instruction=persona_instruction)
 
-if not api_key:
-    # This will fail during Vercel build if the key is not set, which is good.
-    raise RuntimeError("GEMINI_API_KEY not found in environment variables. Please set it in your Vercel project settings or create a .env file with GEMINI_API_KEY=your_key_here")
+@app.route('/chat', methods=['POST'])
+def chat():
+    """Handles chat requests without conversation history."""
+    data = request.get_json()
+    if not data or 'message' not in data:
+        return jsonify({"error": "Invalid request: 'message' is required."}), 400
 
-# Configure Gemini API and model
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.5-flash-lite') # Using a standard model name
+    user_message = data['message']
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="Shiksha Saathi Backend",
-    description="API for the Shiksha Saathi chatbot, powered by Google Gemini.",
-    version="1.0.0"
-)
-
-# Add CORS middleware to allow requests from your frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, you should restrict this to your frontend's domain
-    allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
-)
-
-# Pydantic models for request and response body validation
-class ChatRequest(BaseModel):
-    message: str
-
-class ChatResponse(BaseModel):
-    response: str
-
-@app.get("/", tags=["Health"])
-def root():
-    """Root endpoint that serves as a health check."""
-    return {"status": "healthy", "message": "Shiksha Saathi Gemini API is running"}
-
-@app.get("/health", tags=["Health"])  
-def health_check():
-    """Health check endpoint to confirm the server is running."""
-    return {"status": "healthy", "message": "Shiksha Saathi Gemini API is running"}
-
-@app.post("/chat", response_model=ChatResponse, tags=["Chat"])
-def chat(request: ChatRequest):
-    """
-    Handles a chat message and returns a bot response.
-    This handler is synchronous to avoid event-loop issues in some serverless
-    environments (the Gemini client can use gRPC which may conflict with the
-    runtime event loop when used with async handlers). Each request is
-    independent (stateless).
-    """
     try:
-        user_message = request.message
-
-        logger.info(f"Received message: '{user_message}'")
-
-        # Start a fresh chat session for each request (stateless)
-        chat_session = model.start_chat()
-
-        # Use the synchronous send_message call to avoid asyncio event-loop problems
-        response = chat_session.send_message(user_message)
-        bot_response = response.text
-
-        logger.info(f"Generated Gemini response.")
-
-        return ChatResponse(response=bot_response)
-
+        response = model.generate_content(user_message)
+        
+        return jsonify({"reply": response.text})
     except Exception as e:
-        logger.error(f"An error occurred in the chat endpoint: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"An internal server error occurred: {e}")
+        print(f"Error during Gemini API call: {e}")
+        return jsonify({"error": "An error occurred while processing your request."}), 500
+
+@app.route('/', methods=['GET'])
+def health_check():
+    return "Shiksha Saathi server is running!"
