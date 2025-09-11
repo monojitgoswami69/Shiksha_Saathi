@@ -3,7 +3,7 @@
 
     // --- CONFIGURATION ---
     // IMPORTANT: Replace this with the actual URL where your widget's index.html is hosted.
-    const WIDGET_URL = "https://your-widget-url.com/index.html?embed=1"; 
+    const WIDGET_URL = "https://shiksha-saathi-mg69.vercel.app/index.html?embed=1"; 
     
     // --- STATE ---
     let iframeVisible = false;
