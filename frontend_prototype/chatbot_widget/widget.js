@@ -9,11 +9,9 @@ class SikshaSathiWidget {
     constructor() {
         this.isEmbedded = this.detectEmbedMode();
         this.isOpen = true;
-        this.messages = [];
         this.isWaitingForResponse = false;
         this.currentTheme = 'dark'; // Initialize theme
-        // Configurable synthetic response delay (ms). Set to 0 to disable artificial delay.
-        this.simulatedResponseDelay = 0;
+        this.welcomeMessageDismissed = false;
 
         // Initialize widget
         this.initializeTheme();
@@ -46,35 +44,30 @@ class SikshaSathiWidget {
     // Initialize DOM element references
     initializeElements() {
         this.chatContainer = document.querySelector('.widget-chatbot-container');
-        this.messagesContainer = document.querySelector('.chat-messages');
-        this.sendBtn = document.querySelector('#sendBtn'); // now an <img> acting as button
-        this.headerTitle = document.querySelector('.header-title h1');
-        this.themeModeBtn = document.querySelector('#themeModeBtn');
-        this.suggestionChips = document.querySelectorAll('.suggestion-chip');
-        this.overlayInput = document.querySelector('#overlayInput');
+        if (!this.chatContainer) {
+            console.error("Chat widget container not found.");
+            return;
+        }
+        this.messagesContainer = this.chatContainer.querySelector('.chat-messages');
+        this.sendBtn = this.chatContainer.querySelector('#sendBtn');
+        this.headerTitle = this.chatContainer.querySelector('.header-title h1');
+        this.themeModeBtn = this.chatContainer.querySelector('#themeModeBtn');
+        this.suggestionChips = this.chatContainer.querySelectorAll('.suggestion-chip');
+        this.overlayInput = this.chatContainer.querySelector('#overlayInput');
 
         if (this.sendBtn && this.overlayInput) {
-            // Click handler for the image acting as button
             this.sendBtn.addEventListener('click', () => {
-                if (!this.isWaitingForResponse && !this.sendBtn.classList.contains('inactive')) {
+                if (!this.isWaitingForResponse && !this.sendBtn.disabled) {
                     this.handleSendMessage();
                 }
             });
 
-            // Allow keyboard activation when focused
-            this.sendBtn.tabIndex = 0;
-            this.sendBtn.addEventListener('keydown', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !this.sendBtn.classList.contains('inactive')) {
-                    e.preventDefault();
-                    this.handleSendMessage();
-                }
-            });
-
+            // The <button> element handles keyboard activation automatically.
+            // No extra keydown listener is needed for it.
             this.updateSendBtnState();
         }
 
         if (this.overlayInput) this.setupContentEditableInput();
-
         this.setTheme(this.currentTheme, true);
     }
 
@@ -111,7 +104,6 @@ class SikshaSathiWidget {
 
         this.autoResizeInput();
         
-        // Add mobile-specific focus handling for better keyboard behavior
         this.overlayInput.addEventListener('focus', () => {
             setTimeout(() => this.handleMobileViewportChange(), 300);
         });
@@ -185,14 +177,12 @@ class SikshaSathiWidget {
         window.parent.postMessage(message, '*');
     }
     
-    // Notify parent with updated height
     notifyHeightChange() {
         if (!this.isEmbedded) return;
         const height = Math.max(this.chatContainer.scrollHeight, 400);
         this.notifyParent('height-changed', { height });
     }
     
-    // Handle mobile viewport changes (keyboard show/hide)
     handleMobileViewportChange() {
         if (this.overlayInput && document.activeElement === this.overlayInput) {
             setTimeout(() => this.overlayInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
@@ -208,76 +198,61 @@ class SikshaSathiWidget {
     
     handleSendMessage() {
         if (!this.overlayInput) return;
-        
         const message = this.overlayInput.textContent.trim();
         if (!message || this.isWaitingForResponse) return;
         
         this.isWaitingForResponse = true;
-        
         this.addMessage(message, 'user');
-        
         this.overlayInput.textContent = '';
         this.autoResizeInput();
         this.updateSendBtnState();
         this.updatePlaceholderVisibility();
-        
         this.showTypingIndicator();
-        
-        // This now calls the backend directly without an artificial delay
         this.getBotResponse(message);
-        
         this.notifyParent('message-sent', { message });
         this.notifyHeightChange();
     }
     
     addMessage(content, sender = 'bot', enableStreaming = false) {
-        // Hide welcome message when first message is added
-        const welcomeMessage = this.messagesContainer.querySelector('.welcome-message');
-        if (welcomeMessage) {
-            welcomeMessage.style.display = 'none';
+        if (!this.welcomeMessageDismissed) {
+            const welcomeMessage = this.messagesContainer.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.style.display = 'none';
+            }
+            this.welcomeMessageDismissed = true;
         }
 
         if (sender === 'user') {
-            // Keep user messages as bubbles
             const processedContent = this.escapeHtml(content);
             const messageElement = document.createElement('div');
-            messageElement.className = `message ${sender}`;
+            messageElement.className = `message user`;
             messageElement.innerHTML = `
                 <div class="message-content">
                     <div class="message-text">${processedContent}</div>
                 </div>
             `;
-
             this.messagesContainer.appendChild(messageElement);
             this.scrollToBottom();
             return messageElement;
         } else {
-            // Render bot responses directly to the page (non-bubbled)
             const botElement = document.createElement('div');
             botElement.className = 'bot-response';
-            botElement.innerHTML = `
-                <div class="bot-response-content"></div>
-            `;
-
+            botElement.innerHTML = `<div class="bot-response-content"></div>`;
             this.messagesContainer.appendChild(botElement);
             const contentDiv = botElement.querySelector('.bot-response-content');
 
             if (enableStreaming) {
-                // Stream the response with typing effect
                 this.streamBotResponse(content, contentDiv, botElement);
             } else {
-                // Show response immediately (non-streaming)
                 const processedContent = this.renderMarkdown(content);
                 contentDiv.innerHTML = processedContent;
                 this.addCodeCopyButtons(botElement);
             }
-
             this.scrollToBottom();
             return botElement;
         }
     }
 
-    // Stream bot response with typing effect
     streamBotResponse(content, contentDiv, botElement) {
         const chars = content.split('');
         let currentIndex = 0;
@@ -287,38 +262,22 @@ class SikshaSathiWidget {
             if (currentIndex < chars.length) {
                 currentText += chars[currentIndex];
                 currentIndex++;
-                
-                // Render markdown for the current text
-                const processedContent = this.renderMarkdown(currentText);
-                contentDiv.innerHTML = processedContent;
-                
-                // Scroll to bottom to follow the typing
+                contentDiv.innerHTML = this.renderMarkdown(currentText);
                 this.scrollToBottom();
-                
-                // Continue typing with a small delay
-                setTimeout(typeChar, 1); // Adjust speed here (1ms = fastest)
+                setTimeout(typeChar, 1); // Adjust speed here
             } else {
-                // Streaming complete - add code copy buttons
                 this.addCodeCopyButtons(botElement);
             }
         };
-        
         typeChar();
     }
 
-    // Render markdown content with safety measures
     renderMarkdown(content) {
         if (typeof marked === 'undefined') {
-            console.warn('Marked library not loaded, falling back to escaped HTML');
             return this.escapeHtml(content);
         }
-
         try {
-            marked.setOptions({
-                breaks: true,
-                gfm: true,
-                sanitize: false,
-            });
+            marked.setOptions({ breaks: true, gfm: true, sanitize: false });
             return this.sanitizeHtml(marked.parse(content));
         } catch (error) {
             console.error('Markdown rendering failed:', error);
@@ -326,15 +285,14 @@ class SikshaSathiWidget {
         }
     }
 
-    // Basic HTML sanitization
     sanitizeHtml(html) {
         return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>|on\w+\s*=\s*"[^"]*"|on\w+\s*=\s*'[^']*'|javascript:/gi, '');
     }
 
-    // Add copy buttons to code blocks
     addCodeCopyButtons(messageElement) {
         const codeBlocks = messageElement.querySelectorAll('pre');
         codeBlocks.forEach(pre => {
+            if (pre.querySelector('.code-copy-btn')) return;
             const code = pre.querySelector('code');
             if (!code) return;
 
@@ -353,46 +311,35 @@ class SikshaSathiWidget {
         });
     }
 
-    // Copy code to clipboard
     async copyCodeToClipboard(code, button) {
         if (button.classList.contains('copied')) return;
-
         try {
             await navigator.clipboard.writeText(code);
             button.textContent = 'Copied!';
             button.classList.add('copied');
-            
             setTimeout(() => {
                 button.textContent = 'Copy';
                 button.classList.remove('copied');
             }, 2000);
-            
         } catch (err) {
             console.error('Failed to copy code: ', err);
             button.textContent = 'Failed';
-            setTimeout(() => {
-                button.textContent = 'Copy';
-            }, 2000);
+            setTimeout(() => { button.textContent = 'Copy'; }, 2000);
         }
     }
 
     showTypingIndicator() {
-        // CORRECTED: Use this.messagesContainer to find the element
         if (this.messagesContainer.querySelector('.typing-indicator')) return;
-        
         const typingDots = document.createElement('div');
         typingDots.className = 'typing-indicator';
         typingDots.innerHTML = '<span></span><span></span><span></span>';
         this.messagesContainer.appendChild(typingDots);
-        
         this.scrollToBottom();
     }
     
     hideTypingIndicator() {
         const typingIndicator = this.messagesContainer.querySelector('.typing-indicator');
-        if (typingIndicator) {
-            typingIndicator.remove();
-        }
+        if (typingIndicator) typingIndicator.remove();
     }
     
     async getBotResponse(userMessage) {
@@ -405,20 +352,18 @@ class SikshaSathiWidget {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                // CORRECTED: Use errorData.error to match backend
                 throw new Error(`HTTP error! status: ${response.status}, details: ${errorData.error || 'Unknown error'}`);
             }
 
             const data = await response.json();
             this.hideTypingIndicator();
-            // CORRECTED: Use data.reply to match backend and enable streaming
-            this.addMessage(data.reply, 'bot', true); // Enable streaming
+            this.addMessage(data.reply, 'bot', true);
 
         } catch (error) {
             console.error('Failed to get response from backend:', error);
             this.hideTypingIndicator();
             const fallbackResponse = "I'm having trouble connecting right now. Please try again in a moment.";
-            this.addMessage(fallbackResponse, 'bot', true); // Enable streaming for fallback too
+            this.addMessage(fallbackResponse, 'bot', true);
         }
         
         this.isWaitingForResponse = false;
@@ -450,9 +395,7 @@ class SikshaSathiWidget {
         if (!this.sendBtn || !this.overlayInput) return;
         const hasContent = this.overlayInput.textContent.trim().length > 0;
         const isButtonActive = hasContent && !this.isWaitingForResponse;
-        this.sendBtn.classList.toggle('inactive', !isButtonActive);
-        // Update ARIA state since <img> does not support disabled
-        this.sendBtn.setAttribute('aria-disabled', String(!isButtonActive));
+        this.sendBtn.disabled = !isButtonActive;
     }
     
     updatePlaceholderVisibility() {
@@ -495,25 +438,6 @@ class SikshaSathiWidget {
         this.currentTheme = theme;
         document.documentElement.setAttribute('data-theme', theme);
 
-        // Runtime enforcement: set inline backgrounds when dark theme is active
-        // This ensures the desired background color applies even if other CSS or inline
-        // styles would otherwise override the CSS variables.
-        try {
-            if (theme === 'dark') {
-                document.documentElement.style.background = '#010409';
-                if (document.body) document.body.style.background = '#010409';
-                const container = document.querySelector('.widget-chatbot-container');
-                if (container) container.style.background = '#010409';
-            } else {
-                document.documentElement.style.background = '';
-                if (document.body) document.body.style.background = '';
-                const container = document.querySelector('.widget-chatbot-container');
-                if (container) container.style.background = '';
-            }
-        } catch (err) {
-            console.warn('Unable to set inline background for theme enforcement', err);
-        }
-
         if (!isInitialization) {
             try {
                 localStorage.setItem('siksha-sathi-theme', theme);
@@ -526,7 +450,6 @@ class SikshaSathiWidget {
             this.themeModeBtn.classList.toggle('sun-active', theme === 'light');
             this.themeModeBtn.classList.toggle('moon-active', theme === 'dark');
         }
-
         this.notifyParent('theme-changed', { theme });
     }
     
@@ -541,22 +464,13 @@ class SikshaSathiWidget {
             timeout = setTimeout(later, wait);
         };
     }
-
-    destroy() {
-        window.removeEventListener('resize', this.notifyHeightChange);
-        if ('visualViewport' in window) {
-            window.visualViewport.removeEventListener('resize', this.handleMobileViewportChange);
-        }
-        window.removeEventListener('orientationchange', this.handleMobileViewportChange);
-        this.messages = [];
-    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
         window.sikshaSathiWidget = new SikshaSathiWidget();
     } catch (error) {
-        console.error('Failed to initialize Siksha Sathi Widget:', error);
+        console.error('Failed to initialize Siksha Saathi Widget:', error);
     }
 });
 

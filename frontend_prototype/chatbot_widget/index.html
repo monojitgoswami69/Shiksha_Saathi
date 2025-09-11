@@ -9,11 +9,9 @@
     <link rel="stylesheet" href="base.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
     
-    <!-- Markdown parsing library -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 </head>
 <body>
-    <!-- Widget Container -->
     <div class="widget-chatbot-container" id="widgetContainer">
         <header class="chatbot-header">
             <div class="header-controls">
@@ -41,8 +39,9 @@
         <footer class="input-pane" id="inputPane">
             <div class="input-overlay">
                 <div class="input-field" id="overlayInput" contenteditable="true" aria-label="Message input" data-placeholder="Type your query..."></div>
-                <!-- Use the PNG itself as the send control (no wrapping button) -->
-                <img id="sendBtn" src="assets/send_button.png" alt="Send" class="send-btn-img inactive" role="button" aria-label="Send message" aria-disabled="true">
+                <button id="sendBtn" class="send-btn" aria-label="Send message" disabled>
+                    <img src="assets/send_button.png" alt="Send icon">
+                </button>
             </div>
         </footer>
     </div>

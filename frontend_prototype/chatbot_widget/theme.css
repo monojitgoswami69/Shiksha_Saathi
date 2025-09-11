@@ -66,7 +66,8 @@ html[data-theme='dark'] {
     --scrollbar-thumb: #4b5563;
 }
 
-/* Ensure dark background is applied even if other rules override variable usage */
-html[data-theme='dark'], html[data-theme='dark'] body, html[data-theme='dark'] .widget-chatbot-container {
-    background: #010409 !important;
+/* Ensure background is applied correctly without !important */
+html[data-theme='dark'] body,
+html[data-theme='dark'] .widget-chatbot-container {
+    background-color: var(--bg-page);
 }
