@@ -2,251 +2,233 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Shiksha Saathi - AI Educational Assistant Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shiksha Saathi - Popup Demo</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #667eea;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.08);
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
         }
-
-        .main-content {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 60px;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-top: 4rem;
+        }
+        header {
             text-align: center;
-            max-width: 600px;
-            width: 90%;
-        }
-
-        .main-content h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #2c3e50;
-        }
-
-        .main-content .subtitle {
-            font-size: 1.3rem;
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.5;
-        }
-
-        .features {
-            list-style: none;
             margin-bottom: 3rem;
-            text-align: left;
-            display: inline-block;
         }
-
-        .features li {
-            padding: 0.8rem 0;
-            color: #555;
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        p.subtitle {
             font-size: 1.1rem;
+            color: #6c757d;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            margin-bottom: 2rem;
+        }
+        .card h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .highlight {
+            background-color: #e8eaf6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+        }
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
         }
 
-        .features li::before {
-            content: "✓ ";
-            color: #27ae60;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            margin-top: 1rem;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Chatbot Popup Styles */
-        .chatbot-popup {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 400px;
-            height: 600px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 1000;
-            transform: translateY(100vh);
-            opacity: 0;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .chatbot-popup.open {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .chatbot-popup iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 15px;
-        }
-
-        .chat-toggle {
+        /* --- STYLES FOR THE LAUNCHER AND POPUP WIDGET --- */
+        #widget-launcher {
             position: fixed;
             bottom: 20px;
             right: 20px;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--primary-color);
+            color: white;
             border: none;
-            color: white;
-            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1001;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2147483646;
+            transition: transform 0.2s ease-out, background-color 0.2s ease;
         }
-
-        .chat-toggle:hover {
+        #widget-launcher:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        #widget-launcher .icon {
+            position: absolute;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        }
+        #widget-launcher .close-icon {
+            transform: rotate(-90deg) scale(0.5);
+            opacity: 0;
+        }
+        #widget-launcher.open .chat-icon {
+            transform: rotate(90deg) scale(0.5);
+            opacity: 0;
+        }
+        #widget-launcher.open .close-icon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
         }
 
-        .chat-toggle.close-btn {
-            background: #e74c3c;
-        }
-
-        .demo-note {
+        #widget-iframe-container {
             position: fixed;
-            top: 20px;
+            bottom: 90px; /* Positioned above the button */
             right: 20px;
-            background: rgba(231, 76, 60, 0.9);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            backdrop-filter: blur(10px);
+            width: min(400px, 90vw);
+            height: min(700px, 85vh);
+            z-index: 2147483647; /* Max z-index */
+            transform-origin: bottom right;
+            transform: scale(0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+        #widget-iframe-container.visible {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 40px 30px;
-            }
-            
-            .main-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .chatbot-popup {
-                width: calc(100vw - 20px);
-                height: calc(100vh - 100px);
-                bottom: 10px;
-                right: 10px;
-                left: 10px;
-            }
-
-            .chat-toggle {
-                bottom: 30px;
-                right: 30px;
-            }
+        #widget-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
-    <div class="demo-note">DEMO</div>
 
-    <div class="main-content">
-    <h1>🎓 Shiksha Saathi</h1>
-        <p class="subtitle">Your AI-powered educational assistant that helps students learn and understand complex topics through interactive conversations.</p>
-        
-        <ul class="features">
-            <li>Ask questions about any subject</li>
-            <li>Get step-by-step explanations</li>
-            <li>Solve math problems</li>
-            <li>Learn new concepts interactively</li>
-            <li>Available 24/7 for learning support</li>
-        </ul>
+    <div class="container">
+        <header>
+            <h1>Shiksha Saathi Widget Demo</h1>
+            <p class="subtitle">A demonstration of a self-contained, embeddable web component.</p>
+        </header>
 
-        <button class="cta-button" onclick="openChat()">
-            Start Learning Now
-        </button>
+        <main>
+            <div class="card">
+                <h2>Popup Demonstration</h2>
+                <p>
+                    This page now demonstrates the "popup" method. The widget is initially hidden.
+                </p>
+                <p>
+                    Click the launcher button in the bottom-right corner to open and close the chat widget. When open, the button transforms into an 'X', and clicking anywhere on the page will close the popup.
+                </p>
+            </div>
+        </main>
         
-        <p style="margin-top: 2rem; color: #888; font-size: 0.9rem;">
-            Click the chat button in the bottom right to begin!
-        </p>
+        <footer>
+            <p>A Sample Host Page</p>
+        </footer>
     </div>
 
-    <!-- Chat Toggle Button -->
-    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
-        💬
+    <!-- 
+    ==================================================================
+    == WIDGET INSTALLATION (LAUNCHER & POPUP IFRAME)                ==
+    ==================================================================
+    -->
+    
+    <!-- 1. The Launcher Button with both icons -->
+    <button id="widget-launcher" aria-label="Toggle Chat Widget">
+        <svg class="icon chat-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <svg class="icon close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
     </button>
-
-    <!-- Chatbot Popup -->
-    <div class="chatbot-popup" id="chatbotPopup">
+    
+    <!-- 2. The Iframe Container (initially hidden by CSS) -->
+    <div id="widget-iframe-container">
         <iframe 
-            src="chatbot_widget/index.html" 
-            title="Shiksha Saathi Chatbot Widget">
+            id="widget-iframe"
+            src="https://shiksha-saathi-mg69.vercel.app/index.html?embed=1"
+            title="Shiksha Saathi Chat Widget"
+            allow="clipboard-write">
         </iframe>
     </div>
-
+    
+    <!-- 3. The Script to connect them and handle closing -->
     <script>
-        let chatOpen = false;
+        document.addEventListener('DOMContentLoaded', function() {
+            const launcher = document.getElementById('widget-launcher');
+            const iframeContainer = document.getElementById('widget-iframe-container');
+            let isWidgetOpen = false;
 
-        function toggleChat() {
-            const popup = document.getElementById('chatbotPopup');
-            const toggle = document.getElementById('chatToggle');
+            function openWidget() {
+                if (isWidgetOpen) return;
+                iframeContainer.classList.add('visible');
+                launcher.classList.add('open');
+                isWidgetOpen = true;
+            }
+
+            function closeWidget() {
+                if (!isWidgetOpen) return;
+                iframeContainer.classList.remove('visible');
+                launcher.classList.remove('open');
+                isWidgetOpen = false;
+            }
+
+            function toggleWidget() {
+                if (isWidgetOpen) {
+                    closeWidget();
+                } else {
+                    openWidget();
+                }
+            }
             
-            if (chatOpen) {
-                popup.classList.remove('open');
-                toggle.innerHTML = '💬';
-                toggle.classList.remove('close-btn');
-                chatOpen = false;
-            } else {
-                popup.classList.add('open');
-                toggle.innerHTML = '✕';
-                toggle.classList.add('close-btn');
-                chatOpen = true;
-            }
-        }
+            launcher.addEventListener('click', toggleWidget);
 
-        function openChat() {
-            if (!chatOpen) {
-                toggleChat();
-            }
-        }
+            document.addEventListener('click', function(event) {
+                if (!isWidgetOpen) return;
 
-        // Close chat when clicking outside (optional)
-        document.addEventListener('click', function(event) {
-            const popup = document.getElementById('chatbotPopup');
-            const toggle = document.getElementById('chatToggle');
-            
-            if (chatOpen && !popup.contains(event.target) && !toggle.contains(event.target)) {
-                // Uncomment the line below if you want to close chat when clicking outside
-                // toggleChat();
-            }
+                const isClickInsideWidget = iframeContainer.contains(event.target);
+                const isClickOnLauncher = launcher.contains(event.target);
+
+                if (!isClickInsideWidget && !isClickOnLauncher) {
+                    closeWidget();
+                }
+            });
         });
     </script>
+    <!-- ================================================================== -->
+
 </body>
 </html>
+
