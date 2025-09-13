@@ -14,18 +14,62 @@
 <body>
     <div class="widget-chatbot-container" id="widgetContainer">
         <header class="chatbot-header">
+            <div class="header-left">
+                <img src="assets/avatar.png" alt="Bot avatar" class="bot-avatar">
+                <div class="title-stack" aria-hidden="false">
+                    <span class="title-line">Shiksha</span>
+                    <span class="title-line">Saathi</span>
+                </div>
+            </div>
+
+            <!-- Keep an accessible H1 for scripts/AT; visually hidden via CSS -->
+            <h1 class="header-title"><span>Shiksha Saathi</span></h1>
+
             <div class="header-controls">
+                <!-- Language Selector -->
+                <div class="language-selector" id="languageSelector">
+                    <button class="language-btn" id="languageBtn" title="Select language">
+                        <span class="language-emoji">�</span>
+                        <span class="language-text">English</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <div class="language-search-container">
+                            <input type="text" class="language-search" id="languageSearch" placeholder="Search languages...">
+                        </div>
+                        <div class="language-options" id="languageOptions">
+                            <div class="language-option selected" data-lang="en" data-native="English" data-english="English">
+                                <span class="option-text">English</span>
+                            </div>
+                            <div class="language-option" data-lang="hi" data-native="हिन्दी" data-english="Hindi">
+                                <span class="option-text">हिन्दी</span>
+                            </div>
+                            <div class="language-option" data-lang="bn" data-native="বাংলা" data-english="Bengali">
+                                <span class="option-text">বাংলা</span>
+                            </div>
+                            <div class="language-option" data-lang="raj" data-native="राजस्थानी" data-english="Rajasthani">
+                                <span class="option-text">राजस्थानी</span>
+                            </div>
+                            <div class="language-option" data-lang="hr" data-native="हरियाणवी" data-english="Haryanvi">
+                                <span class="option-text">हरियाणवी</span>
+                            </div>
+                            <div class="language-option" data-lang="ta" data-native="தமிழ்" data-english="Tamil">
+                                <span class="option-text">தமிழ்</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <button class="theme-mode-btn" id="themeModeBtn" title="Toggle theme">
                     <img src="assets/sun.png" alt="Light mode" class="theme-mode-icon sun-icon">
                     <img src="assets/moon.png" alt="Dark mode" class="theme-mode-icon moon-icon">
                 </button>
             </div>
-            <h1 class="header-title">Shiksha Saathi</h1>
-            <a href="https://github.com/monojitgoswami69/Shiksha_Saathi" target="_blank" rel="noopener noreferrer" class="beta-badge">BETA</a>
         </header>
 
         <main class="chat-messages" id="chatMessages">
             <div class="welcome-message">
+                <img src="assets/avatar.png" alt="Shiksha Saathi Avatar" class="welcome-avatar">
                 <h2>Welcome to Shiksha Saathi</h2>
                 <p>Your AI-powered learning assistant. Ask me anything!</p>
                 <div class="welcome-suggestions">

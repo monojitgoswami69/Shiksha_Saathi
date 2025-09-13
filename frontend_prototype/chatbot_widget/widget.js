@@ -1,6 +1,16 @@
 /**
  * Siksha Sathi Widget - JavaScript functionality for embeddable chatbot
- * Provides core chat functionality and postMessage API for iframe integration
+ * Provides core chat functionality and postMessage     setupLanguageSelector() {
+        if (!this.languageSelector || !this.languageBtn || !this.languageDropdown) return;
+
+        this.languages = [
+            { code: 'en', name: 'English', native: 'English' },
+            { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+            { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+            { code: 'raj', name: 'Rajasthani', native: 'राजस्थानी' },
+            { code: 'hr', name: 'Haryanvi', native: 'हरियाणवी' },
+            { code: 'ta', name: 'Tamil', native: 'தமிழ்' }
+        ];me integration
  */
 
 const backendUrl = "https://shiksha-saathi-backend.vercel.app";
@@ -11,6 +21,7 @@ class SikshaSathiWidget {
         this.isOpen = true;
         this.isWaitingForResponse = false;
         this.currentTheme = 'dark'; // Initialize theme
+        this.selectedLanguage = 'en'; // Initialize language
         this.welcomeMessageDismissed = false;
 
         // Initialize widget
@@ -52,6 +63,11 @@ class SikshaSathiWidget {
         this.sendBtn = this.chatContainer.querySelector('#sendBtn');
         this.headerTitle = this.chatContainer.querySelector('.header-title h1');
         this.themeModeBtn = this.chatContainer.querySelector('#themeModeBtn');
+        this.languageSelector = this.chatContainer.querySelector('#languageSelector');
+        this.languageBtn = this.chatContainer.querySelector('#languageBtn');
+        this.languageDropdown = this.chatContainer.querySelector('#languageDropdown');
+        this.languageSearch = this.chatContainer.querySelector('#languageSearch');
+        this.languageOptions = this.chatContainer.querySelector('#languageOptions');
         this.suggestionChips = this.chatContainer.querySelectorAll('.suggestion-chip');
         this.overlayInput = this.chatContainer.querySelector('#overlayInput');
 
@@ -68,6 +84,11 @@ class SikshaSathiWidget {
         }
 
         if (this.overlayInput) this.setupContentEditableInput();
+        if (this.languageSelector) this.setupLanguageSelector();
+        
+        // Initialize UI with default language
+        this.updateUILanguage(this.selectedLanguage || 'en');
+        
         this.setTheme(this.currentTheme, true);
     }
 
@@ -112,6 +133,301 @@ class SikshaSathiWidget {
             if ('visualViewport' in window && this.chatContainer) {
                 this.chatContainer.style.height = '';
             }
+        });
+    }
+
+    // Setup language selector dropdown functionality
+    setupLanguageSelector() {
+        if (!this.languageSelector || !this.languageBtn || !this.languageDropdown) return;
+
+        this.selectedLanguage = 'en';
+        this.languages = [
+            { code: 'en', name: 'English', native: 'English' },
+            { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+            { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+            { code: 'raj', name: 'Rajasthani', native: 'राजस्थानी' },
+            { code: 'hr', name: 'Haryanvi', native: 'हरियाणवी' },
+            { code: 'ta', name: 'Tamil', native: 'தமிழ்' }
+        ];
+
+        // Toggle dropdown
+        this.languageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleLanguageDropdown();
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.languageSelector.contains(e.target)) {
+                this.closeLanguageDropdown();
+            }
+        });
+
+        // Reposition dropdown on window resize
+        window.addEventListener('resize', () => {
+            if (this.languageSelector.classList.contains('open')) {
+                this.adjustDropdownPosition();
+            }
+        });
+
+        // Handle language option selection
+        if (this.languageOptions) {
+            this.languageOptions.addEventListener('click', (e) => {
+                const option = e.target.closest('.language-option');
+                if (option) {
+                    const langCode = option.dataset.lang;
+                    const langNative = option.dataset.native;
+                    this.selectLanguage(langCode, langNative);
+                }
+            });
+        }
+
+        // Handle search functionality
+        if (this.languageSearch) {
+            this.languageSearch.addEventListener('input', (e) => {
+                this.filterLanguages(e.target.value);
+            });
+
+            this.languageSearch.addEventListener('keydown', (e) => {
+                e.stopPropagation();
+            });
+        }
+
+        // Keyboard navigation
+        this.languageBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.toggleLanguageDropdown();
+            } else if (e.key === 'Escape') {
+                this.closeLanguageDropdown();
+            }
+        });
+    }
+
+    toggleLanguageDropdown() {
+        const isOpen = this.languageSelector.classList.contains('open');
+        if (isOpen) {
+            this.closeLanguageDropdown();
+        } else {
+            this.openLanguageDropdown();
+        }
+    }
+
+    openLanguageDropdown() {
+        this.languageSelector.classList.add('open');
+        
+        // Adjust dropdown position to prevent overflow
+        this.adjustDropdownPosition();
+        
+        if (this.languageSearch) {
+            setTimeout(() => this.languageSearch.focus(), 100);
+        }
+        this.notifyParent('language-dropdown-opened');
+    }
+
+    adjustDropdownPosition() {
+        if (!this.languageDropdown) return;
+        
+        // Reset position first
+        this.languageDropdown.style.left = '';
+        this.languageDropdown.style.right = '';
+        this.languageDropdown.style.transform = '';
+        
+        // Get element positions
+        const dropdown = this.languageDropdown;
+        const selector = this.languageSelector;
+        const selectorRect = selector.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const dropdownWidth = 200; // min-width from CSS
+        const padding = 16; // Padding from viewport edge
+        
+        // Calculate if dropdown would overflow on the right
+        const rightEdge = selectorRect.right;
+        const wouldOverflowRight = rightEdge + dropdownWidth > viewportWidth - padding;
+        
+        // Calculate if dropdown would overflow on the left  
+        const leftEdge = selectorRect.left;
+        const wouldOverflowLeft = leftEdge - dropdownWidth < padding;
+        
+        if (wouldOverflowRight && !wouldOverflowLeft) {
+            // Position dropdown to the left of the button
+            dropdown.style.right = '0';
+            dropdown.style.left = 'auto';
+        } else if (wouldOverflowLeft && !wouldOverflowRight) {
+            // Position dropdown to the right of the button
+            dropdown.style.left = '0';
+            dropdown.style.right = 'auto';
+        } else if (wouldOverflowRight && wouldOverflowLeft) {
+            // Center dropdown with padding from both sides
+            const centerOffset = (viewportWidth - dropdownWidth) / 2 - selectorRect.left;
+            dropdown.style.left = `${Math.max(padding - selectorRect.left, centerOffset)}px`;
+            dropdown.style.right = 'auto';
+        } else {
+            // Default position (right-aligned)
+            dropdown.style.right = '0';
+            dropdown.style.left = 'auto';
+        }
+    }
+
+    closeLanguageDropdown() {
+        this.languageSelector.classList.remove('open');
+        if (this.languageSearch) {
+            this.languageSearch.value = '';
+            this.filterLanguages('');
+        }
+        this.notifyParent('language-dropdown-closed');
+    }
+
+    selectLanguage(code, nativeName) {
+        this.selectedLanguage = code;
+        
+        // Update the button display - keep globe emoji, update text
+        const textSpan = this.languageBtn.querySelector('.language-text');
+        if (textSpan) textSpan.textContent = nativeName;
+
+        // Update selected state in options
+        const options = this.languageOptions.querySelectorAll('.language-option');
+        options.forEach(option => {
+            option.classList.toggle('selected', option.dataset.lang === code);
+        });
+
+        // Update UI language
+        this.updateUILanguage(code);
+
+        this.closeLanguageDropdown();
+        this.notifyParent('language-changed', { language: code, nativeName });
+        
+        console.log('Language changed to:', { code, nativeName });
+    }
+
+    updateUILanguage(languageCode) {
+        // Translation strings for UI elements
+        const translations = {
+            en: {
+                headerTitle: "Shiksha Saathi",
+                searchPlaceholder: "Search languages...",
+                welcomeTitle: "Welcome to Shiksha Saathi",
+                welcomeDesc: "Your AI-powered learning assistant. Ask me anything!",
+                inputPlaceholder: "Type your query...",
+                suggestions: {
+                    whoAreYou: "Who are you?",
+                    whoMaintains: "Who maintains you?", 
+                    whatCanYouDo: "What can you do?"
+                }
+            },
+            hi: {
+                headerTitle: "शिक्षा साथी",
+                searchPlaceholder: "भाषाएं खोजें...",
+                welcomeTitle: "शिक्षा साथी में आपका स्वागत है",
+                welcomeDesc: "आपका AI-संचालित शिक्षण सहायक। मुझसे कुछ भी पूछें!",
+                inputPlaceholder: "अपना प्रश्न लिखें...",
+                suggestions: {
+                    whoAreYou: "आप कौन हैं?",
+                    whoMaintains: "आपको कौन संचालित करता है?",
+                    whatCanYouDo: "आप क्या कर सकते हैं?"
+                }
+            },
+            bn: {
+                headerTitle: "শিক্ষা সাথী",
+                searchPlaceholder: "ভাষা খুঁজুন...",
+                welcomeTitle: "শিক্ষা সাথীতে স্বাগতম",
+                welcomeDesc: "আপনার AI-চালিত শিক্ষা সহায়ক। আমাকে যেকোনো কিছু জিজ্ঞাসা করুন!",
+                inputPlaceholder: "আপনার প্রশ্ন লিখুন...",
+                suggestions: {
+                    whoAreYou: "আপনি কে?",
+                    whoMaintains: "আপনাকে কে রক্ষণাবেক্ষণ করে?",
+                    whatCanYouDo: "আপনি কী করতে পারেন?"
+                }
+            },
+            raj: {
+                headerTitle: "शिक्षा साथी",
+                searchPlaceholder: "भाषावां खोजो...",
+                welcomeTitle: "शिक्षा साथी में आपनो स्वागत है",
+                welcomeDesc: "आपनो AI-चालित शिक्षा साथी। म्हारै सूं कुछ भी पूछो!",
+                inputPlaceholder: "आपनो सवाल लिखो...",
+                suggestions: {
+                    whoAreYou: "थे कुण सो?",
+                    whoMaintains: "थमनै कुण चलावै?",
+                    whatCanYouDo: "थे के कर सको?"
+                }
+            },
+            hr: {
+                headerTitle: "शिक्षा साथी",
+                searchPlaceholder: "भाषाएं खोजें...",
+                welcomeTitle: "शिक्षा साथी में आपका स्वागत है",
+                welcomeDesc: "आपका AI-चालित शिक्षा साथी। म्हारै तै कुछ भी पूछो!",
+                inputPlaceholder: "अपना सवाल लिखो...",
+                suggestions: {
+                    whoAreYou: "तू कौण सै?",
+                    whoMaintains: "तेरै न कौण चलावै सै?",
+                    whatCanYouDo: "तू के कर सकै सै?"
+                }
+            },
+            ta: {
+                headerTitle: "ஷிக்ஷா சாத்தி",
+                searchPlaceholder: "மொழிகளைத் தேடுங்கள்...",
+                welcomeTitle: "ஷிக்ஷா சாத்திக்கு வரவேற்கிறோம்",
+                welcomeDesc: "உங்கள் AI-இயங்கும் கற்றல் உதவியாளர். என்னிடம் எதையும் கேளுங்கள்!",
+                inputPlaceholder: "உங்கள் கேள்வியை டைப் செய்யுங்கள்...",
+                suggestions: {
+                    whoAreYou: "நீங்கள் யார்?",
+                    whoMaintains: "உங்களை யார் பராமரிக்கிறார்கள்?",
+                    whatCanYouDo: "நீங்கள் என்ன செய்ய முடியும்?"
+                }
+            }
+        };
+
+        const lang = translations[languageCode] || translations.en;
+
+        // Update header title
+        const titleLines = document.querySelectorAll('.title-stack .title-line');
+        if (titleLines.length >= 2) {
+            const headerParts = lang.headerTitle.split(' ');
+            titleLines[0].textContent = headerParts[0] || 'Shiksha';
+            titleLines[1].textContent = headerParts[1] || 'Saathi';
+        }
+
+        // Update search placeholder
+        if (this.languageSearch) {
+            this.languageSearch.placeholder = lang.searchPlaceholder;
+        }
+
+        // Update welcome message
+        const welcomeTitle = document.querySelector('.welcome-message h2');
+        const welcomeDesc = document.querySelector('.welcome-message p');
+        if (welcomeTitle) welcomeTitle.textContent = lang.welcomeTitle;
+        if (welcomeDesc) welcomeDesc.textContent = lang.welcomeDesc;
+
+        // Update input placeholder
+        if (this.overlayInput) {
+            this.overlayInput.setAttribute('data-placeholder', lang.inputPlaceholder);
+        }
+
+        // Update suggestion chips
+        const suggestions = document.querySelectorAll('.suggestion-chip');
+        suggestions.forEach((chip, index) => {
+            const suggestionKeys = Object.keys(lang.suggestions);
+            if (index < suggestionKeys.length) {
+                const key = suggestionKeys[index];
+                chip.textContent = lang.suggestions[key];
+                chip.setAttribute('data-suggestion', lang.suggestions[key]);
+            }
+        });
+    }
+
+    filterLanguages(searchTerm) {
+        if (!this.languageOptions) return;
+        
+        const options = this.languageOptions.querySelectorAll('.language-option');
+        const term = searchTerm.toLowerCase().trim();
+        
+        options.forEach(option => {
+            const nativeText = option.querySelector('.option-text').textContent.toLowerCase();
+            const englishName = option.getAttribute('data-english')?.toLowerCase() || '';
+            
+            // Match either native name or English name
+            const matches = nativeText.includes(term) || englishName.includes(term);
+            option.classList.toggle('hidden', !matches);
         });
     }
 
