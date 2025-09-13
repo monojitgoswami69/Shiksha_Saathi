@@ -381,9 +381,11 @@ body {
     box-shadow: 0 0 0 2px rgba(128, 128, 128, 0.2);
 }
 
-.language-emoji {
-    font-size: 16px;
-    line-height: 1;
+.language-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .language-text {
