@@ -1,3 +1,68 @@
+/* From: login_globals.css */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0px;
+  height: 100%;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+  text-decoration: none;
+}
+body {
+  position: relative;
+}
+
+/* From: login_styleguide.css */
+:root {
+  --white: rgba(255, 255, 255, 1);
+  --gray-900: rgba(16, 24, 40, 1);
+  --gray-500: rgba(102, 112, 133, 1);
+  --gray-700: rgba(52, 64, 84, 1);
+  --gray-300: rgba(208, 213, 221, 1);
+  --primary-600: rgba(127, 86, 217, 1);
+  --display-md-semibold-font-family: "Inter", Helvetica;
+  --display-md-semibold-font-weight: 600;
+  --display-md-semibold-font-size: 36px;
+  --display-md-semibold-letter-spacing: -0.72px;
+  --display-md-semibold-line-height: 44px;
+  --display-md-semibold-font-style: normal;
+  --text-xl-normal-font-family: "Inter", Helvetica;
+  --text-xl-normal-font-weight: 400;
+  --text-xl-normal-font-size: 20px;
+  --text-xl-normal-letter-spacing: 0px;
+  --text-xl-normal-line-height: 30px;
+  --text-xl-normal-font-style: normal;
+  --text-sm-medium-font-family: "Inter", Helvetica;
+  --text-sm-medium-font-weight: 500;
+  --text-sm-medium-font-size: 14px;
+  --text-sm-medium-letter-spacing: 0px;
+  --text-sm-medium-line-height: 20px;
+  --text-sm-medium-font-style: normal;
+  --text-md-normal-font-family: "Inter", Helvetica;
+  --text-md-normal-font-weight: 400;
+  --text-md-normal-font-size: 16px;
+  --text-md-normal-letter-spacing: 0px;
+  --text-md-normal-line-height: 24px;
+  --text-md-normal-font-style: normal;
+  --text-md-medium-font-family: "Inter", Helvetica;
+  --text-md-medium-font-weight: 500;
+  --text-md-medium-font-size: 16px;
+  --text-md-medium-letter-spacing: 0px;
+  --text-md-medium-line-height: 24px;
+  --text-md-medium-font-style: normal;
+  --shadow-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+}
+
+/* From: login_styles.css */
 .theme-switch {
     --toggle-size: 20px;
     --container-width: 5.625em;
@@ -354,12 +419,12 @@ body.dark-mode .button-base {
 
 .contact-page-header .heading-and {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     gap: 20px;
     position: relative;
     align-self: stretch;
-    width: 100%;
     flex: 0 0 auto;
 }
 
@@ -375,6 +440,8 @@ body.dark-mode .button-base {
     letter-spacing: var(--display-md-semibold-letter-spacing);
     line-height: var(--display-md-semibold-line-height);
     font-style: var(--display-md-semibold-font-style);
+    margin: 0;
+    flex-grow: 1;
 }
 
 .contact-page-header .supporting-text {

@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="utf-8" />
   <title>Admin Login</title>
-  <link rel="stylesheet" href="login_globals.css" />
-  <link rel="stylesheet" href="login_styleguide.css" />
-  <link rel="stylesheet" href="login_styles.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
-<body style="position: relative;">
+<body>
   <label class="theme-switch">
     <input type="checkbox" class="theme-switch__checkbox">
     <div class="theme-switch__container">
@@ -37,9 +35,8 @@
     <div class="container">
       <div class="content">
         <section class="div">
-          <header class="heading-and"
-            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-            <h1 class="heading" style="margin: 0; flex-grow: 1; text-align: center;">Admin Login</h1>
+          <header class="heading-and">
+            <h1 class="heading">Admin Login</h1>
           </header>
           <form class="form" id="loginForm" novalidate autocomplete="off">
             <div class="form-fields">
@@ -107,52 +104,6 @@
       </div>
     </div>
   </main>
-  <script>
-    const toggleCheckbox = document.querySelector('.theme-switch__checkbox');
-    const body = document.body;
-
-    // Function to apply the theme
-    function applyTheme(theme) {
-      if (theme === 'dark') {
-        body.classList.add('dark-mode');
-        toggleCheckbox.checked = true;
-      } else {
-        body.classList.remove('dark-mode');
-        toggleCheckbox.checked = false;
-      }
-    }
-
-    // Apply theme on initial load
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    applyTheme(savedTheme);
-
-    // Add event listener for theme toggle
-    toggleCheckbox.addEventListener('change', () => {
-      const newTheme = toggleCheckbox.checked ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      applyTheme(newTheme);
-    });
-
-    // Add login redirect
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-      loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        if (
-          username === 'aot169' &&
-          email === 'academy@aot.edu.in' &&
-          password === '1234'
-        ) {
-          window.location.href = 'admin_dashboard.html';
-        } else {
-          alert('Invalid credentials. Please try again.');
-        }
-      });
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
-
 </html>
