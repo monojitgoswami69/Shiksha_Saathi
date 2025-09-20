@@ -118,41 +118,211 @@ document.addEventListener('DOMContentLoaded', () => {
             Chart.defaults.color = colors.textColor;
             Chart.defaults.font.family = "'Inter', sans-serif";
             
-            const queryVolumeCtx = document.getElementById('queryVolumeChart');
-            if(queryVolumeCtx) {
-                const gradient = queryVolumeCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-                gradient.addColorStop(0, 'rgba(102, 126, 234, 0.5)');
-                gradient.addColorStop(1, 'rgba(102, 126, 234, 0)');
+            // --- Query Volume: SVG Area Chart (responsive, transparent background) ---
+            (function initSvgAreaChart(){
+                const svg = document.getElementById('area-chart');
+                if (!svg) return;
 
-                window.myCharts.queryVolume = new Chart(queryVolumeCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Aug 1', 'Aug 5', 'Aug 10', 'Aug 15', 'Aug 20', 'Aug 25', 'Aug 30'],
-                        datasets: [{
-                            label: 'Queries',
-                            data: [120, 190, 300, 500, 210, 330, 450],
-                            borderColor: colors.primaryColor,
-                            backgroundColor: gradient,
-                            fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: colors.primaryColor,
-                            pointRadius: 4,
-                            pointHoverRadius: 6,
-                        }]
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: { grid: { color: colors.gridColor } },
-                            y: { grid: { color: colors.gridColor } }
+                // sample 31-day data (keeps the original shape/content the user provided)
+                const data = [
+                    { day: 1, value: 23 }, { day: 2, value: 24 }, { day: 3, value: 21 }, { day: 4, value: 22 },
+                    { day: 5, value: 19 }, { day: 6, value: 16 }, { day: 7, value: 12 }, { day: 8, value: 8 },
+                    { day: 9, value: 5 }, { day: 10, value: 11 }, { day: 11, value: 25 }, { day: 12, value: 38 },
+                    { day: 13, value: 45 }, { day: 14, value: 43 }, { day: 15, value: 35 }, { day: 16, value: 28 },
+                    { day: 17, value: 24 }, { day: 18, value: 18 }, { day: 19, value: 15 }, { day: 20, value: 19 },
+                    { day: 21, value: 25 }, { day: 22, value: 30 }, { day: 23, value: 28 }, { day: 24, value: 22 },
+                    { day: 25, value: 15 }, { day: 26, value: 8 }, { day: 27, value: 12 }, { day: 28, value: 15 },
+                    { day: 29, value: 16 }, { day: 30, value: 12 }, { day: 31, value: 10 }
+                ];
+
+                const svgNs = 'http://www.w3.org/2000/svg';
+
+                function createPath(points) {
+                    let path = `M ${points[0].x},${points[0].y}`;
+                    for (let i = 0; i < points.length - 1; i++) {
+                        const p0 = i > 0 ? points[i - 1] : points[i];
+                        const p1 = points[i];
+                        const p2 = points[i + 1];
+                        const p3 = i < points.length - 2 ? points[i + 2] : p2;
+
+                        const tension = 0.5;
+                        const cp1x = p1.x + (p2.x - p0.x) / 6 * tension;
+                        const cp1y = p1.y + (p2.y - p0.y) / 6 * tension;
+                        const cp2x = p2.x - (p3.x - p1.x) / 6 * tension;
+                        const cp2y = p2.y - (p3.y - p1.y) / 6 * tension;
+
+                        path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+                    }
+                    return path;
+                }
+
+                function draw() {
+                    // clear
+                    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+                    // compute width/height from container and set an appropriate viewBox so the SVG scales responsively
+                    const width = svg.clientWidth || svg.parentElement.clientWidth;
+                    const height = svg.clientHeight || 360;
+                    // set viewBox to enable consistent scaling and use preserveAspectRatio to maintain stretching behavior
+                    svg.setAttribute('viewBox', `0 0 ${Math.max(320, Math.round(width))} ${Math.round(height)}`);
+                    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                    if (width === 0 || height === 0) return;
+
+                    const margin = { top: 18, right: 18, bottom: 36, left: 40 };
+                    const graphWidth = width - margin.left - margin.right;
+                    const graphHeight = height - margin.top - margin.bottom;
+
+                    // scale factors for visual elements so the chart keeps the same feel on mobile
+                    const k = Math.max(0.6, Math.min(1.0, graphWidth / 640));
+                    const lineStroke = Math.max(1.6, 2.5 * k);
+                    const circleHitR = Math.max(8, 10 * k);
+                    const tooltipW = Math.max(84, Math.round(110 * k));
+                    const tooltipH = Math.max(34, Math.round(44 * k));
+
+                    const xScale = (day) => margin.left + (day - 1) * (graphWidth / 30);
+                    const yScale = (value) => margin.top + (graphHeight - (value / 50) * graphHeight);
+
+                    // defs + gradient (transparent background, gradient fill)
+                    const defs = document.createElementNS(svgNs, 'defs');
+                    const grad = document.createElementNS(svgNs, 'linearGradient');
+                    grad.setAttribute('id', 'area-gradient');
+                    grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
+                    grad.setAttribute('x2', '0'); grad.setAttribute('y2', '1');
+                    const stop1 = document.createElementNS(svgNs, 'stop');
+                    stop1.setAttribute('offset', '0%');
+                    stop1.setAttribute('stop-color', '#A6FFCB');
+                    stop1.setAttribute('stop-opacity', '0.6');
+                    const stop2 = document.createElementNS(svgNs, 'stop');
+                    stop2.setAttribute('offset', '100%');
+                    stop2.setAttribute('stop-color', '#12D8FA');
+                    stop2.setAttribute('stop-opacity', '0.08');
+                    grad.appendChild(stop1);
+                    grad.appendChild(stop2);
+                    defs.appendChild(grad);
+                    svg.appendChild(defs);
+
+                    // group
+                    const g = document.createElementNS(svgNs, 'g');
+                    svg.appendChild(g);
+
+                    // Y grid lines and labels (0..50 step 10)
+                    for (let i = 0; i <= 50; i += 10) {
+                        const y = yScale(i);
+                        const line = document.createElementNS(svgNs, 'line');
+                        line.setAttribute('x1', margin.left);
+                        line.setAttribute('y1', y);
+                        line.setAttribute('x2', width - margin.right);
+                        line.setAttribute('y2', y);
+                        line.setAttribute('class', 'axis-line');
+                        g.appendChild(line);
+
+                        const txt = document.createElementNS(svgNs, 'text');
+                        txt.setAttribute('x', margin.left - 10);
+                        txt.setAttribute('y', y + 4);
+                        txt.setAttribute('text-anchor', 'end');
+                        txt.setAttribute('class', 'axis-text');
+                        txt.textContent = i;
+                        g.appendChild(txt);
+                    }
+
+                    // X labels every 2 days
+                    for (let i = 1; i <= 31; i++) {
+                        if ((i - 1) % 2 === 0) {
+                            const txt = document.createElementNS(svgNs, 'text');
+                            txt.setAttribute('x', xScale(i));
+                            txt.setAttribute('y', height - margin.bottom + 18);
+                            txt.setAttribute('text-anchor', 'middle');
+                            txt.setAttribute('class', 'axis-text');
+                            txt.textContent = String(i).padStart(2, '0');
+                            g.appendChild(txt);
                         }
                     }
-                });
-            }
+
+                    const points = data.map(d => ({ x: xScale(d.day), y: yScale(d.value) }));
+
+                    // area path (smooth)
+                    const areaD = createPath(points) + ` L ${xScale(31)},${height - margin.bottom} L ${xScale(1)},${height - margin.bottom} Z`;
+                    const areaPath = document.createElementNS(svgNs, 'path');
+                    areaPath.setAttribute('d', areaD);
+                    areaPath.setAttribute('fill', 'url(#area-gradient)');
+                    areaPath.setAttribute('stroke', 'none');
+                    g.appendChild(areaPath);
+
+                    // line path on top
+                    const lineD = createPath(points);
+                    const linePath = document.createElementNS(svgNs, 'path');
+                    linePath.setAttribute('d', lineD);
+                    linePath.setAttribute('fill', 'none');
+                    linePath.setAttribute('stroke', '#A6FFCB');
+                    linePath.setAttribute('stroke-width', String(lineStroke));
+                    g.appendChild(linePath);
+
+                    // tooltip group
+                    const tooltip = document.createElementNS(svgNs, 'g');
+                    tooltip.setAttribute('class', 'tooltip-group');
+                    const tooltipRect = document.createElementNS(svgNs, 'rect');
+                    tooltipRect.setAttribute('class', 'tooltip-rect');
+                    tooltipRect.setAttribute('width', String(tooltipW));
+                    tooltipRect.setAttribute('height', String(tooltipH));
+                    const t1 = document.createElementNS(svgNs, 'text');
+                    t1.setAttribute('class', 'tooltip-text');
+                    // position tooltip text with small padding
+                    t1.setAttribute('x', String(12 * k));
+                    t1.setAttribute('y', String(Math.round(14 * k + 4)));
+                    const t2 = document.createElementNS(svgNs, 'text');
+                    t2.setAttribute('class', 'tooltip-text');
+                    t2.setAttribute('x', String(12 * k));
+                    t2.setAttribute('y', String(Math.round((14 * k) + (12 * k))));
+                    tooltip.appendChild(tooltipRect);
+                    tooltip.appendChild(t1);
+                    tooltip.appendChild(t2);
+                    g.appendChild(tooltip);
+
+                    // interaction circles
+                    data.forEach(d => {
+                        const c = document.createElementNS(svgNs, 'circle');
+                        c.setAttribute('cx', xScale(d.day));
+                        c.setAttribute('cy', yScale(d.value));
+                        // visual radius kept smaller; hit radius maintained by the element
+                        c.setAttribute('r', String(Math.max(6, Math.round(circleHitR * 0.9))));
+                        c.setAttribute('class', 'interaction-circle');
+
+                        c.addEventListener('mouseover', () => {
+                            t1.textContent = `${String(d.day).padStart(2, '0')}/01/2020`;
+                            t2.textContent = `${d.value} queries`;
+
+                            let tx = xScale(d.day) - Math.round(tooltipW / 2);
+                            let ty = yScale(d.value) - Math.round(tooltipH + 14 * k);
+                            if (tx < 6) tx = 6;
+                            if (tx + tooltipW > width) tx = width - tooltipW - 6;
+
+                            tooltip.setAttribute('transform', `translate(${tx}, ${ty})`);
+                            tooltip.classList.add('visible');
+                        });
+                        c.addEventListener('mouseout', () => {
+                            tooltip.classList.remove('visible');
+                        });
+
+                        g.appendChild(c);
+                    });
+                }
+
+                // initial draw and resize handling (use a named listener so it can be removed)
+                draw();
+                let resizeTimer = null;
+                const _areaChartResizeListener = () => {
+                    if (resizeTimer) clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => draw(), 120);
+                };
+                window.addEventListener('resize', _areaChartResizeListener);
+
+                // expose a simple destroy hook to be consistent with Chart life-cycle
+                window.myCharts.queryVolume = {
+                    destroy() {
+                        try { window.removeEventListener('resize', _areaChartResizeListener); } catch (e) {}
+                    }
+                };
+            })();
 
             const confusionHotspotsCtx = document.getElementById('confusionHotspotsChart');
             if (confusionHotspotsCtx) {
