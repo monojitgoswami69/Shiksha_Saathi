@@ -1,5 +1,7 @@
 /* --- Base & Global Styles --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -51,6 +53,7 @@ a {
     background: var(--bg-secondary);
     border-color: var(--border-color);
 }
+
 .btn.btn-secondary:hover {
     background: var(--bg-primary);
     border-color: var(--text-secondary);
@@ -151,6 +154,7 @@ a {
 .dashboard-body {
     overflow: hidden;
 }
+
 .dashboard-container {
     display: flex;
     height: 100vh;
@@ -179,6 +183,34 @@ a {
     color: var(--text-primary);
 }
 
+/* Logo image replacement for the previous SVG */
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    display: block;
+    border-radius: 6px;
+}
+
+/* Make logo scale with sidebar/font on smaller screens */
+@media (max-width: 768px) {
+    .logo-img {
+        width: 34px;
+        height: 34px;
+    }
+
+    .sidebar-header h1 {
+        font-size: 1.05rem;
+    }
+}
+
+/* Theme-aware tweak: if the image is a flat icon on dark background, allow an invert filter in light mode */
+html[data-theme='light'] .logo-img {
+    filter: none;
+}
+
+/* no additional dark-theme filter applied to .logo-img by default */
+
 .sidebar-nav {
     display: flex;
     flex-direction: column;
@@ -205,7 +237,7 @@ a {
 }
 
 html[data-theme='dark'] .nav-icon {
-   --nav-icon-filter-invert: 1;
+    --nav-icon-filter-invert: 1;
 }
 
 
@@ -273,6 +305,59 @@ html[data-theme='dark'] .nav-icon {
     position: sticky;
     top: 0;
     z-index: 10;
+
+    /* Responsive header tweaks to avoid overlap between title and action buttons */
+    .main-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .main-header h2 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+        /* allow flex children to shrink */
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+        /* prevent actions from shrinking into title */
+    }
+
+    /* Ensure the page title takes remaining space and is truncated on small screens */
+    .main-header h2 {
+        flex: 1 1 auto;
+    }
+
+    /* On very small screens, slightly reduce action button sizes and hide non-essential text */
+    @media (max-width: 420px) {
+        .header-actions .btn {
+            padding: 8px 10px;
+            font-size: 0.85rem;
+        }
+
+        /* Make logout button icon-only if you want — currently we keep it but shrink */
+        .theme-mode-btn {
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    /* If the title is too long on mobile, ensure hamburger + actions remain visible */
+    @media (max-width: 360px) {
+        .main-header h2 {
+            font-size: 1rem;
+        }
+    }
 }
 
 .header-actions {
@@ -295,8 +380,15 @@ html[data-theme='dark'] .nav-icon {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* --- Dashboard Components --- */
@@ -311,6 +403,32 @@ html[data-theme='dark'] .nav-icon {
     background: var(--bg-primary);
     padding: 1.5rem;
     border-radius: var(--border-radius-lg);
+
+    /* Place title directly beside hamburger and keep actions to the right on small screens */
+    @media (max-width: 768px) {
+        .main-header {
+            justify-content: flex-start;
+            /* keep items left-aligned */
+        }
+
+        .main-header h2 {
+            flex: 0 1 auto;
+            /* do not take all available space */
+            margin-left: 8px;
+            /* small gap after hamburger */
+            text-align: left;
+        }
+
+        .header-actions {
+            margin-left: auto;
+            /* push actions to the far right */
+        }
+
+        .hamburger-btn {
+            margin-right: 4px;
+        }
+    }
+
     border: 1px solid var(--border-color);
 }
 
@@ -339,9 +457,16 @@ html[data-theme='dark'] .nav-icon {
     align-items: center;
     gap: 4px;
 }
-.stat-change.positive { color: var(--success-color); }
-.stat-change.negative { color: var(--error-color); }
-.stat-change.neutral { 
+
+.stat-change.positive {
+    color: var(--success-color);
+}
+
+.stat-change.negative {
+    color: var(--error-color);
+}
+
+.stat-change.neutral {
     color: var(--text-secondary);
     font-weight: 400;
     font-size: 0.8rem;
@@ -396,7 +521,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
@@ -408,7 +534,8 @@ td {
 }
 
 /* Allow long query text to wrap */
-td:first-child, th:first-child {
+td:first-child,
+th:first-child {
     white-space: normal;
     word-break: break-word;
 }
@@ -433,10 +560,12 @@ th {
     background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
     color: var(--primary-color);
 }
+
 .status-chip.solved {
     background-color: color-mix(in srgb, var(--success-color) 15%, transparent);
     color: var(--success-color);
 }
+
 .status-chip.pending {
     background-color: color-mix(in srgb, var(--error-color) 15%, transparent);
     color: var(--error-color);
@@ -459,7 +588,8 @@ th {
     margin-bottom: 1.5rem;
 }
 
-.settings-form label, .settings-form legend {
+.settings-form label,
+.settings-form legend {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
@@ -532,7 +662,8 @@ th {
     font-size: 0.875rem;
     margin-top: 0.25rem;
     color: var(--text-secondary);
-    margin-bottom: 0 !important; /* Override generic p margin */
+    margin-bottom: 0 !important;
+    /* Override generic p margin */
 }
 
 .toggle-switch {
@@ -573,11 +704,11 @@ th {
     border-radius: 50%;
 }
 
-input:checked + .toggle-slider {
+input:checked+.toggle-slider {
     background-color: var(--success-color);
 }
 
-input:checked + .toggle-slider:before {
+input:checked+.toggle-slider:before {
     transform: translateX(20px);
 }
 
@@ -605,10 +736,25 @@ input:checked + .toggle-slider:before {
     color: var(--text-secondary);
 }
 
-.sun-icon { transform: translateY(-150%); opacity: 0; }
-.moon-icon { transform: translateY(0); opacity: 1; }
-.theme-mode-btn.sun-active .sun-icon { transform: translateY(0); opacity: 1; }
-.theme-mode-btn.sun-active .moon-icon { transform: translateY(150%); opacity: 0; }
+.sun-icon {
+    transform: translateY(-150%);
+    opacity: 0;
+}
+
+.moon-icon {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.theme-mode-btn.sun-active .sun-icon {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.theme-mode-btn.sun-active .moon-icon {
+    transform: translateY(150%);
+    opacity: 0;
+}
 
 
 /* --- Responsive Design --- */
@@ -626,12 +772,13 @@ input:checked + .toggle-slider:before {
         height: 100%;
         z-index: 100;
         transition: left var(--transition-normal);
-        box-shadow: 0 0 40px rgba(0,0,0,0.2);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
     }
+
     .sidebar.open {
         left: 0;
     }
-    
+
     .main-header {
         padding: 1rem 1.5rem;
     }
@@ -639,15 +786,15 @@ input:checked + .toggle-slider:before {
     .page-content {
         padding: 1.5rem;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr 1fr;
     }
-    
+
     .table-container {
         overflow-x: auto;
     }
-    
+
     .notification-setting {
         flex-direction: column;
         align-items: flex-start;
@@ -658,9 +805,127 @@ input:checked + .toggle-slider:before {
     }
 }
 
+/* Mobile overlay and hamburger button */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 90;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+.hamburger-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+@media (min-width: 769px) {
+    .hamburger-btn {
+        display: none;
+    }
+}
+
+/* helper: ensure sidebar uses transform for smooth animation on modern browsers */
+.sidebar.transform-translate {
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+}
+
+.sidebar.transform-translate.open {
+    transform: translateX(0);
+}
+
 @media (max-width: 480px) {
-     .stats-grid {
+    .stats-grid {
         grid-template-columns: 1fr;
     }
 }
 
+/* Theme-aware adjustments for hamburger + overlay */
+.hamburger-btn {
+    color: var(--nav-icon-color, var(--text-primary));
+    /* SVG stroke uses currentColor */
+    border-radius: 8px;
+}
+
+.hamburger-btn svg {
+    display: block;
+}
+
+.hamburger-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--nav-icon-color, var(--text-primary)) 16%, transparent);
+}
+
+.hamburger-btn:hover {
+    opacity: 0.95;
+}
+
+.hamburger-btn[aria-expanded="true"] {
+    color: var(--primary-color);
+}
+
+/* Slightly stronger overlay in dark mode for legibility */
+html[data-theme='light'] .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme='dark'] .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Charts: make canvases responsive and prevent overflow on small screens */
+.chart-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.chart-wrapper {
+    width: 100%;
+    max-width: 100%;
+    height: 300px;
+    /* default height for desktop */
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .chart-wrapper {
+        height: 220px;
+        /* reduce height on mobile */
+        padding-right: 0.5rem;
+        /* avoid scrollbar overlap */
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+        /* stack charts vertically */
+    }
+}
+
+/* If chart content still needs horizontal scrolling (rare), allow safe scroll inside container */
+.chart-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Add consistent spacing between chart headings and the chart area */
+.chart-container h3 {
+    margin-bottom: 14px;
+    font-size: 1rem;
+    color: var(--text-primary);
+}

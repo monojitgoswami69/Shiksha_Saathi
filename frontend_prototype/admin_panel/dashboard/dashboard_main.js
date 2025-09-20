@@ -155,40 +155,250 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const confusionHotspotsCtx = document.getElementById('confusionHotspotsChart');
-            if(confusionHotspotsCtx) {
-                window.myCharts.confusionHotspots = new Chart(confusionHotspotsCtx, {
+            if (confusionHotspotsCtx) {
+                // helper: convert hex like #667eea to rgba
+                function hexToRgba(hex, alpha) {
+                    if (!hex) return `rgba(0,0,0,${alpha})`;
+                    const h = hex.replace('#', '').trim();
+                    const bigint = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+                    const r = (bigint >> 16) & 255;
+                    const g = (bigint >> 8) & 255;
+                    const b = bigint & 255;
+                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                }
+
+                const ctx = confusionHotspotsCtx.getContext('2d');
+                const rawData = [30, 25, 20, 25];
+                const baseColors = [colors.primaryColor, colors.secondaryColor, colors.warningColor, colors.errorColor];
+
+                // Build gradients for each segment for a richer look
+                const segmentFills = baseColors.map((c, i) => {
+                    const g = ctx.createLinearGradient(0, 0, 0, 200);
+                    g.addColorStop(0, hexToRgba(c.trim(), 0.95));
+                    g.addColorStop(1, hexToRgba(c.trim(), 0.6));
+                    return g;
+                });
+
+                // Helpers: parse hex or rgb strings, compute luminance, and mix with white for vibrancy
+                function parseColorToRgb(input) {
+                    if (!input) return { r: 255, g: 255, b: 255 };
+                    const s = input.trim();
+                    if (s.startsWith('rgb')) {
+                        const nums = s.replace(/rgba?\(|\)/g, '').split(',').map(n => parseFloat(n));
+                        return { r: nums[0], g: nums[1], b: nums[2] };
+                    }
+                    // hex
+                    const h = s.replace('#', '');
+                    const hex = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+                    const bigint = parseInt(hex, 16);
+                    return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+                }
+
+                function rgbToHex({ r, g, b }) {
+                    const toHex = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+                    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+                }
+
+                function luminance({ r, g, b }) {
+                    // relative luminance per ITU-R BT.709
+                    const a = [r, g, b].map(v => {
+                        v = v / 255;
+                        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                    });
+                    return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+                }
+
+                function mixWithWhite(rgb, weight = 0.6) {
+                    // weight 0..1, 1 => white
+                    return {
+                        r: Math.round(rgb.r + (255 - rgb.r) * weight),
+                        g: Math.round(rgb.g + (255 - rgb.g) * weight),
+                        b: Math.round(rgb.b + (255 - rgb.b) * weight),
+                    };
+                }
+
+                function ensureVibrantColor(input) {
+                    const rgb = parseColorToRgb(input);
+                    const lum = luminance(rgb);
+                    // If it's too dark against a dark background, mix with white for vibrancy
+                    if (lum < 0.2) {
+                        return rgbToHex(mixWithWhite(rgb, 0.7));
+                    }
+                    // If mid-dark, make it a bit lighter
+                    if (lum < 0.45) {
+                        return rgbToHex(mixWithWhite(rgb, 0.45));
+                    }
+                    // otherwise return original hex (normalize)
+                    return rgbToHex(rgb);
+                }
+
+                // Mix color with black for darkening
+                function mixWithBlack(rgb, weight = 0.5) {
+                    return {
+                        r: Math.round(rgb.r * (1 - weight)),
+                        g: Math.round(rgb.g * (1 - weight)),
+                        b: Math.round(rgb.b * (1 - weight)),
+                    };
+                }
+
+                // Ensure the chosen center color has good contrast against the page background
+                function ensureContrastColor(input) {
+                    const rgb = parseColorToRgb(input);
+                    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-page') || '#ffffff';
+                    const bgRgb = parseColorToRgb(bg);
+                    const bgLum = luminance(bgRgb);
+                    const clrLum = luminance(rgb);
+
+                    // If background is light, prefer a darker-ish center color
+                    if (bgLum > 0.55) {
+                        if (clrLum > 0.5) {
+                            // too light on light bg -> darken
+                            return rgbToHex(mixWithBlack(rgb, 0.6));
+                        }
+                        return rgbToHex(rgb);
+                    }
+
+                    // If background is dark, prefer a lighter center color
+                    if (bgLum <= 0.55) {
+                        if (clrLum < 0.5) {
+                            // too dark on dark bg -> lighten
+                            return rgbToHex(mixWithWhite(rgb, 0.7));
+                        }
+                        return rgbToHex(rgb);
+                    }
+
+                    return rgbToHex(rgb);
+                }
+
+                // Plugin to draw text in center. By default shows total; when a segment is clicked it will display the clicked segment's percentage.
+                const centerTextPlugin = {
+                    id: 'centerText',
+                    beforeDraw(chart) {
+                        const { ctx, chartArea: { width, height } } = chart;
+                        const total = rawData.reduce((s, v) => s + v, 0);
+                        // Use per-chart stored value if present (set by click handler), otherwise show total
+                        const display = chart._centerDisplay !== undefined ? chart._centerDisplay : (total + '%');
+                        ctx.save();
+                        // use stored center color if present (set on click), else use theme text color
+                        const centerColor = chart._centerColor ? chart._centerColor.trim() : (getComputedStyle(document.documentElement).getPropertyValue('--text-primary') || '#fff').trim();
+                        ctx.fillStyle = centerColor;
+                        ctx.font = '600 18px Inter, sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        // center coordinates
+                        const meta = chart.getDatasetMeta(0);
+                        const first = meta && meta.data && meta.data[0];
+                        const x = (first && first.x) || (width / 2);
+                        const y = (first && first.y) || (height / 2);
+                        ctx.fillText(display, x, y);
+                        ctx.restore();
+                    }
+                };
+
+                window.myCharts.confusionHotspots = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Scholarships', 'Hostel Fees', 'Exam Schedule', 'Admissions'],
                         datasets: [{
                             label: 'Low Confidence Queries',
-                            data: [30, 25, 20, 25],
-                            backgroundColor: [colors.primaryColor, colors.secondaryColor, colors.warningColor, colors.errorColor],
-                            borderWidth: 0,
-                            hoverOffset: 10,
+                            data: rawData,
+                            backgroundColor: segmentFills,
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary') || '#0b1220',
+                            borderWidth: 2,
+                            hoverOffset: 14,
                         }]
                     },
-                     options: { 
-                         responsive: true, 
-                         maintainAspectRatio: false,
-                         cutout: '75%',
-                         plugins: {
-                             legend: {
-                                 position: 'bottom',
-                                 labels: {
-                                     usePointStyle: true,
-                                     pointStyle: 'rectRounded',
-                                     padding: 20
-                                 }
-                             }
-                         }
-                    }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '68%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'rectRounded',
+                                    padding: 12
+                                }
+                            }
+                        },
+                        animation: {
+                            animateRotate: true,
+                            duration: 700
+                        }
+                    },
+                    plugins: [centerTextPlugin]
                 });
+
+                // Click handler: when a segment is clicked, show its percentage in the center and color it to match the segment
+                try {
+                    const chartRef = window.myCharts.confusionHotspots;
+                    const total = rawData.reduce((s, v) => s + v, 0);
+                    ctx.canvas.addEventListener('click', (e) => {
+                        const points = chartRef.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                        if (points && points.length) {
+                            const idx = points[0].index;
+                            const val = rawData[idx];
+                            const pct = Math.round((val / total) * 100);
+                            chartRef._centerDisplay = pct + '%';
+                            // store a color for center text (use baseColors for solid color)
+                            // Use black for light theme and white for dark theme for clear, consistent contrast
+                            const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+                            chartRef._centerColor = theme === 'light' ? '#000000' : '#ffffff';
+                        } else {
+                            chartRef._centerDisplay = total + '%';
+                            const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+                            chartRef._centerColor = theme === 'light' ? '#000000' : '#ffffff';
+                        }
+                        chartRef.update();
+                    });
+                } catch (err) {
+                    // Fail silently if event binding or chart API isn't supported in the environment
+                    console.warn('Could not attach click handler for confusionHotspots chart center text.', err);
+                }
             }
         }
         
         // Initial call after setting theme
         applyTheme(currentTheme);
+        // --- MOBILE SIDEBAR TOGGLE ---
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.add('open');
+            sidebar.classList.remove('transform-translate');
+            if (sidebarOverlay) sidebarOverlay.classList.add('active');
+            if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.remove('open');
+            sidebar.classList.add('transform-translate');
+            if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+            if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', (e) => {
+                const isOpen = sidebar.classList.contains('open');
+                if (isOpen) closeSidebar(); else openSidebar();
+            });
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        // Close sidebar when navigation link clicked on small screens
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
     }
 });
 
