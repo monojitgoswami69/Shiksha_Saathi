@@ -1,148 +1,203 @@
-**Project Status**
-
-- **Version:** 0.1.0
-- **Current Maintainer:** [monojitgoswami69](https://github.com/monojitgoswami69)
-- **Development Status:** Developing MVP
-- **Last Updated:** September 6, 2025
-- **Project Type:** Campus Chatbot (AI, Multilingual, RAG)
-- **Target Event:** Smart India Hackathon 2025
-- **Contact:** See GitHub profile for details
-
-<hr>
-
 # Shiksha Saathi
 
-**Shiksha Saathi** is a language-agnostic campus chatbot designed for Smart India Hackathon 2025. It provides instant, 24/7 support to students in multiple regional languages using a Retrieval-Augmented Generation (RAG) model for document-grounded, accurate responses.
+**Shiksha Saathi** is a multilingual, document-grounded campus chatbot designed to provide students instant, accurate, and accessible responses in their preferred language. Built for **Smart India Hackathon 2025**, it leverages a **Retrieval-Augmented Generation (RAG) pipeline** combined with modern LLMs to deliver context-aware, source-linked, and dynamically updated answers while maintaining security, accessibility, and continuous improvement.
+
+---
+
+## Project Status
+
+* **Version:** 0.1.8
+* **Current Maintainer:** [monojitgoswami69](https://github.com/monojitgoswami69)
+* **Development Status:** Production-ready prototype
+* **Last Updated:** September 21, 2025
+* **Project Type:** Campus Chatbot (AI, Multilingual, RAG)
+* **Target Event:** Smart India Hackathon 2025
+* **Contact:** See GitHub profile
+
+---
 
 ## Problem Statement
 
-Campus offices handle hundreds of repetitive queries daily—fee deadlines, scholarship forms, timetable changes—often from students more comfortable in Hindi or other regional languages. This creates communication gaps and strains both staff and learners. Shiksha Saathi aims to deflect routine inquiries, freeing staff for complex tasks and providing students with equitable, round-the-clock information access.
+Campus offices handle hundreds of repetitive queries daily—fee deadlines, scholarship forms, timetable changes—often from students uncomfortable with English or official documentation. Students in rural or regional sectors frequently miss critical deadlines due to language barriers, while staff are burdened by repetitive queries.
 
+**Shiksha Saathi** provides a **dynamic, multilingual, document-grounded solution** that delivers accurate, context-aware responses in the student’s preferred language, prevents misinformation, escalates ambiguous queries to humans, and ensures equitable access to official resources.
 
-## Key Features
+---
 
-- **Multilingual Design:** Built to support countless regional languages with minimal setup and training. Easily extendable to new languages as needed.
+## Objectives
 
-- **Conversational Intelligence & Intent Recognition:** Understands user context and intent, providing accurate answers in the user's preferred language. Maintains multi-turn context for natural conversations.
+1. **Student-Centric:** Provide fast, reliable answers to students in English, Hindi, and regional languages.
+2. **Accuracy & Trust:** Prevent misinformation through document-grounded retrieval and explicit source linking.
+3. **Scalability:** Handle daily uploads of institutional PDFs and circulars dynamically.
+4. **Accessibility:** Support visually/hearing-impaired and differently-abled students with voice and visual aids.
+5. **Admin-Friendly:** Enable institutions to manage documents, queries, and analytics without coding knowledge.
+6. **Continuous Improvement:** Collect and analyze query data to optimize content coverage, detect gaps, and retrain embeddings.
 
-- **RAG Retrieval & Hallucination Prevention:** Answers are grounded in institutional documents (PDFs, circulars, web pages) with confidence scores. Prevents hallucinations and triggers human handoff when confidence is low, based on configurable thresholds.
+---
 
-- **Web Chat Widget:** Easily integrable into any website with minimal frontend setup. Mobile-responsive and accessible for all users.
+## Core Features
 
-- **Scalable Backend:** Modular API design, supporting both local LLMs and cloud-hosted models for flexible, scalable deployment.
+### 1. Multilingual Support
 
-- **Admin Panel for Backend Management:** Each institution receives unique credentials for secure access. Admins can manage their own encrypted databases, upload documents, and control bot behavior through a user-friendly interface.
+* English + Hindi + 3–5 regional languages in MVP.
+* Automatic language detection with fallback to English.
+* Easily extendable for new languages with minimal retraining.
 
-- **No-Code Maintenance:** Admin panel enables non-technical staff or student volunteers to maintain and update the bot without coding. The bot can automatically crawl institutional websites and sublinks to update its database nightly or on demand, while remaining functional for users. Manual PDF/circular upload is also supported for rapid updates.
+### 2. Conversational Intelligence
 
-- **Advanced Admin Features:** Includes student query logging, human handoff answering, and automated AI-based suggestions (e.g., most asked queries, confusion hotspots, recommended content updates).
+* Multi-turn context with session limits.
+* Intent recognition with **confidence thresholds** to trigger human fallback.
+* Handles minor spelling, grammar, and semantic variations.
 
-- **Security & Privacy:** All institutional data and student chat logs are securely encrypted. Database contents use industry-standard encryption for maximum protection.
+### 3. RAG-Based Retrieval & Hallucination Prevention
 
-- **Low-Cost Infrastructure:** Utilizes free open-source LLMs and low-cost cloud/server setups. Designed to minimize annual costs for institutions (estimated cost per year available on request).
+* Answers grounded in PDFs, circulars, and web pages.
+* Dynamic ingestion pipeline for daily document uploads.
+* Explicit source linking in responses.
+* Semantic similarity checks prevent misretrieval.
+* Low-confidence queries are flagged for human intervention.
 
-- **Accessibility Aids:** Audio/visual features to support handicapped users, ensuring inclusive access for all students.
+### 4. Web Chat Widget
 
-- **Continuous Improvement:** Automated analytics and feedback loops help institutions identify common queries, improve content, and enhance student satisfaction.
+* Embeddable on college websites.
+* Mobile-responsive, cross-browser tested (Chrome, Firefox, Edge, Safari).
+* Accessibility: keyboard navigation, ARIA labels, high contrast, adjustable fonts.
+* Source document links displayed alongside answers.
 
-<hr>
+### 5. Scalable Backend
 
-## MVP Version Overview
+* Modular API architecture separating retrieval, embeddings, and LLM generation.
+* Supports cloud LLMs (Gemini/OpenAI) and local embeddings.
+* Async processing for multiple concurrent queries.
+* Query caching for cost and latency optimization.
 
-The current MVP (Minimum Viable Product) version of Shiksha Saathi is focused on rapid prototyping and core functionality validation. It is designed for basic testing and demonstration purposes, with the following features:
+### 6. Admin Panel
 
-- **Basic Conversation:** Supports simple, natural language chat with users in English, Hindi, and Bengali.
-- **Intent Recognition & Context Maintenance:** Maintains context across multiple turns and recognizes user intent for more relevant responses.
-- **RAG Retrieval (Static):** Answers are grounded in static test files and PDFs using a basic RAG pipeline. No database storage is implemented yet; all knowledge is loaded from provided documents at startup.
-- **No Admin Panel:** The MVP does not include an admin panel or backend management features.
-- **Web Chat Widget:** Easily integrable into any website for basic conversational testing.
-- **Free API Integration:** Uses a free, rate-limited API for LLM processing, restricting usage to basic testing and demonstration only.
-- **Manual Document Setup:** Institutional documents must be manually loaded for each test; no automated crawling or updating is available in the MVP.
-- **No Analytics or Logging:** The MVP does not log queries or provide analytics features.
+* Role-based access per institution with encrypted credentials.
+* Manual document upload with **approval workflow**.
+* Document versioning, audit logs, and analytics dashboard.
+* Dashboard metrics: top queries, low-confidence queries, repeated ambiguous queries.
 
-## Architecture Diagram
+### 7. Security & Privacy
 
-Below is a flowchart representation of the Shiksha Saathi MVP:
+* HTTPS + TLS 1.3; AES-256 encryption at rest.
+* Query logs pseudonymized; retention period configurable.
+* Human fallback for sensitive or ambiguous queries.
+
+### 8. Accessibility Enhancements
+
+* Text-to-speech for visually impaired students.
+* High-contrast mode and adjustable fonts.
+* Voice input for queries.
+* Screen-reader compatibility.
+
+### 9. Continuous Improvement
+
+* Query logs analyzed for content gaps.
+* Human-in-the-loop validation for updates.
+* AI-based FAQ suggestions and recommended content updates.
+
+### 10. Cost-Efficient & Scalable
+
+* Hybrid local + cloud approach.
+* Multi-tenant support for multiple institutions.
+* Optimized cost per query with caching, batch embeddings, and async processing.
+
+### 11. Differentiators
+
+* Offline access to frequently queried documents for intermittent connectivity.
+* Explainable AI: shows which source lines informed the answer.
+* Multi-modal input: accepts text, PDF uploads, and screenshots.
+* Proactive notifications via SMS/email/WhatsApp for deadlines.
+* Emergency alerts for high-priority institutional announcements.
+
+---
+
+## Architecture & Flow Process
 
 ```
-User Device (Browser/Mobile)
-	│
-	▼
-Web Chat Widget (HTML/JS/CSS)
-	│
-	▼
-FastAPI Backend (Python)
-	│
-	▼
-RAG Module (ChromaDB, PDF Loader, Embeddings)
-	│
-	▼
-LLM API (Free Tier: Together AI / Hugging Face)
-	│
-	▼
-Response to User (Preferred Language)
+                         ┌────────────────────────┐
+                         │  Institution Admin     │
+                         │  Panel & Dashboard     │
+                         └─────────┬──────────────┘
+                                   │
+                 Upload PDFs / View Analytics / Approve Documents
+                                   │
+                                   ▼
+┌──────────────────────┐     ┌─────────────────────────────┐
+│  Async Document      │     │  Vector DB / Embeddings     │
+│  Preprocessing       │────▶│  (ChromaDB / FAISS)         │
+│  Pipeline            │     │  Text Extraction & Indexing │
+└──────────────────────┘     └─────────┬───────────────────┘
+                                      │
+                                      ▼
+                               ┌───────────────────┐
+                               │ RAG Retrieval     │
+                               │ (FastAPI Backend) │
+                               └─────────┬─────────┘
+                                         │
+                                         ▼
+                               ┌───────────────────┐
+                               │ LLM Response      │
+                               │ Generation        │
+                               │ (Gemini / OpenAI) │
+                               └─────────┬─────────┘
+                                         │
+                                         ▼
+                         ┌─────────────────────────┐
+                         │  Web Chat Widget        │
+                         │  (Student Interface)    │
+                         └─────────┬───────────────┘
+                                   │
+                                   ▼
+                      ┌─────────────────────────────┐
+                      │ Source-linked Answer /      │
+                      │ Confidence Score / Human    │
+                      │ Fallback Trigger            │
+                      └─────────────────────────────┘
 ```
 
-**Flow:**
-- User interacts with the chat widget on the website.
-- Widget sends queries to the FastAPI backend.
-- Backend uses RAG module to retrieve answers from static PDFs and test files.
-- LLM API is called for language understanding and generation.
-- Response is sent back to the user in their preferred language.
+**Process Flow:**
 
-## MVP Tech Stack
+1. Admin uploads PDFs/circulars; pipeline extracts and indexes content.
+2. Embeddings stored in vector database (ChromaDB/FAISS).
+3. Student submits query via web widget.
+4. Backend retrieves relevant content, generates answer using LLM.
+5. Response delivered with **source references**; low-confidence flagged for human fallback.
+6. Query logged for analytics, continuous improvement, and FAQ optimization.
 
-The following technologies, libraries, and services are required for the MVP implementation:
+---
 
-**Backend:**
-- Python 3.12+
-- FastAPI (web framework)
-- ChromaDB (vector database)
-- PyPDF2 (PDF text extraction)
-- sentence-transformers (embeddings)
-- LangChain (RAG orchestration)
+## Tech Stack
 
-**Frontend:**
-- HTML5, CSS3, JavaScript (vanilla)
-- Web chat widget (custom, embeddable)
+**Backend:** Python 3.12+, FastAPI, ChromaDB/FAISS, PyPDF2, sentence-transformers, LangChain<br> 
+**Frontend:** React + Tailwind CSS, embeddable web chat widget<br>
+**AI & NLP:** Gemini/OpenAI API, multilingual pipelines, RAG orchestration<br> 
+**Hosting:** Vercel / GitHub Pages (frontend), Hugging Face Spaces / Google Cloud Run (backend), Docker containerization <br>
+**Analytics:** Admin dashboard with query metrics, FAQ recommendations, and low-confidence alerts 
 
-**AI & NLP:**
-- Together AI API (free tier, multilingual LLM)
-- Hugging Face API (alternative LLM provider)
+---
 
-**Hosting & Deployment:**
-- Vercel or GitHub Pages (frontend static hosting)
-- Hugging Face Spaces or Google Cloud Run (backend hosting, free tier)
-- Docker (containerization for backend)
+## Deployment Guidelines
 
-## MVP Feature Checklist
+1. **Frontend:** Host static React/Tailwind chat widget on Vercel or GitHub Pages.
+2. **Backend:** Deploy FastAPI backend on Hugging Face Spaces, Google Cloud Run, or Docker container.
+3. **Database:** ChromaDB or FAISS for embeddings; set up periodic backups.
+4. **Document Ingestion:** Async pipeline for daily PDF uploads, preprocessing, and embedding generation.
+5. **Monitoring:** Enable logging for query success rates, errors, and LLM response times.
 
-- [x] Initial project setup (repository, environment, dependencies)
-- [ ] Basic UI/UX design for chat widget
-- [ ] Sample institutional document preparation
-- [ ] Basic conversation in English, Hindi, Bengali
-- [ ] Intent recognition and context maintenance
-- [ ] RAG retrieval from static test files and PDFs
-- [ ] Web chat widget integration
-- [ ] Manual document setup
-- [ ] Free, rate-limited API integration for LLM
-- [ ] Testing and validation of conversation flow
-- [ ] Documentation for setup and usage
-- [ ] Deployment instructions (local/cloud)
-- [ ] Feedback collection mechanism for MVP users
+---
 
-## Getting Started
+## Contribution Guidelines
 
-This section will be published once the MVP is complete. It will contain step-by-step instructions for cloning the repository, installing dependencies, setting up the environment, and running the project for development and testing.
+* Follow GitHub issue → PR workflow.
+* All contributions must include **unit tests** for critical backend functionality.
+* Code style: PEP8 for Python; ESLint + Prettier for frontend.
+* Maintain modularity: separate retrieval, embedding, and LLM layers.
+* For data or PDF changes, follow document approval workflow in admin panel.
 
-## Running the MVP Locally
-
-Detailed local run instructions (commands, environment variables, example data) will be provided after MVP completion. For now, the MVP is under active development and these instructions will be added when the runnable artifacts and `requirements.txt` are finalized.
-
-## Contributions
-
-Contribution guidelines, code of conduct, and PR workflow will be documented after the MVP is stable. If you want to contribute during development, please open an issue to discuss proposed changes.
+---
 
 ## License
 
-The project's license information will be added once the core MVP is finalized and a license is chosen. For now, consider the project to be under review for licensing and contact the maintainer via the GitHub profile for any questions.
+Under review; contact the maintainer via GitHub profile for inquiries.
