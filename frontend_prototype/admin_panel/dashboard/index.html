@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,17 @@
     <link rel="stylesheet" href="dashboard_theme.css">
     <link rel="stylesheet" href="dashboard_styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 </head>
+
 <body class="dashboard-body">
     <div class="dashboard-container">
 
         <aside class="sidebar">
             <div class="sidebar-header">
-                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <!-- Replaced inline SVG with provided logo image.png -->
+                <img src="assets/image.png" alt="Shiksha Saathi" class="logo-img" />
                 <h1>Shiksha Saathi</h1>
             </div>
             <nav class="sidebar-nav">
@@ -47,8 +51,18 @@
         </aside>
 
         <!-- Main Content -->
+        <!-- Mobile sidebar overlay (toggled via JS) -->
+        <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
         <main class="main-content">
             <header class="main-header">
+                <!-- Hamburger for small screens -->
+                <button id="sidebarToggle" class="hamburger-btn" aria-label="Toggle navigation" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true">
+                        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
                 <h2 id="pageTitle">Dashboard</h2>
                 <div class="header-actions">
                     <button class="theme-mode-btn" id="themeModeBtn" title="Toggle theme"></button>
@@ -65,7 +79,13 @@
                             <div class="stat-main">
                                 <p>12,453</p>
                                 <span class="stat-change positive">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14"/><path d="M18 11l-6 -6"/><path d="M6 11l6 -6"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5l0 14" />
+                                        <path d="M18 11l-6 -6" />
+                                        <path d="M6 11l6 -6" />
+                                    </svg>
                                     <span>5.2%</span>
                                 </span>
                             </div>
@@ -75,39 +95,53 @@
                             <div class="stat-main">
                                 <p>89%</p>
                                 <span class="stat-change positive">
-                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14"/><path d="M18 11l-6 -6"/><path d="M6 11l6 -6"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5l0 14" />
+                                        <path d="M18 11l-6 -6" />
+                                        <path d="M6 11l6 -6" />
+                                    </svg>
                                     <span>1.5%</span>
                                 </span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <h3>Human Handoffs</h3>
-                             <div class="stat-main">
+                            <div class="stat-main">
                                 <p>128</p>
                                 <span class="stat-change negative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14"/><path d="M18 13l-6 6"/><path d="M6 13l6 6"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5l0 14" />
+                                        <path d="M18 13l-6 6" />
+                                        <path d="M6 13l6 6" />
+                                    </svg>
                                     <span>10%</span>
                                 </span>
                             </div>
                         </div>
                         <div class="stat-card">
                             <h3>Documents Indexed</h3>
-                             <div class="stat-main">
+                            <div class="stat-main">
                                 <p>542</p>
                                 <span class="stat-change neutral">Updated Today</span>
                             </div>
                         </div>
                     </div>
                     <div class="charts-grid">
-                        <div class="chart-container">
+                        <div class="chart-container transparent-chart">
                             <h3>Query Volume (Last 30 Days)</h3>
-                            <div class="chart-wrapper">
-                                <canvas id="queryVolumeChart"></canvas>
+                            <div class="chart-wrapper svg-area-wrapper">
+                                <!-- Replaced canvas with an inline, responsive SVG area-chart -->
+                                <svg id="area-chart" class="area-chart-svg" role="img"
+                                    aria-label="Query volume area chart"></svg>
                             </div>
                         </div>
                         <div class="chart-container">
                             <h3>Confusion Hotspots</h3>
-                             <div class="chart-wrapper">
+                            <div class="chart-wrapper">
                                 <canvas id="confusionHotspotsChart"></canvas>
                             </div>
                         </div>
@@ -120,39 +154,63 @@
                         <h3>Manage Knowledge Base</h3>
                         <p>Upload new documents, or trigger a website crawl to keep the bot's knowledge up-to-date.</p>
                         <div class="action-buttons">
-                           <button class="btn btn-primary">Upload PDF/Circular</button>
-                           <button class="btn">Crawl Website Now</button>
+                            <button class="btn btn-primary">Upload PDF/Circular</button>
+                            <button class="btn">Crawl Website Now</button>
                         </div>
                     </div>
-                     <div class="content-card">
+                    <div class="content-card">
                         <h3>Indexed Documents</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>File Name</th>
-                                    <th>Source</th>
-                                    <th>Date Indexed</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Academic_Calendar_2024.pdf</td>
-                                    <td>Manual Upload</td>
-                                    <td>2024-08-15</td>
-                                    <td><span class="status-chip active">Active</span></td>
-                                    <td><button class="btn-icon">Delete</button></td>
-                                </tr>
-                                <tr>
-                                    <td>/admissions/faq</td>
-                                    <td>Web Crawl</td>
-                                    <td>2024-08-20</td>
-                                    <td><span class="status-chip active">Active</span></td>
-                                    <td><button class="btn-icon">Delete</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive" data-stack="true">
+                            <table class="responsive-table">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Source</th>
+                                        <th>Date Indexed</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="File Name">Academic_Calendar_2024.pdf</td>
+                                        <td data-label="Source">Manual Upload</td>
+                                        <td data-label="Date Indexed">2024-08-15</td>
+                                        <td data-label="Status"><span class="status-chip active">Active</span></td>
+                                        <td data-label="Actions">
+                                            <button class="btn-icon" aria-label="Delete document">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="none" viewBox="0 0 20 20" aria-hidden="true"
+                                                    style="margin-right:6px;">
+                                                    <path stroke="#fff" stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M7.5 9v4m5-4v4M3.5 5.5h13M5.5 5.5V15A1.5 1.5 0 0 0 7 16.5h6A1.5 1.5 0 0 0 14.5 15V5.5m-7 0V4A1.5 1.5 0 0 1 9 2.5h2A1.5 1.5 0 0 1 12.5 4v1.5" />
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="File Name">/admissions/faq</td>
+                                        <td data-label="Source">Web Crawl</td>
+                                        <td data-label="Date Indexed">2024-08-20</td>
+                                        <td data-label="Status"><span class="status-chip active">Active</span></td>
+                                        <td data-label="Actions">
+                                            <button class="btn-icon" aria-label="Delete document">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="none" viewBox="0 0 20 20" aria-hidden="true"
+                                                    style="margin-right:6px;">
+                                                    <path stroke="#fff" stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M7.5 9v4m5-4v4M3.5 5.5h13M5.5 5.5V15A1.5 1.5 0 0 0 7 16.5h6A1.5 1.5 0 0 0 14.5 15V5.5m-7 0V4A1.5 1.5 0 0 1 9 2.5h2A1.5 1.5 0 0 1 12.5 4v1.5" />
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </section>
 
@@ -161,74 +219,81 @@
                     <div class="content-card">
                         <h3>Student Query Logs</h3>
                         <p>Review recent queries to understand student needs and improve responses.</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Query</th>
-                                    <th>Confidence</th>
-                                    <th>Response</th>
-                                    <th>Timestamp</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>"When are the semester exams?"</td>
-                                    <td>98%</td>
-                                    <td>"The final semester exams start on..."</td>
-                                    <td>2 mins ago</td>
-                                </tr>
-                                 <tr>
-                                    <td>"hostel fee structure"</td>
-                                    <td>95%</td>
-                                    <td>"The hostel fees are detailed in..."</td>
-                                    <td>15 mins ago</td>
-                                 </tr>
-                                <tr>
-                                    <td>"how to apply for scholarship"</td>
-                                    <td>72%</td>
-                                    <td>"I found some information on schola..."</td>
-                                    <td>1 hour ago</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="responsive-table">
+                                <thead>
+                                    <tr>
+                                        <th>Query</th>
+                                        <th>Confidence</th>
+                                        <th>Response</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Query">"When are the semester exams?"</td>
+                                        <td data-label="Confidence">98%</td>
+                                        <td data-label="Response">"The final semester exams start on..."</td>
+                                        <td data-label="Timestamp">2 mins ago</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="Query">"hostel fee structure"</td>
+                                        <td data-label="Confidence">95%</td>
+                                        <td data-label="Response">"The hostel fees are detailed in..."</td>
+                                        <td data-label="Timestamp">15 mins ago</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="Query">"how to apply for scholarship"</td>
+                                        <td data-label="Confidence">72%</td>
+                                        <td data-label="Response">"I found some information on schola..."</td>
+                                        <td data-label="Timestamp">1 hour ago</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                     <div class="content-card">
+                    <div class="content-card">
                         <h3>Unsolved Queries</h3>
                         <p>Queries that the bot failed to answer and required human intervention.</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Question</th>
-                                    <th>User Email</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>"Can I change my major in the third year?"</td>
-                                    <td>student123@example.com</td>
-                                    <td>2024-09-12</td>
-                                    <td><span class="status-chip pending">Pending</span></td>
-                                    <td><button class="btn btn-primary btn-sm">Answer</button></td>
-                                </tr>
-                                 <tr>
-                                    <td>"Are pets allowed in the dorms?"</td>
-                                    <td>another.student@example.com</td>
-                                    <td>2024-09-11</td>
-                                    <td><span class="status-chip solved">Solved</span></td>
-                                    <td></td>
-                                 </tr>
-                                <tr>
-                                    <td>"Specific question about research funding for project X"</td>
-                                    <td>research.scholar@example.com</td>
-                                    <td>2024-09-10</td>
-                                    <td><span class="status-chip pending">Pending</span></td>
-                                    <td><button class="btn btn-primary btn-sm">Answer</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="responsive-table">
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>User Email</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Question">"Can I change my major in the third year?"</td>
+                                        <td data-label="User Email">student123@example.com</td>
+                                        <td data-label="Date">2024-09-12</td>
+                                        <td data-label="Status"><span class="status-chip pending">Pending</span></td>
+                                        <td data-label="Actions"><button class="btn btn-primary btn-sm">Answer</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="Question">"Are pets allowed in the dorms?"</td>
+                                        <td data-label="User Email">another.student@example.com</td>
+                                        <td data-label="Date">2024-09-11</td>
+                                        <td data-label="Status"><span class="status-chip solved">Solved</span></td>
+                                        <td data-label="Actions"></td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="Question">"Specific question about research funding for project
+                                            X"</td>
+                                        <td data-label="User Email">research.scholar@example.com</td>
+                                        <td data-label="Date">2024-09-10</td>
+                                        <td data-label="Status"><span class="status-chip pending">Pending</span></td>
+                                        <td data-label="Actions"><button class="btn btn-primary btn-sm">Answer</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </section>
 
@@ -245,7 +310,7 @@
                                 <label for="handoffThreshold">Human Handoff Confidence Threshold (%)</label>
                                 <input type="number" id="handoffThreshold" value="40" min="0" max="100">
                             </div>
-                             <div class="input-group">
+                            <div class="input-group">
                                 <label for="websiteUrl">Institution Website URL for Crawling</label>
                                 <input type="url" id="websiteUrl" value="https://institution.edu">
                             </div>
@@ -258,7 +323,8 @@
                         <form class="settings-form">
                             <div class="input-group">
                                 <label for="welcomeMessage">Bot Welcome Message</label>
-                                <textarea id="welcomeMessage" rows="3">Hello! I'm Shiksha Saathi, your friendly AI assistant. How can I help you today?</textarea>
+                                <textarea id="welcomeMessage"
+                                    rows="3">Hello! I'm Shiksha Saathi, your friendly AI assistant. How can I help you today?</textarea>
                             </div>
                             <div class="input-group">
                                 <label for="themeColor">Bot Theme Color</label>
@@ -271,20 +337,21 @@
                         </form>
                     </div>
 
-                     <div class="content-card">
+                    <div class="content-card">
                         <h3>Notifications</h3>
                         <form class="settings-form">
                             <div class="notification-setting">
                                 <div>
                                     <label for="emailHandoff">Email on Human Handoff</label>
-                                    <p class="setting-description">Receive an email when a user's query requires human intervention.</p>
+                                    <p class="setting-description">Receive an email when a user's query requires human
+                                        intervention.</p>
                                 </div>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="emailHandoff" checked>
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
-                             <div class="input-group">
+                            <div class="input-group">
                                 <label for="notificationEmail">Notification Email Address</label>
                                 <input type="email" id="notificationEmail" value="admin@institution.edu">
                             </div>
@@ -298,5 +365,5 @@
 
     <script src="dashboard_main.js"></script>
 </body>
-</html>
 
+</html>
