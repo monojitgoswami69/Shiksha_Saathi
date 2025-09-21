@@ -51,6 +51,26 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ripple effect */
+.btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animate 0.6s linear;
+    background: rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes ripple-animate {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
 }
 
 .btn:hover {
@@ -536,11 +556,65 @@ html[data-theme='dark'] .nav-icon {
 
 /* --- Generic Content Cards --- */
 .content-card {
-    background: var(--bg-primary);
-    padding: 1.5rem;
+    /* Glassmorphism + gradient, theme-aware */
+    background: linear-gradient(135deg, var(--card-glass-bg1, rgba(34, 40, 49, 0.60)) 60%, var(--card-glass-bg2, rgba(58, 123, 213, 0.18)) 100%);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
     border-radius: var(--border-radius-lg);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--card-glass-border, rgba(255, 255, 255, 0.18));
+    /* Soft, responsive drop shadow for elevation */
+    box-shadow:
+        0 2.5px 12px 0 var(--card-shadow-color, rgba(0, 0, 0, 0.10)),
+        0 1.5px 8px 0 var(--card-shadow-accent, rgba(58, 123, 213, 0.06));
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s, background 0.2s, transform 0.4s cubic-bezier(.4, 2, .6, 1), opacity 0.4s cubic-bezier(.4, 2, .6, 1);
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+    animation: cardFadeIn 0.7s cubic-bezier(.4, 2, .6, 1) 0.1s forwards;
+}
+
+@keyframes cardFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Hover effect for extra pop */
+.content-card:hover {
+    box-shadow:
+        0 6px 24px 0 var(--card-shadow-color-hover, rgba(0, 0, 0, 0.16)),
+        0 2.5px 12px 0 var(--card-shadow-accent-hover, rgba(58, 123, 213, 0.10));
+    background: linear-gradient(135deg, var(--card-glass-bg1-hover, rgba(34, 40, 49, 0.72)) 60%, var(--card-glass-bg2-hover, rgba(58, 123, 213, 0.22)) 100%);
+    transform: translateY(-2px) scale(1.012);
+}
+
+/* Theme variables for glass effect */
+:root {
+    --card-glass-bg1: rgba(34, 40, 49, 0.38);
+    /* more transparent for glass effect */
+    --card-glass-bg2: rgba(58, 123, 213, 0.22);
+    --card-glass-border: rgba(255, 255, 255, 0.32);
+    /* brighter border for contrast */
+    --card-shadow-color: rgba(0, 0, 0, 0.13);
+    --card-shadow-accent: rgba(58, 123, 213, 0.07);
+    --card-shadow-color-hover: rgba(0, 0, 0, 0.19);
+    --card-shadow-accent-hover: rgba(58, 123, 213, 0.13);
+    --card-glass-bg1-hover: rgba(34, 40, 49, 0.52);
+    --card-glass-bg2-hover: rgba(58, 123, 213, 0.28);
+}
+
+html[data-theme='light'] {
+    --card-glass-bg1: rgba(255, 255, 255, 0.72);
+    --card-glass-bg2: rgba(58, 123, 213, 0.10);
+    --card-glass-border: rgba(34, 40, 49, 0.10);
+    --card-shadow-color: rgba(58, 123, 213, 0.08);
+    --card-shadow-accent: rgba(0, 0, 0, 0.04);
+    --card-shadow-color-hover: rgba(58, 123, 213, 0.13);
+    --card-shadow-accent-hover: rgba(0, 0, 0, 0.07);
+    --card-glass-bg1-hover: rgba(255, 255, 255, 0.88);
+    --card-glass-bg2-hover: rgba(58, 123, 213, 0.16);
 }
 
 .content-card h3 {
@@ -574,7 +648,8 @@ table {
 
 .responsive-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     min-width: 0;
     /* allow the table to shrink to fit mobile without forcing huge min width */
 }
@@ -583,7 +658,18 @@ th,
 td {
     padding: 12px 16px;
     text-align: left;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1.5px solid var(--table-divider, var(--border-color));
+    transition: border-color 0.18s;
+
+    /* Subtle divider for document tables, theme-adaptive */
+    :root {
+        --table-divider: color-mix(in srgb, var(--primary-color) 12%, var(--border-color) 88%);
+    }
+
+    html[data-theme='light'] {
+        --table-divider: color-mix(in srgb, var(--primary-color) 8%, var(--border-color) 92%);
+    }
+
     white-space: nowrap;
 }
 
@@ -726,6 +812,7 @@ th {
     gap: 0.5em;
     background: var(--error-color);
     color: #fff;
+    will-change: transform, box-shadow, background;
     border: none;
     border-radius: 999px;
     padding: 6px 18px 6px 14px;
@@ -739,9 +826,14 @@ th {
 
 .btn-icon:hover,
 .btn-icon:focus {
-    background: #b91c1c;
-    box-shadow: 0 4px 16px rgba(185, 28, 28, 0.12);
-    transform: translateY(-1px) scale(1.04);
+    background: linear-gradient(90deg, var(--error-color) 80%, #b91c1c 100%);
+    box-shadow: 0 6px 24px 0 rgba(185, 28, 28, 0.18), 0 0 0 2px rgba(185, 28, 28, 0.10);
+    transform: translateY(-2px) scale(1.08);
+    filter: brightness(1.08) saturate(1.15);
+    outline: 2px solid var(--error-color);
+    outline-offset: 2px;
+    /* Light mode delete button hover: slightly lighter red */
+    --error-color: #e53935;
 }
 
 /* --- Forms (Settings Page) --- */
@@ -1153,4 +1245,36 @@ html[data-theme='dark'] .sidebar-overlay {
     margin-bottom: 14px;
     font-size: 1rem;
     color: var(--text-primary);
+}
+
+/* --- Soft Drop Shadows for Card Elevation (Theme Adaptive) --- */
+.stat-card,
+.chart-container,
+.content-card {
+    box-shadow: 0 2.5px 16px 0 rgba(40, 60, 120, 0.10), 0 1.5px 8px 0 rgba(40, 40, 60, 0.08);
+    transition: box-shadow 0.3s cubic-bezier(.4, 0, .2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .stat-card,
+    .chart-container,
+    .content-card {
+        box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.22), 0 1.5px 8px 0 rgba(40, 40, 60, 0.13);
+    }
+}
+
+@media (max-width: 700px) {
+
+    .stat-card,
+    .chart-container,
+    .content-card {
+        box-shadow: 0 1.5px 8px 0 rgba(40, 60, 120, 0.10), 0 0.5px 3px 0 rgba(40, 40, 60, 0.08);
+    }
+}
+
+.stat-card:hover,
+.chart-container:hover,
+.content-card:hover {
+    box-shadow: 0 8px 40px 0 rgba(40, 60, 120, 0.16), 0 2.5px 12px 0 rgba(40, 40, 60, 0.13);
 }
