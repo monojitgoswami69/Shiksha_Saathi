@@ -1,3 +1,21 @@
+/* Color Palette for Dashboard */
+:root {
+    --accent-vibrant: #059669;
+    --primary-color: #059669;
+    --bg-page: #F9FAFB;
+    --bg-primary: #FFFFFF;
+    --card-surface: #FFFFFF;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --success-color: #22C55E;
+    --error-color: #F43F5E;
+    --chart-green: #059669;
+    --chart-blue: #0EA5E9;
+    --chart-amber: #F59E0B;
+    --chart-indigo: #6366F1;
+    --border-color: #E5E7EB;
+}
+
 /* Make the first column (Query) wider and more readable in Student Query Logs */
 .responsive-table td[data-label="Query"],
 .responsive-table th:first-child {
@@ -1277,4 +1295,26 @@ html[data-theme='dark'] .sidebar-overlay {
 .chart-container:hover,
 .content-card:hover {
     box-shadow: 0 8px 40px 0 rgba(40, 60, 120, 0.16), 0 2.5px 12px 0 rgba(40, 40, 60, 0.13);
+}
+
+/* --- Logout Button Style --- */
+.header-actions #logoutBtn {
+    background: var(--accent-vibrant);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 8px 0 rgba(5, 150, 105, 0.10);
+    transition: background 0.22s cubic-bezier(.4, 0, .2, 1),
+        transform 0.18s cubic-bezier(.4, 0, .2, 1),
+        box-shadow 0.22s cubic-bezier(.4, 0, .2, 1);
+    will-change: transform, box-shadow, background;
+}
+
+.header-actions #logoutBtn:hover,
+.header-actions #logoutBtn:focus {
+    background: linear-gradient(90deg, var(--accent-vibrant) 60%, var(--chart-blue) 100%);
+    color: #fff;
+    transform: scale(1.07) translateY(-2px);
+    box-shadow: 0 6px 24px 0 rgba(14, 165, 233, 0.18), 0 2px 8px 0 rgba(5, 150, 105, 0.13);
 }
