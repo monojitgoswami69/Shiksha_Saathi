@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- BUTTON RIPPLE EFFECT ---
+    function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement('span');
+        circle.className = 'ripple';
+        const rect = button.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        circle.style.width = circle.style.height = size + 'px';
+        circle.style.left = (event.clientX - rect.left - size / 2) + 'px';
+        circle.style.top = (event.clientY - rect.top - size / 2) + 'px';
+        button.appendChild(circle);
+        circle.addEventListener('animationend', () => circle.remove());
+    }
+    document.querySelectorAll('.btn, .btn-primary').forEach(btn => {
+        btn.addEventListener('pointerdown', createRipple);
+    });
     
     const CONSTANTS = {
         THEME_STORAGE_KEY: 'siksha-sathi-admin-theme',
@@ -240,12 +256,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const points = data.map(d => ({ x: xScale(d.day), y: yScale(d.value) }));
 
+
                     // area path (smooth)
                     const areaD = createPath(points) + ` L ${xScale(31)},${height - margin.bottom} L ${xScale(1)},${height - margin.bottom} Z`;
                     const areaPath = document.createElementNS(svgNs, 'path');
                     areaPath.setAttribute('d', areaD);
                     areaPath.setAttribute('fill', 'url(#area-gradient)');
                     areaPath.setAttribute('stroke', 'none');
+                    areaPath.style.opacity = '0'; // fade in after line animates
                     g.appendChild(areaPath);
 
                     // line path on top
@@ -256,6 +274,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     linePath.setAttribute('stroke', '#A6FFCB');
                     linePath.setAttribute('stroke-width', String(lineStroke));
                     g.appendChild(linePath);
+
+                    // --- Animate the line draw ---
+                    const totalLength = linePath.getTotalLength();
+                    linePath.style.strokeDasharray = totalLength;
+                    linePath.style.strokeDashoffset = totalLength;
+                    linePath.style.transition = 'none';
+                    areaPath.style.transition = 'opacity 0.5s ease';
+
+                    // Animate with requestAnimationFrame
+                    let start = null;
+                    const duration = 900; // ms
+                    function animateLineDraw(ts) {
+                        if (!start) start = ts;
+                        const elapsed = ts - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        linePath.style.strokeDashoffset = totalLength * (1 - progress);
+                        if (progress < 1) {
+                            requestAnimationFrame(animateLineDraw);
+                        } else {
+                            linePath.style.strokeDashoffset = 0;
+                            areaPath.style.opacity = '1';
+                        }
+                    }
+                    // Start with area hidden, then fade in after line animates
+                    areaPath.style.opacity = '0';
+                    requestAnimationFrame(animateLineDraw);
 
                     // tooltip group
                     const tooltip = document.createElementNS(svgNs, 'g');

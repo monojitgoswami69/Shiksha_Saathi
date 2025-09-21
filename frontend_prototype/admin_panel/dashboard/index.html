@@ -75,55 +75,77 @@
                 <section id="dashboard" class="page active">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <h3>Total Queries</h3>
+                            <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:8px;">
+                                    <path stroke="currentColor" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+                                </svg>Total Queries</h3>
                             <div class="stat-main">
                                 <p>12,453</p>
                                 <span class="stat-change positive">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                        stroke-linejoin="round">
+                                        stroke-linejoin="round" style="color:var(--accent-vibrant)">
                                         <path d="M12 5l0 14" />
                                         <path d="M18 11l-6 -6" />
                                         <path d="M6 11l6 -6" />
                                     </svg>
-                                    <span>5.2%</span>
+                                    <span style="color:var(--accent-vibrant)">5.2%</span>
                                 </span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <h3>Avg. Confidence</h3>
+                            <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:8px;">
+                                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+                                    <path stroke="currentColor" stroke-width="1.5" d="M8 12l2 2 4-4" />
+                                </svg>Avg. Confidence</h3>
                             <div class="stat-main">
                                 <p>89%</p>
                                 <span class="stat-change positive">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                        stroke-linejoin="round">
+                                        stroke-linejoin="round" style="color:var(--accent-vibrant)">
                                         <path d="M12 5l0 14" />
                                         <path d="M18 11l-6 -6" />
                                         <path d="M6 11l6 -6" />
                                     </svg>
-                                    <span>1.5%</span>
+                                    <span style="color:var(--accent-vibrant)">1.5%</span>
                                 </span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <h3>Human Handoffs</h3>
+                            <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:8px;">
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M4 17v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" />
+                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" />
+                                </svg>Human Handoffs</h3>
                             <div class="stat-main">
                                 <p>128</p>
                                 <span class="stat-change negative">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                        stroke-linejoin="round">
+                                        stroke-linejoin="round" style="color:var(--error-color)">
                                         <path d="M12 5l0 14" />
                                         <path d="M18 13l-6 6" />
                                         <path d="M6 13l6 6" />
                                     </svg>
-                                    <span>10%</span>
+                                    <span style="color:var(--error-color)">10%</span>
                                 </span>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <h3>Documents Indexed</h3>
+                            <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:8px;">
+                                    <rect x="4" y="4" width="16" height="16" rx="2.5" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                    <path stroke="currentColor" stroke-width="1.5" d="M8 8h8M8 12h8M8 16h4" />
+                                </svg>Documents Indexed</h3>
                             <div class="stat-main">
                                 <p>542</p>
                                 <span class="stat-change neutral">Updated Today</span>
@@ -132,7 +154,12 @@
                     </div>
                     <div class="charts-grid">
                         <div class="chart-container transparent-chart">
-                            <h3>Query Volume (Last 30 Days)</h3>
+                            <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:8px;">
+                                    <path stroke="currentColor" stroke-width="1.5" d="M4 20V4m0 16h16" />
+                                    <path stroke="currentColor" stroke-width="1.5" d="M4 16l4-4 4 4 4-8 4 8" />
+                                </svg>Query Volume (Last 30 Days)</h3>
                             <div class="chart-wrapper svg-area-wrapper">
                                 <!-- Replaced canvas with an inline, responsive SVG area-chart -->
                                 <svg id="area-chart" class="area-chart-svg" role="img"
@@ -140,7 +167,12 @@
                             </div>
                         </div>
                         <div class="chart-container">
-                            <h3>Confusion Hotspots</h3>
+                            <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                    viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:8px;">
+                                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+                                    <path stroke="currentColor" stroke-width="1.5" d="M8 12l2 2 4-4" />
+                                </svg>Confusion Hotspots</h3>
                             <div class="chart-wrapper">
                                 <canvas id="confusionHotspotsChart"></canvas>
                             </div>
@@ -151,15 +183,34 @@
                 <!-- Bot Management Page -->
                 <section id="bot-management" class="page">
                     <div class="content-card">
-                        <h3>Manage Knowledge Base</h3>
+                        <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:middle;margin-right:8px;">
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-11Z" />
+                                <path stroke="currentColor" stroke-width="1.5" d="M8 8h8M8 12h8M8 16h4" />
+                            </svg>Manage Knowledge Base</h3>
                         <p>Upload new documents, or trigger a website crawl to keep the bot's knowledge up-to-date.</p>
                         <div class="action-buttons">
-                            <button class="btn btn-primary">Upload PDF/Circular</button>
-                            <button class="btn">Crawl Website Now</button>
+                            <button class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16" fill="none" viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:6px;">
+                                    <path stroke="currentColor" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                                </svg>Upload PDF/Circular</button>
+                            <button class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="none" viewBox="0 0 24 24" aria-hidden="true"
+                                    style="vertical-align:middle;margin-right:6px;">
+                                    <path stroke="currentColor" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+                                </svg>Crawl Website Now</button>
                         </div>
                     </div>
                     <div class="content-card">
-                        <h3>Indexed Documents</h3>
+                        <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                                viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:middle;margin-right:8px;">
+                                <rect x="4" y="4" width="16" height="16" rx="2.5" stroke="currentColor"
+                                    stroke-width="1.5" />
+                                <path stroke="currentColor" stroke-width="1.5" d="M8 8h8M8 12h8M8 16h4" />
+                            </svg>Indexed Documents</h3>
                         <div class="table-responsive" data-stack="true">
                             <table class="responsive-table">
                                 <thead>
