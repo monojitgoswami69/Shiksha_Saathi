@@ -1,11 +1,12 @@
 /* Reusing the theme from your chatbot for consistency */
 
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #00ff88;
+    --primary-color: #059669; /* primary green */
+    --primary-color-700: #047857;
+    --secondary-color: #7c3aed; /* purple for contrast */
+    --accent-color: #c4b5fd; /* soft purple accent */
     --error-color: #ef4444;
-    --success-color: #22c55e;
+    --success-color: #16a34a;
     --warning-color: #f59e0b;
     --on-primary: #ffffff;
     --border-radius-sm: 4px;

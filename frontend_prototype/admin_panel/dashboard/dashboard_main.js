@@ -107,8 +107,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                window.location.href = 'admin_login.html';
+            // Replace simple redirect with animated sequence from user-supplied button
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // respect reduced motion preference
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                // prevent double clicks
+                if (logoutBtn.dataset.busy === '1') return;
+                logoutBtn.dataset.busy = '1';
+
+                const buttonText = logoutBtn.querySelector('.button-text');
+                // play logging-out state
+                if (!reduceMotion) logoutBtn.classList.add('logging-out');
+                if (buttonText) buttonText.textContent = 'Logging out...';
+
+                // small simulated delay to allow animation to be noticed (400ms), then mark success and redirect
+                const firstDelay = reduceMotion ? 120 : 600;
+                setTimeout(() => {
+                    if (!reduceMotion) {
+                        logoutBtn.classList.remove('logging-out');
+                        logoutBtn.classList.add('logged-out');
+                    }
+                    if (buttonText) buttonText.textContent = 'Goodbye!';
+
+                    // final redirect shortly after success state
+                    setTimeout(() => {
+                        window.location.href = 'admin_login.html';
+                    }, reduceMotion ? 80 : 500);
+                }, firstDelay);
             });
         }
         
@@ -206,11 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     grad.setAttribute('x2', '0'); grad.setAttribute('y2', '1');
                     const stop1 = document.createElementNS(svgNs, 'stop');
                     stop1.setAttribute('offset', '0%');
-                    stop1.setAttribute('stop-color', '#A6FFCB');
+                    stop1.setAttribute('stop-color', '#A8F3D1');
                     stop1.setAttribute('stop-opacity', '0.6');
                     const stop2 = document.createElementNS(svgNs, 'stop');
                     stop2.setAttribute('offset', '100%');
-                    stop2.setAttribute('stop-color', '#12D8FA');
+                    stop2.setAttribute('stop-color', '#34D399');
                     stop2.setAttribute('stop-opacity', '0.08');
                     grad.appendChild(stop1);
                     grad.appendChild(stop2);
@@ -271,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const linePath = document.createElementNS(svgNs, 'path');
                     linePath.setAttribute('d', lineD);
                     linePath.setAttribute('fill', 'none');
-                    linePath.setAttribute('stroke', '#A6FFCB');
+                    linePath.setAttribute('stroke', '#34D399');
                     linePath.setAttribute('stroke-width', String(lineStroke));
                     g.appendChild(linePath);
 
@@ -383,7 +409,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const ctx = confusionHotspotsCtx.getContext('2d');
                 const rawData = [30, 25, 20, 25];
-                const baseColors = [colors.primaryColor, colors.secondaryColor, colors.warningColor, colors.errorColor];
+                // Ensure adjacent segments use distinct colors: green, purple, yellow, red
+                const baseColors = [
+                    colors.primaryColor || '#059669',
+                    colors.secondaryColor || '#7c3aed',
+                    colors.warningColor || '#f59e0b',
+                    colors.errorColor || '#ef4444'
+                ];
 
                 // Build gradients for each segment for a richer look
                 const segmentFills = baseColors.map((c, i) => {

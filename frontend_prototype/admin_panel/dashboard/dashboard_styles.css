@@ -534,7 +534,7 @@ html[data-theme='dark'] .nav-icon {
 }
 
 .tooltip-rect {
-    fill: var(--primary-color, #14B8A6);
+    fill: var(--primary-color, #059669);
     rx: 6;
 }
 
@@ -1277,4 +1277,74 @@ html[data-theme='dark'] .sidebar-overlay {
 .chart-container:hover,
 .content-card:hover {
     box-shadow: 0 8px 40px 0 rgba(40, 60, 120, 0.16), 0 2.5px 12px 0 rgba(40, 40, 60, 0.13);
+}
+
+/* --- Logout Button Animations (theme-compatible) --- */
+.logout-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: linear-gradient(90deg, var(--bg-secondary), var(--bg-primary));
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: transform 0.28s cubic-bezier(.2,.9,.2,1), background 0.28s, color 0.28s;
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+}
+
+.logout-button .icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.36s cubic-bezier(.2,.9,.2,1);
+}
+
+.logout-button .button-text {
+    display: inline-block;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.logout-button:active {
+    transform: translateY(1px) scale(0.995);
+}
+
+/* Logging out motion: subtle icon travel and text change */
+.logout-button.logging-out .icon-wrapper {
+    transform: translateX(-8px) rotate(-12deg);
+}
+
+.logout-button.logging-out .button-text {
+    opacity: 0.9;
+    transform: translateX(6px);
+}
+
+/* Success state */
+.logout-button.logged-out {
+    background: linear-gradient(90deg, var(--success-color, #10b981), color-mix(in srgb, var(--success-color, #10b981) 60%, white));
+    color: var(--on-success, #ffffff);
+    border-color: color-mix(in srgb, var(--success-color, #10b981) 40%, var(--border-color));
+    transform: scale(0.995);
+}
+
+.logout-button.logged-out .icon-wrapper {
+    transform: translateX(0) rotate(0);
+}
+
+.logout-button.logged-out .button-text {
+    opacity: 1;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .logout-button,
+    .logout-button * {
+        transition: none !important;
+        animation: none !important;
+    }
 }
