@@ -95,7 +95,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.classList.toggle('active', link.dataset.page === pageId);
             });
             pageTitle.textContent = pageTitles[pageId] || 'Dashboard';
-            window.location.hash = pageId;
+            // Use history.replaceState to avoid browser auto-scrolling to anchor
+            try {
+                history.replaceState(null, '', '#' + pageId);
+            } catch (e) {
+                // fallback
+                window.location.hash = pageId;
+            }
+            // Ensure main content scrolls to top when showing a page
+            const mainContent = document.querySelector('.page-content');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+                // also ensure page itself scrolls to top on small devices
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' in history ? 'instant' : 'auto' });
+            }
+
+            // If we just showed the dashboard, refresh charts so hidden SVG/canvas redraws correctly
+            if (pageId === 'dashboard') {
+                try {
+                    if (window.myCharts && window.myCharts.queryVolume && typeof window.myCharts.queryVolume.refresh === 'function') {
+                        window.myCharts.queryVolume.refresh();
+                    }
+                    if (window.myCharts && window.myCharts.confusionHotspots) {
+                        // chart.js charts should resize/update when container shown
+                        try { window.myCharts.confusionHotspots.resize(); window.myCharts.confusionHotspots.update(); } catch (e) {}
+                    }
+                } catch (err) { console.warn('Error refreshing charts when showing dashboard', err); }
+            }
         }
         
         navLinks.forEach(link => {
@@ -386,10 +412,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 window.addEventListener('resize', _areaChartResizeListener);
 
-                // expose a simple destroy hook to be consistent with Chart life-cycle
+                // expose a simple API to be consistent with Chart life-cycle
                 window.myCharts.queryVolume = {
                     destroy() {
                         try { window.removeEventListener('resize', _areaChartResizeListener); } catch (e) {}
+                    },
+                    // refresh/redraw the SVG area chart (useful when container was hidden)
+                    refresh() {
+                        try { draw(); } catch (e) { console.warn('Failed to refresh area chart', e); }
                     }
                 };
             })();
@@ -638,6 +668,45 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sidebarOverlay) {
             sidebarOverlay.addEventListener('click', closeSidebar);
         }
+
+        // Intercept settings form submissions to avoid page position jumps
+        document.querySelectorAll('.settings-form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const mainContent = document.querySelector('.page-content');
+                // capture current scroll position of content area
+                const prevScroll = mainContent ? mainContent.scrollTop : window.scrollY || 0;
+
+                // Simulate a save: if the form has a real handler elsewhere, it can be called here.
+                // For now, provide immediate feedback and preserve scroll.
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const origText = submitBtn.textContent;
+                    submitBtn.textContent = 'Saving...';
+                    submitBtn.disabled = true;
+                    setTimeout(() => {
+                        submitBtn.textContent = origText;
+                        submitBtn.disabled = false;
+                        // small visual confirmation — use an alert or a toast element if present
+                        if (typeof Toast !== 'undefined') {
+                            Toast.show('Settings saved');
+                        } else {
+                            // gentle inline confirmation
+                            const note = document.createElement('div');
+                            note.className = 'inline-save-note';
+                            note.textContent = 'Settings saved';
+                            note.style.marginTop = '8px';
+                            note.style.color = 'var(--text-secondary)';
+                            form.appendChild(note);
+                            setTimeout(() => note.remove(), 2200);
+                        }
+                        // restore scroll position
+                        if (mainContent) mainContent.scrollTop = prevScroll;
+                        else window.scrollTo({ top: prevScroll, left: 0, behavior: 'auto' });
+                    }, 700);
+                }
+            });
+        });
 
         // Close sidebar when navigation link clicked on small screens
         document.querySelectorAll('.sidebar .nav-link').forEach(link => {
