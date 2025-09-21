@@ -476,15 +476,14 @@ html[data-theme='dark'] .nav-icon {
 }
 
 /* Transparent SVG area chart wrapper (replaces canvas for Query Volume) */
+
 .svg-area-wrapper {
     position: relative;
     width: 100%;
-    height: 360px;
-    /* slightly taller by default for area visual */
-    max-height: 60vh;
+    aspect-ratio: 2 / 1;
+    max-width: 100%;
     background: transparent;
-    /* ensure no solid background */
-    padding: 6px 8px;
+    padding: 0 !important;
 }
 
 .area-chart-svg {
@@ -1104,8 +1103,9 @@ html[data-theme='dark'] .sidebar-overlay {
     }
 
     .svg-area-wrapper {
-        height: 44vh;
-        max-height: 48vh;
+        aspect-ratio: 16 / 9;
+        height: auto;
+        max-height: none;
     }
 
     .charts-grid {
@@ -1117,8 +1117,8 @@ html[data-theme='dark'] .sidebar-overlay {
 /* Mobile-specific tweaks to give the SVG more vertical space and match desktop density */
 @media (max-width: 480px) {
     .svg-area-wrapper {
-        height: 54vh;
-        /* taller on narrow mobiles so y-axis spacing looks like desktop */
+        aspect-ratio: 16 / 9;
+        height: auto;
         max-height: none;
         padding-left: 8px;
         padding-right: 8px;
