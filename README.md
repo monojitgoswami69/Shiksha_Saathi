@@ -118,8 +118,8 @@ The following technologies, libraries, and services are required for the MVP imp
 ## MVP Feature Checklist
 
 - [x] Initial project setup (repository, environment, dependencies)
-- [■] Basic UI/UX design for chat widget
-- [■] Sample institutional document preparation
+- [ ] Basic UI/UX design for chat widget
+- [ ] Sample institutional document preparation
 - [ ] Basic conversation in English, Hindi, Bengali
 - [ ] Intent recognition and context maintenance
 - [ ] RAG retrieval from static test files and PDFs
@@ -130,12 +130,6 @@ The following technologies, libraries, and services are required for the MVP imp
 - [ ] Documentation for setup and usage
 - [ ] Deployment instructions (local/cloud)
 - [ ] Feedback collection mechanism for MVP users
-
-```
-[x] : Completed
-[■] : Ongoing
-[ ] : Not started
-```
 
 ## Getting Started
 
