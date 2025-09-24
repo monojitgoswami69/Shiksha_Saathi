@@ -1,0 +1,49 @@
+/* Reusing the theme from your chatbot for consistency */
+
+:root {
+    --primary-color: #059669; /* primary green */
+    --primary-color-700: #047857;
+    --secondary-color: #7c3aed; /* purple for contrast */
+    --accent-color: #c4b5fd; /* soft purple accent */
+    --error-color: #ef4444;
+    --success-color: #16a34a;
+    --warning-color: #f59e0b;
+    --on-primary: #ffffff;
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* Light theme variables */
+html,
+html[data-theme='light'] {
+    --bg-page: #f9fafb; /* Lighter background for the panel */
+    --bg-primary: #ffffff; /* Card backgrounds */
+    --bg-secondary: #f3f4f6; /* Sidebar and secondary elements */
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border-color: #e5e7eb;
+    --shadow-medium: rgba(0, 0, 0, 0.06);
+    --shadow-strong: rgba(0, 0, 0, 0.1);
+    --nav-icon-color: #6b7280;
+    --nav-icon-active-color: var(--primary-color);
+}
+
+/* Dark theme variables */
+html[data-theme='dark'] {
+    --bg-page: #010409;
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --border-color: #374151;
+    --shadow-medium: rgba(0, 0, 0, 0.3);
+    --shadow-strong: rgba(0, 0, 0, 0.5);
+    --nav-icon-color: #9ca3af;
+    --nav-icon-active-color: #ffffff;
+}
+
