@@ -918,600 +918,271 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Simple asset replacement if they fail to load
-        const FAILED_ASSETS = {};
-        function handleAssetError(e) {
-            if (FAILED_ASSETS[e.target.src]) return; // Prevent infinite loops
-            FAILED_ASSETS[e.target.src] = true;
-            console.warn(`Asset failed to load, replacing: ${e.target.src}`);
-            if (e.target.alt.toLowerCase().includes('avatar')) {
-                e.target.outerHTML = `<span class="message-avatar" style="display:grid;place-items:center;background:#764ba2;color:white;font-weight:bold;">SS</span>`;
-            } else {
-                e.target.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple asset replacement if they fail to load
+            const FAILED_ASSETS = {};
+            function handleAssetError(e) {
+                if (FAILED_ASSETS[e.target.src]) return; // Prevent infinite loops
+                FAILED_ASSETS[e.target.src] = true;
+                console.warn(`Asset failed to load, replacing: ${e.target.src}`);
+                if (e.target.alt.toLowerCase().includes('avatar')) {
+                    e.target.outerHTML = `<span class="message-avatar" style="display:grid;place-items:center;background:#764ba2;color:white;font-weight:bold;">SS</span>`;
+                } else {
+                    e.target.style.display = 'none';
+                }
             }
-        }
-        document.addEventListener('error', handleAssetError, true);
-
-
-        function setVhProperty() {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
-
-        setVhProperty();
-        window.addEventListener('resize', setVhProperty);
-        window.addEventListener('orientationchange', () => {
-            setTimeout(setVhProperty, 100);
-        });
-
-        class SikshaSathiChatbot {
-            constructor() {
-                this.backendUrl = "https://shiksha-saathi-backend.vercel.app";
-                this.isWaitingForResponse = false;
-                this.selectedLanguage = 'en';
-                this.welcomeDismissed = false;
-
-                this.languages = [
-                    { code: 'en', name: 'English', native: 'English' },
-                    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
-                    { code: 'bn', name: 'Bengali', native: 'বাংলা' },
-                    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
-                    { code: 'raj', name: 'Rajasthani', native: 'राजस्थानी' },
-                    { code: 'hr', name: 'Haryanvi', native: 'हरियाणवी' }
-                ];
-                
-                this.dom = {
-                    chatMessages: document.getElementById('chatMessages'),
-                    messageInput: document.getElementById('messageInput'),
-                    sendBtn: document.getElementById('sendBtn'),
-                    themeModeBtn: document.getElementById('themeModeBtn'),
-                    languageSelector: document.getElementById('languageSelector'),
-                    languageBtn: document.getElementById('languageBtn'),
-                    languageText: document.getElementById('languageText'),
-                    languageDropdown: document.getElementById('languageDropdown'),
-                    languageSearch: document.getElementById('languageSearch'),
-                    languageOptions: document.getElementById('languageOptions'),
-                    inputPane: document.getElementById('inputPane'),
-                    welcomeScreen: document.getElementById('welcomeScreen')
-                };
-
-                this.init();
+            document.addEventListener('error', handleAssetError, true);
+    
+    
+            function setVhProperty() {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
             }
-
-            init() {
-                this.populateLanguageOptions();
-                this.setupEventListeners();
-                this.initializeTheme();
-                this.updateUILanguage(this.selectedLanguage);
-                this.handleSendButtonState();
-            }
-
-            setupEventListeners() {
-                this.dom.sendBtn.addEventListener('click', () => this.sendMessage());
-                
-                this.dom.messageInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                    if (e.key === 'Escape') {
-                        this.dom.messageInput.textContent = '';
-                        this.handleSendButtonState();
-                    }
-                });
-                
-                this.dom.messageInput.addEventListener('input', () => {
-                    this.handleSendButtonState();
-                    this.handleInputResize();
-                });
-                
-                this.dom.messageInput.addEventListener('focus', () => {
-                    this.closeLanguageDropdown();
+    
+            setVhProperty();
+            window.addEventListener('resize', setVhProperty);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(setVhProperty, 100);
+            });
+    
+            class SikshaSathiChatbot {
+                constructor() {
+                    this.backendUrl = "https://shiksha-saathi-backend.vercel.app";
+                    this.isWaitingForResponse = false;
+                    this.selectedLanguage = 'en';
+                    this.welcomeDismissed = false;
+                    this.sessionId = this.getSessionId(); // Get session ID on initialization
+    
+                    this.languages = [
+                        { code: 'en', name: 'English', native: 'English' },
+                        { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+                        { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+                        { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+                        { code: 'raj', name: 'Rajasthani', native: 'राजस्थानी' },
+                        { code: 'hr', name: 'Haryanvi', native: 'हरियाणवी' }
+                    ];
                     
-                    const scrollAttempts = [150, 300, 500];
-                    scrollAttempts.forEach((delay, index) => {
-                        setTimeout(() => {
-                            this.scrollToBottom();
-                            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && index === scrollAttempts.length - 1) {
+                    this.dom = {
+                        chatMessages: document.getElementById('chatMessages'),
+                        messageInput: document.getElementById('messageInput'),
+                        sendBtn: document.getElementById('sendBtn'),
+                        themeModeBtn: document.getElementById('themeModeBtn'),
+                        languageSelector: document.getElementById('languageSelector'),
+                        languageBtn: document.getElementById('languageBtn'),
+                        languageText: document.getElementById('languageText'),
+                        languageDropdown: document.getElementById('languageDropdown'),
+                        languageSearch: document.getElementById('languageSearch'),
+                        languageOptions: document.getElementById('languageOptions'),
+                        inputPane: document.getElementById('inputPane'),
+                        welcomeScreen: document.getElementById('welcomeScreen')
+                    };
+    
+                    this.init();
+                }
+    
+                init() {
+                    this.populateLanguageOptions();
+                    this.setupEventListeners();
+                    this.initializeTheme();
+                    this.updateUILanguage(this.selectedLanguage);
+                    this.handleSendButtonState();
+                    this.startSession();
+                }
+    
+                async startSession() {
+                    try {
+                        const response = await fetch(`${this.backendUrl}/session/start`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ session_id: this.sessionId })
+                        });
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Failed to start session:', errorText);
+                            this.showNotification('Could not initialize a new chat session.', 'error');
+                            return;
+                        }
+                        const data = await response.json();
+                        console.log('Session status:', data.status);
+                    } catch (error) {
+                        console.error('Error starting session:', error);
+                        this.showNotification('Error connecting to the server.', 'error');
+                    }
+                }
+                
+                async streamBotResponse(userMessage) {
+                    const botMessageEl = this.addMessage('bot', '', { isStreaming: true });
+                    const markdownContent = botMessageEl.querySelector('.markdown-content');
+                    
+                    let fullReply = '';
+                    const charQueue = [];
+                    let rendererInterval = null;
+    
+                    try {
+                        // --- The Renderer ---
+                        // This runs every 10ms to display characters, creating a fast typing effect.
+                        rendererInterval = setInterval(() => {
+                            if (charQueue.length > 0) {
+                                // Pull 1 or 2 characters to control the speed
+                                const charsToAdd = charQueue.splice(0, 2).join('');
+                                fullReply += charsToAdd;
+                                markdownContent.innerHTML = this.renderMarkdown(fullReply);
                                 this.scrollToBottom();
                             }
-                        }, delay);
-                    });
-                });
-
-                let resizeTimeout;
-                const handleViewportChange = () => {
-                    clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(() => {
-                        this.handleViewportResize();
-                    }, 100);
-                };
-
-                if (window.visualViewport) {
-                    window.visualViewport.addEventListener('resize', handleViewportChange);
-                } else {
-                    window.addEventListener('resize', handleViewportChange);
-                }
-
-                this.dom.themeModeBtn.addEventListener('click', () => {
-                    this.dom.themeModeBtn.style.animation = 'wiggle 0.5s ease-in-out';
-                    this.dom.themeModeBtn.addEventListener('animationend', () => {
-                         this.dom.themeModeBtn.style.animation = '';
-                    }, { once: true });
-                    this.toggleTheme();
-                });
-
-                this.setupLanguageSelector();
-                this.setupSuggestionChips();
-                
-                window.addEventListener('error', this.handleGlobalError.bind(this), true);
-                window.addEventListener('unhandledrejection', this.handleGlobalError.bind(this));
-            }
-            
-            setupLanguageSelector() {
-                this.dom.languageBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleLanguageDropdown();
-                });
-                
-                document.addEventListener('click', (e) => {
-                    if (!this.dom.languageSelector.contains(e.target)) {
-                        this.closeLanguageDropdown();
-                    }
-                });
-                
-                this.dom.languageOptions.addEventListener('click', (e) => {
-                    const option = e.target.closest('.language-option');
-                    if (option) {
-                        this.selectLanguage(option.dataset.lang);
-                    }
-                });
-                
-                let searchTimeout;
-                this.dom.languageSearch.addEventListener('input', (e) => {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        this.filterLanguages(e.target.value);
-                    }, 150);
-                });
-            }
-            
-            setupSuggestionChips() {
-                this.dom.welcomeScreen.querySelectorAll('.suggestion-chip').forEach((chip) => {
-                    chip.addEventListener('click', () => {
-                        this.dom.messageInput.textContent = chip.dataset.suggestion;
-                        this.handleSendButtonState();
-                        this.sendMessage();
-                    });
-                });
-            }
-            
-            handleInputResize() {
-                const input = this.dom.messageInput;
-                input.style.height = 'auto';
-                input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-            }
-            
-            handleViewportResize() {
-                const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-                const isKeyboardVisible = currentHeight < window.innerHeight * 0.8;
-                
-                if (isKeyboardVisible) {
-                    document.documentElement.style.setProperty('--keyboard-visible', '1');
-                    setTimeout(() => this.scrollToBottom(), 100);
-                } else {
-                    document.documentElement.style.setProperty('--keyboard-visible', '0');
-                }
-            }
-            
-            handleGlobalError(event) {
-                 if (event.target.tagName === 'IMG') return; // Ignore asset loading errors
-                 console.error('Global error caught:', event);
-                 this.showNotification('Something went wrong. Please try again.', 'error');
-            }
-            
-            sendMessage() {
-                const messageText = this.dom.messageInput.textContent.trim();
-                if (!messageText || this.isWaitingForResponse) return;
-
-                const proceed = () => {
-                    this.isWaitingForResponse = true;
-                    this.handleSendButtonState();
-                    this.addMessage('user', messageText);
-                    this.dom.messageInput.textContent = '';
-                    this.handleInputResize();
-                    this.showTypingIndicator();
-                    this.fetchBotResponseWithRetry(messageText);
-                };
-
-                if (!this.welcomeDismissed) {
-                    this.dismissWelcome().then(proceed);
-                } else {
-                    proceed();
-                }
-            }
-
-            dismissWelcome() {
-                return new Promise(resolve => {
-                    if (this.welcomeDismissed) return resolve();
-                    const el = this.dom.welcomeScreen;
-                    if (!el) { this.welcomeDismissed = true; return resolve(); }
-                    el.style.animation = 'fadeOut 0.3s ease-out forwards';
-                    el.addEventListener('animationend', () => {
-                        // Remove and then ensure container scrolled to bottom before first message animates
-                        el.remove();
-                        this.welcomeDismissed = true;
-                        requestAnimationFrame(() => {
-                            this.scrollToBottom();
-                            // Small delay to let scroll settle
-                            setTimeout(() => resolve(), 30);
+                        }, 10);
+    
+                        // --- The Network Fetcher ---
+                        const response = await fetch(`${this.backendUrl}/chat`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                message: userMessage,
+                                session_id: this.sessionId
+                            })
                         });
-                    }, { once: true });
-                });
-            }
-            
-            async fetchBotResponseWithRetry(userMessage, retryCount = 0) {
-                const maxRetries = 3;
-                const retryDelay = Math.pow(2, retryCount) * 1000;
-                
-                try {
-                    const response = await this.fetchWithTimeout(`${this.backendUrl}/chat`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            message: userMessage, 
-                            language: this.selectedLanguage,
-                            timestamp: Date.now(),
-                            sessionId: this.getSessionId()
-                        })
-                    }, 30000);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const data = await response.json();
-                    // Ensure typing indicator is fully gone before showing reply
-                    await this.hideTypingIndicator();
-                    this.addMessage('bot', data.reply, { timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
-                    
-                    this.isWaitingForResponse = false;
-                    this.handleSendButtonState();
-                    
-                } catch (error) {
-                    console.error(`Attempt ${retryCount + 1} failed:`, error);
-                    
-                    if (retryCount < maxRetries) {
-                        this.updateTypingIndicator(`Retrying... (${retryCount + 1}/${maxRetries})`);
+    
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
                         
-                        setTimeout(() => {
-                            this.fetchBotResponseWithRetry(userMessage, retryCount + 1);
-                        }, retryDelay);
-                    } else {
                         await this.hideTypingIndicator();
-                        this.handleFinalError(error);
+    
+                        const reader = response.body.getReader();
+                        const decoder = new TextDecoder();
+    
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) {
+                                // When the stream is done, wait for the queue to be empty, then stop the renderer.
+                                const finalCheck = setInterval(() => {
+                                    if (charQueue.length === 0) {
+                                        clearInterval(rendererInterval);
+                                        clearInterval(finalCheck);
+                                        this.isWaitingForResponse = false;
+                                        this.handleSendButtonState();
+                                        this.announceToScreenReader(fullReply);
+                                    }
+                                }, 50);
+                                break;
+                            }
+                            const chunk = decoder.decode(value, { stream: true });
+                            // Push all characters from the received chunk into the queue
+                            charQueue.push(...chunk.split(''));
+                        }
+    
+                    } catch (error) {
+                        // Cleanup on error
+                        clearInterval(rendererInterval);
+                        await this.hideTypingIndicator();
+                        const errorMessage = "Sorry, an error occurred. Please try again.";
+                        markdownContent.innerHTML = this.renderMarkdown(errorMessage);
+                        this.isWaitingForResponse = false;
+                        this.handleSendButtonState();
+                        this.announceToScreenReader(errorMessage);
+                        console.error('Streaming failed:', error);
                     }
                 }
+    
+                setupEventListeners() {
+                    this.dom.sendBtn.addEventListener('click', () => this.sendMessage());
+                    this.dom.messageInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } if (e.key === 'Escape') { this.dom.messageInput.textContent = ''; this.handleSendButtonState(); } });
+                    this.dom.messageInput.addEventListener('input', () => { this.handleSendButtonState(); this.handleInputResize(); });
+                    this.dom.messageInput.addEventListener('focus', () => { this.closeLanguageDropdown(); const scrollAttempts = [150, 300, 500]; scrollAttempts.forEach((delay, index) => { setTimeout(() => { this.scrollToBottom(); if (/iPad|iPhone|iPod/.test(navigator.userAgent) && index === scrollAttempts.length - 1) { this.scrollToBottom(); } }, delay); }); });
+                    let resizeTimeout; const handleViewportChange = () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { this.handleViewportResize(); }, 100); }; if (window.visualViewport) { window.visualViewport.addEventListener('resize', handleViewportChange); } else { window.addEventListener('resize', handleViewportChange); }
+                    this.dom.themeModeBtn.addEventListener('click', () => { this.dom.themeModeBtn.style.animation = 'wiggle 0.5s ease-in-out'; this.dom.themeModeBtn.addEventListener('animationend', () => { this.dom.themeModeBtn.style.animation = ''; }, { once: true }); this.toggleTheme(); });
+                    this.setupLanguageSelector(); this.setupSuggestionChips();
+                    window.addEventListener('error', this.handleGlobalError.bind(this), true); window.addEventListener('unhandledrejection', this.handleGlobalError.bind(this));
+                }
+    
+                setupLanguageSelector() {
+                    this.dom.languageBtn.addEventListener('click', (e) => { e.stopPropagation(); this.toggleLanguageDropdown(); });
+                    document.addEventListener('click', (e) => { if (!this.dom.languageSelector.contains(e.target)) { this.closeLanguageDropdown(); } });
+                    this.dom.languageOptions.addEventListener('click', (e) => { const option = e.target.closest('.language-option'); if (option) { this.selectLanguage(option.dataset.lang); } });
+                    let searchTimeout; this.dom.languageSearch.addEventListener('input', (e) => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { this.filterLanguages(e.target.value); }, 150); });
+                }
+    
+                setupSuggestionChips() { this.dom.welcomeScreen.querySelectorAll('.suggestion-chip').forEach((chip) => { chip.addEventListener('click', () => { this.dom.messageInput.textContent = chip.dataset.suggestion; this.handleSendButtonState(); this.sendMessage(); }); }); }
+                handleInputResize() { const input = this.dom.messageInput; input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
+                handleViewportResize() { const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight; const isKeyboardVisible = currentHeight < window.innerHeight * 0.8; if (isKeyboardVisible) { document.documentElement.style.setProperty('--keyboard-visible', '1'); setTimeout(() => this.scrollToBottom(), 100); } else { document.documentElement.style.setProperty('--keyboard-visible', '0'); } }
+                handleGlobalError(event) { if (event.target.tagName === 'IMG') return; console.error('Global error caught:', event); this.showNotification('Something went wrong. Please try again.', 'error'); }
+                
+                sendMessage() { 
+                    const messageText = this.dom.messageInput.textContent.trim(); 
+                    if (!messageText || this.isWaitingForResponse) return; 
+                    const proceed = () => { 
+                        this.isWaitingForResponse = true; 
+                        this.handleSendButtonState(); 
+                        this.addMessage('user', messageText); 
+                        this.dom.messageInput.textContent = ''; 
+                        this.handleInputResize(); 
+                        this.showTypingIndicator(); 
+                        this.streamBotResponse(messageText); 
+                    }; 
+                    if (!this.welcomeDismissed) { 
+                        this.dismissWelcome().then(proceed); 
+                    } else { 
+                        proceed(); 
+                    } 
+                }
+    
+                dismissWelcome() { return new Promise(resolve => { if (this.welcomeDismissed) return resolve(); const el = this.dom.welcomeScreen; if (!el) { this.welcomeDismissed = true; return resolve(); } el.style.animation = 'fadeOut 0.3s ease-out forwards'; el.addEventListener('animationend', () => { el.remove(); this.welcomeDismissed = true; requestAnimationFrame(() => { this.scrollToBottom(); setTimeout(() => resolve(), 30); }); }, { once: true }); }); }
+                
+                getSessionId() { 
+                    let sid = sessionStorage.getItem('shiksha_saathi_sid'); 
+                    if (!sid) { 
+                        sid = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); 
+                        sessionStorage.setItem('shiksha_saathi_sid', sid); 
+                    } 
+                    return sid; 
+                }
+                
+                addMessage(sender, text, options = {}) { 
+                    const messageEl = document.createElement('div'); 
+                    messageEl.className = `message ${sender}`; 
+                    if (options.isError) { messageEl.classList.add('error'); } 
+                    messageEl.innerHTML = `<div class="message-wrapper"><div class="message-content"><div class="markdown-content"></div></div></div>`; 
+                    const markdownContent = messageEl.querySelector('.markdown-content'); 
+                    if (sender === 'bot') { 
+                        if (!options.isStreaming) { 
+                            markdownContent.innerHTML = this.renderMarkdown(text); 
+                        } 
+                    } else { 
+                        markdownContent.textContent = text; 
+                    } 
+                    const container = this.dom.chatMessages; 
+                    const shouldAutoScroll = (container.scrollHeight - (container.scrollTop + container.clientHeight)) < 80; 
+                    this.dom.chatMessages.appendChild(messageEl); 
+                    requestAnimationFrame(() => messageEl.classList.add('message-enter')); 
+                    if (shouldAutoScroll) this.scrollToBottom(); 
+                    if (sender === 'bot' && !options.isStreaming) { 
+                        this.announceToScreenReader(text); 
+                    } 
+                    return messageEl; 
+                }
+    
+                showTypingIndicator() { if (this.dom.chatMessages.querySelector('.typing-indicator-container')) return; const typingEl = document.createElement('div'); typingEl.className = 'message bot typing-indicator-container'; typingEl.innerHTML = `<div class="message-wrapper"><div class="message-content"><div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>`; this.dom.chatMessages.appendChild(typingEl); requestAnimationFrame(() => typingEl.classList.add('message-enter')); this.scrollToBottom(); }
+                hideTypingIndicator() { return new Promise(resolve => { const indicator = this.dom.chatMessages.querySelector('.typing-indicator-container'); if (!indicator) return resolve(); indicator.classList.remove('message-enter'); indicator.classList.add('is-hiding'); const done = () => { indicator.remove(); resolve(); }; indicator.addEventListener('animationend', done, { once: true }); setTimeout(done, 400); }); }
+                scrollToBottom() { const el = this.dom.chatMessages; el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }
+                showNotification(message, type = 'info') { document.querySelectorAll('.notification').forEach(n => n.remove()); const notification = document.createElement('div'); notification.className = `notification notification-${type}`; notification.innerHTML = `<div class="notification-content"><span class="notification-message"></span><button class="notification-close" aria-label="Close notification">&times;</button></div>`; notification.querySelector('.notification-message').textContent = message; document.body.appendChild(notification); requestAnimationFrame(() => { notification.classList.add('is-visible'); }); const hideTimeout = setTimeout(() => this.hideNotification(notification), 5000); notification.querySelector('.notification-close').addEventListener('click', () => { clearTimeout(hideTimeout); this.hideNotification(notification); }); }
+                hideNotification(notification) { notification.classList.remove('is-visible'); notification.addEventListener('transitionend', () => notification.remove(), { once: true }); }
+                announceToScreenReader(message) { let announcement = document.getElementById('sr-announcement'); if (!announcement) { announcement = document.createElement('div'); announcement.id = 'sr-announcement'; announcement.setAttribute('aria-live', 'polite'); announcement.setAttribute('aria-atomic', 'true'); announcement.className = 'sr-only'; document.body.appendChild(announcement); } announcement.textContent = `Bot says: ${message}`; }
+                handleSendButtonState() { const hasText = this.dom.messageInput.textContent.trim().length > 0; this.dom.sendBtn.disabled = !hasText || this.isWaitingForResponse; }
+                renderMarkdown(text) { if (typeof marked !== 'undefined') { marked.setOptions({ breaks: true, gfm: true }); return this.sanitizeHtml(marked.parse(text)); } const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+                sanitizeHtml(html) { const temp = document.createElement('div'); temp.innerHTML = html; temp.querySelectorAll('script, style, link, meta, [onclick], [onerror]').forEach(el => el.remove()); return temp.innerHTML; }
+                initializeTheme() { const savedTheme = localStorage.getItem('chat-theme') || 'dark'; this.setTheme(savedTheme); }
+                setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('chat-theme', theme); }
+                toggleTheme() { const currentTheme = document.documentElement.getAttribute('data-theme'); const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; this.setTheme(newTheme); }
+                populateLanguageOptions() { this.dom.languageOptions.innerHTML = ''; this.languages.forEach(lang => { const li = document.createElement('li'); li.className = 'language-option'; li.dataset.lang = lang.code; li.textContent = lang.native; li.setAttribute('role', 'option'); li.setAttribute('tabindex', '-1'); this.dom.languageOptions.appendChild(li); }); this.updateSelectedLanguageUI(); }
+                toggleLanguageDropdown() { this.dom.languageSelector.classList.toggle('open'); const isOpen = this.dom.languageSelector.classList.contains('open'); this.dom.languageBtn.setAttribute('aria-expanded', isOpen); if (isOpen) this.dom.languageSearch.focus(); }
+                closeLanguageDropdown() { this.dom.languageSelector.classList.remove('open'); this.dom.languageBtn.setAttribute('aria-expanded', 'false'); }
+                selectLanguage(langCode) { this.selectedLanguage = langCode; this.updateSelectedLanguageUI(); this.updateUILanguage(langCode); this.closeLanguageDropdown(); }
+                updateSelectedLanguageUI() { const selectedLang = this.languages.find(l => l.code === this.selectedLanguage); this.dom.languageText.textContent = selectedLang.name; this.dom.languageOptions.querySelectorAll('.language-option').forEach(opt => { opt.setAttribute('aria-selected', opt.dataset.lang === this.selectedLanguage); }); }
+                updateUILanguage(languageCode) { const translations = { en: { headerTitle: "Shiksha Saathi", welcomeTitle: "Welcome to Shiksha Saathi", welcomeDesc: "How may I help you today?", inputPlaceholder: "Ask me anything...", suggestions: { whoAreYou: "Who are you?", whoMaintains: "Who maintains you?", whatCanYouDo: "What can you do?" } }, hi: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं आपकी क्या मदद कर सकता हूँ?", inputPlaceholder: "अपना प्रश्न लिखें...", suggestions: { whoAreYou: "आप कौन हैं?", whoMaintains: "आपको कौन संचालित करता है?", whatCanYouDo: "आप क्या कर सकते हैं?" } }, bn: { headerTitle: "শিক্ষা সাথী", welcomeTitle: "শিক্ষা সাথীতে স্বাগতম", welcomeDesc: "আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?", inputPlaceholder: "আপনার প্রশ্ন লিখুন...", suggestions: { whoAreYou: "আপনি কে?", whoMaintains: "আপনাকে কে রক্ষণাবেক্ষণ করে?", whatCanYouDo: "আপনি কী করতে পারেন?" } }, raj: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपनो स्वागत है", welcomeDesc: "आज मैं थारी के मदद कर सकूँ?", inputPlaceholder: "आपनो सवाल लिखो...", suggestions: { whoAreYou: "थे कुण सो?", whoMaintains: "थमनै कुण चलावै?", whatCanYouDo: "थे के कर सको?" } }, hr: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं तेरी के मदद कर सकूँ?", inputPlaceholder: "अपना सवाल लिखो...", suggestions: { whoAreYou: "तू कौण सै?", whoMaintains: "तेरै न कौण चलावै सै?", whatCanYouDo: "तू के कर सकै सै?" } }, ta: { headerTitle: "ஷிக்ஷா சாத்தி", welcomeTitle: "ஷிக்ஷா சாத்திக்கு வரவேற்கிறோம்", welcomeDesc: "இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?", inputPlaceholder: "உங்கள் கேள்வியை டைப் செய்யுங்கள்...", suggestions: { whoAreYou: "நீங்கள் யார்?", whoMaintains: "உங்களை யார் பராமரிக்கிறார்கள்?", whatCanYouDo: "நீங்கள் என்ன செய்ய முடியும்?" } } }; const t = translations[languageCode] || translations.en; const botNameElement = document.querySelector('.bot-title .bot-name'); const nameLines = botNameElement.querySelectorAll('.bot-name-line'); const titleParts = t.headerTitle.split(' '); if (nameLines.length >= 2 && titleParts.length >= 2) { nameLines[0].textContent = titleParts[0]; nameLines[1].textContent = titleParts.slice(1).join(' '); } else if (nameLines.length > 0) { nameLines[0].textContent = t.headerTitle; if (nameLines.length > 1) nameLines[1].textContent = ''; } else { botNameElement.textContent = t.headerTitle; } document.querySelector('.welcome-message h2').textContent = t.welcomeTitle; document.querySelector('.welcome-message p').textContent = t.welcomeDesc; this.dom.messageInput.dataset.placeholder = t.inputPlaceholder; this.dom.languageSearch.placeholder = "Search languages..."; const suggestions = this.dom.welcomeScreen.querySelectorAll('.suggestion-chip'); const suggestionKeys = Object.keys(t.suggestions); suggestions.forEach((chip, i) => { if (suggestionKeys[i]) { const key = suggestionKeys[i]; chip.textContent = t.suggestions[key]; chip.dataset.suggestion = t.suggestions[key]; } }); }
+                filterLanguages(term) { term = term.toLowerCase(); this.languages.forEach(lang => { const option = this.dom.languageOptions.querySelector(`[data-lang="${lang.code}"]`); const isVisible = lang.name.toLowerCase().includes(term) || lang.native.toLowerCase().includes(term); option.style.display = isVisible ? 'block' : 'none'; }); }
             }
             
-            async fetchWithTimeout(url, options, timeout) {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), timeout);
-                
-                try {
-                    const response = await fetch(url, {
-                        ...options,
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-                    return response;
-                } catch (error) {
-                    clearTimeout(timeoutId);
-                    throw error;
-                }
-            }
-            
-            handleFinalError(error) {
-                let errorMessage = "I'm having trouble connecting right now. ";
-                
-                if (error.name === 'AbortError') {
-                    errorMessage += "The request timed out. Please try again.";
-                } else if (!navigator.onLine) {
-                    errorMessage += "Please check your internet connection.";
-                } else if (error.message.includes('500')) {
-                    errorMessage += "Our servers are having issues. Please try again in a moment.";
-                } else {
-                    errorMessage += "Please try again in a moment.";
-                }
-                
-                this.addMessage('bot', errorMessage, { 
-                    isError: true,
-                    timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                });
-                
-                this.isWaitingForResponse = false;
-                this.handleSendButtonState();
-            }
-            
-            getSessionId() {
-                if (!this.sessionId) {
-                    this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                }
-                return this.sessionId;
-            }
-
-            addMessage(sender, text, options = {}) {
-                const messageEl = document.createElement('div');
-                messageEl.className = `message ${sender}`;
-                
-                if (options.isError) {
-                    messageEl.classList.add('error');
-                }
-
-                messageEl.innerHTML = `
-                    <div class="message-wrapper">
-                        <div class="message-content">
-                            <div class="markdown-content"></div>
-                        </div>
-                    </div>
-                `;
-                
-                const markdownContent = messageEl.querySelector('.markdown-content');
-                const contentWrapper = messageEl.querySelector('.message-content');
-
-                if (sender === 'bot') {
-                    markdownContent.innerHTML = this.renderMarkdown(text);
-                } else {
-                    markdownContent.textContent = text;
-                }
-                
-                if (options.timestamp) {
-                    const timestampEl = document.createElement('div');
-                    timestampEl.className = 'message-timestamp';
-                    timestampEl.textContent = options.timestamp;
-                    contentWrapper.appendChild(timestampEl);
-                }
-                
-                const container = this.dom.chatMessages;
-                const shouldAutoScroll = (container.scrollHeight - (container.scrollTop + container.clientHeight)) < 80;
-                this.dom.chatMessages.appendChild(messageEl);
-                requestAnimationFrame(() => messageEl.classList.add('message-enter'));
-                if (shouldAutoScroll) this.scrollToBottom();
-                
-                if (sender === 'bot') {
-                    this.announceToScreenReader(text);
-                }
-            }
-
-            showTypingIndicator() {
-                // Avoid duplicating indicator
-                if (this.dom.chatMessages.querySelector('.typing-indicator-container')) return;
-                const typingEl = document.createElement('div');
-                typingEl.className = 'message bot typing-indicator-container';
-                typingEl.innerHTML = `
-                    <div class="message-wrapper">
-                        <div class="message-content">
-                            <div class="typing-indicator">
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                            </div>
-                        </div>
-                    </div>`;
-                this.dom.chatMessages.appendChild(typingEl);
-                requestAnimationFrame(() => typingEl.classList.add('message-enter'));
-                this.scrollToBottom();
-            }
-            
-            updateTypingIndicator(message) {
-                // No longer needed since we removed the text element
-                // Just keep the dots animation
-            }
-
-            hideTypingIndicator() {
-                return new Promise(resolve => {
-                    const indicator = this.dom.chatMessages.querySelector('.typing-indicator-container');
-                    if (!indicator) return resolve();
-                    // Remove slide-in animation class to allow fadeOut to apply cleanly
-                    indicator.classList.remove('message-enter');
-                    // Use fade out class
-                    indicator.classList.add('is-hiding');
-                    const done = () => { indicator.remove(); resolve(); };
-                    indicator.addEventListener('animationend', done, { once: true });
-                    // Fallback in case animationend doesn't fire
-                    setTimeout(done, 400);
-                });
-            }
-
-            scrollToBottom() {
-                const el = this.dom.chatMessages;
-                el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-            }
-            
-            showNotification(message, type = 'info') {
-                document.querySelectorAll('.notification').forEach(n => n.remove());
-                
-                const notification = document.createElement('div');
-                notification.className = `notification notification-${type}`;
-                notification.innerHTML = `
-                    <div class="notification-content">
-                        <span class="notification-message"></span>
-                        <button class="notification-close" aria-label="Close notification">&times;</button>
-                    </div>
-                `;
-                notification.querySelector('.notification-message').textContent = message;
-
-                document.body.appendChild(notification);
-                
-                requestAnimationFrame(() => {
-                    notification.classList.add('is-visible');
-                });
-                
-                const hideTimeout = setTimeout(() => {
-                    this.hideNotification(notification);
-}, 5000);
-                
-                notification.querySelector('.notification-close').addEventListener('click', () => {
-                    clearTimeout(hideTimeout);
-                    this.hideNotification(notification);
-                });
-            }
-            
-            hideNotification(notification) {
-                notification.classList.remove('is-visible');
-                notification.addEventListener('transitionend', () => {
-                    notification.remove();
-                }, { once: true });
-            }
-            
-            announceToScreenReader(message) {
-                let announcement = document.getElementById('sr-announcement');
-                if (!announcement) {
-                    announcement = document.createElement('div');
-                    announcement.id = 'sr-announcement';
-                    announcement.setAttribute('aria-live', 'polite');
-                    announcement.setAttribute('aria-atomic', 'true');
-                    announcement.className = 'sr-only';
-                    document.body.appendChild(announcement);
-                }
-                announcement.textContent = `Bot says: ${message}`;
-            }
-
-            handleSendButtonState() {
-                const hasText = this.dom.messageInput.textContent.trim().length > 0;
-                this.dom.sendBtn.disabled = !hasText || this.isWaitingForResponse;
-            }
-
-            renderMarkdown(text) {
-                if (typeof marked !== 'undefined') {
-                    marked.setOptions({ breaks: true, gfm: true });
-                    return this.sanitizeHtml(marked.parse(text));
-                }
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-            
-            sanitizeHtml(html) {
-                const temp = document.createElement('div');
-                temp.innerHTML = html;
-                temp.querySelectorAll('script, style, link, meta, [onclick], [onerror]').forEach(el => el.remove());
-                return temp.innerHTML;
-            }
-
-            initializeTheme() {
-                const savedTheme = localStorage.getItem('chat-theme') || 'dark';
-                this.setTheme(savedTheme);
-            }
-
-            setTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('chat-theme', theme);
-            }
-
-            toggleTheme() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                this.setTheme(newTheme);
-            }
-
-            populateLanguageOptions() {
-                this.dom.languageOptions.innerHTML = '';
-                this.languages.forEach(lang => {
-                    const li = document.createElement('li');
-                    li.className = 'language-option';
-                    li.dataset.lang = lang.code;
-                    li.textContent = lang.native;
-                    li.setAttribute('role', 'option');
-                    li.setAttribute('tabindex', '-1');
-                    this.dom.languageOptions.appendChild(li);
-                });
-                this.updateSelectedLanguageUI();
-            }
-
-            toggleLanguageDropdown() {
-                this.dom.languageSelector.classList.toggle('open');
-                const isOpen = this.dom.languageSelector.classList.contains('open');
-                this.dom.languageBtn.setAttribute('aria-expanded', isOpen);
-                if (isOpen) this.dom.languageSearch.focus();
-            }
-
-            closeLanguageDropdown() {
-                this.dom.languageSelector.classList.remove('open');
-                this.dom.languageBtn.setAttribute('aria-expanded', 'false');
-            }
-
-            selectLanguage(langCode) {
-                this.selectedLanguage = langCode;
-                this.updateSelectedLanguageUI();
-                this.updateUILanguage(langCode);
-                this.closeLanguageDropdown();
-            }
-
-            updateSelectedLanguageUI() {
-                const selectedLang = this.languages.find(l => l.code === this.selectedLanguage);
-                this.dom.languageText.textContent = selectedLang.name;
-                
-                this.dom.languageOptions.querySelectorAll('.language-option').forEach(opt => {
-                    opt.setAttribute('aria-selected', opt.dataset.lang === this.selectedLanguage);
-                });
-            }
-            
-            updateUILanguage(languageCode) {
-                const translations = {
-                    en: { headerTitle: "Shiksha Saathi", welcomeTitle: "Welcome to Shiksha Saathi", welcomeDesc: "How may I help you today?", inputPlaceholder: "Type your query...", suggestions: { whoAreYou: "Who are you?", whoMaintains: "Who maintains you?", whatCanYouDo: "What can you do?" } },
-                    hi: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं आपकी क्या मदद कर सकता हूँ?", inputPlaceholder: "अपना प्रश्न लिखें...", suggestions: { whoAreYou: "आप कौन हैं?", whoMaintains: "आपको कौन संचालित करता है?", whatCanYouDo: "आप क्या कर सकते हैं?" } },
-                    bn: { headerTitle: "শিক্ষা সাথী", welcomeTitle: "শিক্ষা সাথীতে স্বাগতম", welcomeDesc: "আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?", inputPlaceholder: "আপনার প্রশ্ন লিখুন...", suggestions: { whoAreYou: "আপনি কে?", whoMaintains: "আপনাকে কে রক্ষণাবেক্ষণ করে?", whatCanYouDo: "আপনি কী করতে পারেন?" } },
-                    raj: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपनो स्वागत है", welcomeDesc: "आज मैं थारी के मदद कर सकूँ?", inputPlaceholder: "आपनो सवाल लिखो...", suggestions: { whoAreYou: "थे कुण सो?", whoMaintains: "थमनै कुण चलावै?", whatCanYouDo: "थे के कर सको?" } },
-                    hr: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं तेरी के मदद कर सकूँ?", inputPlaceholder: "अपना सवाल लिखो...", suggestions: { whoAreYou: "तू कौण सै?", whoMaintains: "तेरै न कौण चलावै सै?", whatCanYouDo: "तू के कर सकै सै?" } },
-                    ta: { headerTitle: "ஷிக்ஷா சாத்தி", welcomeTitle: "ஷிக்ஷா சாத்திக்கு வரவேற்கிறோம்", welcomeDesc: "இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?", inputPlaceholder: "உங்கள் கேள்வியை டைப் செய்யுங்கள்...", suggestions: { whoAreYou: "நீங்கள் யார்?", whoMaintains: "உங்களை யார் பராமரிக்கிறார்கள்?", whatCanYouDo: "நீங்கள் என்ன செய்ய முடியும்?" } }
-                };
-                
-                const t = translations[languageCode] || translations.en;
-                
-                const botNameElement = document.querySelector('.bot-title .bot-name');
-                const nameLines = botNameElement.querySelectorAll('.bot-name-line');
-                const titleParts = t.headerTitle.split(' ');
-                
-                if (nameLines.length >= 2 && titleParts.length >= 2) {
-                    nameLines[0].textContent = titleParts[0];
-                    nameLines[1].textContent = titleParts.slice(1).join(' ');
-                } else if (nameLines.length > 0) {
-                    nameLines[0].textContent = t.headerTitle;
-                    if(nameLines.length > 1) nameLines[1].textContent = '';
-                } else {
-                    botNameElement.textContent = t.headerTitle;
-                }
-
-                document.querySelector('.welcome-message h2').textContent = t.welcomeTitle;
-                document.querySelector('.welcome-message p').textContent = t.welcomeDesc;
-                this.dom.messageInput.dataset.placeholder = t.inputPlaceholder;
-                this.dom.languageSearch.placeholder = "Search languages...";
-                
-                const suggestions = this.dom.welcomeScreen.querySelectorAll('.suggestion-chip');
-                const suggestionKeys = Object.keys(t.suggestions);
-                suggestions.forEach((chip, i) => {
-                    if (suggestionKeys[i]) {
-                        const key = suggestionKeys[i];
-                        chip.textContent = t.suggestions[key];
-                        chip.dataset.suggestion = t.suggestions[key];
-                    }
-                });
-            }
-
-            filterLanguages(term) {
-                term = term.toLowerCase();
-                this.languages.forEach(lang => {
-                    const option = this.dom.languageOptions.querySelector(`[data-lang="${lang.code}"]`);
-                    const isVisible = lang.name.toLowerCase().includes(term) || lang.native.toLowerCase().includes(term);
-                    option.style.display = isVisible ? 'block' : 'none';
-                });
-            }
-        }
-        
-        new SikshaSathiChatbot();
-    });
+            new SikshaSathiChatbot();
+        });
     </script>
 </body>
 </html>
