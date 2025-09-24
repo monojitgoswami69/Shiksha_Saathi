@@ -15,16 +15,16 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎓</text></svg>">
 
     <style>
-        /* Modern CSS Reset */
+        /* CSS Reset */
         *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Root Variables for Theming and Layout */
+        /* CSS Custom Properties */
         :root {
-            /* Enhanced Color Palette */
+            /* Color Palette */
             --primary-color-start: #667eea;
             --primary-color-end: #764ba2;
             --accent-color: #00dd88;
@@ -33,7 +33,7 @@
             --error-color: #ef4444;
             --on-primary: #ffffff;
             
-            /* Typography Scale */
+            /* Typography */
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-mono: 'Fira Code', monospace;
             --font-size-xs: 0.75rem;
@@ -43,7 +43,7 @@
             --font-size-xl: 1.25rem;
             --font-size-2xl: 1.5rem;
             
-            /* Spacing Scale */
+            /* Spacing */
             --space-1: 0.25rem;
             --space-2: 0.5rem;
             --space-3: 0.75rem;
@@ -52,7 +52,7 @@
             --space-6: 1.5rem;
             --space-8: 2rem;
             
-            /* Border Radius Scale */
+            /* Border Radius */
             --radius-xs: 4px;
             --radius-sm: 8px;
             --radius-md: 12px;
@@ -61,26 +61,25 @@
             --radius-2xl: 24px;
             --radius-full: 9999px;
             
-            /* Shadow Scale */
+            /* Shadows */
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
             
-            /* Transition Presets */
+            /* Transitions */
             --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             
-            /* Layout Constants */
-            --header-height: 64px; /* Adjusted for mobile */
+            /* Layout */
+            --header-height: 64px;
             --input-height: 56px;
         }
 
-        /* Enhanced Light Theme */
+        /* Light Theme */
         html[data-theme='light'] {
-            --bg-page: #f1f5f9; /* Changed for desktop view contrast */
+            --bg-page: #f1f5f9;
             --bg-main: #ffffff;
             --bg-secondary: #f8fafc;
             --bg-tertiary: #f1f5f9;
@@ -97,7 +96,7 @@
             --overlay-bg: rgba(15, 23, 42, 0.1);
         }
 
-        /* Enhanced Dark Theme */
+        /* Dark Theme */
         html[data-theme='dark'] {
             --bg-page: #0f172a;
             --bg-main: #1e293b;
@@ -116,7 +115,7 @@
             --overlay-bg: rgba(0, 0, 0, 0.3);
         }
 
-        /* Base Body Styles */
+        /* Base Styles */
         html, body {
             height: 100%;
             overflow: hidden;
@@ -128,19 +127,18 @@
             -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Full page layout wrapper */
+        /* Layout Wrapper */
         .chat-layout-wrapper {
             width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            /* Enhanced mobile support */
             height: 100dvh;
             height: calc(var(--vh, 1vh) * 100);
-            padding: 0; /* No padding on mobile */
+            padding: 0;
         }
         
-        /* Enhanced Chatbot Container */
+        /* Chatbot Container */
         .chatbot-container {
             width: 100%;
             height: 100%;
@@ -153,13 +151,13 @@
             overflow: hidden;
         }
 
-        /* Enhanced Header */
+        /* Header */
         .chatbot-header {
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: var(--space-2) var(--space-4); /* Mobile padding */
+            padding: var(--space-2) var(--space-4);
             min-height: var(--header-height);
             background: var(--bg-main);
             border-bottom: 1px solid var(--border-color);
@@ -176,7 +174,7 @@
         }
 
         .bot-avatar {
-            width: 40px; /* Mobile size */
+            width: 40px;
             height: 40px;
             border-radius: var(--radius-full);
             object-fit: cover;
@@ -194,8 +192,14 @@
         
         .bot-name { 
             font-weight: 700; 
-            font-size: var(--font-size-lg); /* Use larger font size as base */
+            font-size: var(--font-size-lg);
             color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        
+        .bot-name-line {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -208,12 +212,12 @@
             flex-shrink: 0;
         }
 
-        /* Enhanced Icon Button */
+        /* Icon Button */
         .icon-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px; /* Mobile size */
+            width: 40px;
             height: 40px;
             border-radius: var(--radius-md);
             background: transparent;
@@ -224,6 +228,7 @@
             position: relative;
             overflow: hidden;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .icon-btn:hover:not(:disabled) {
@@ -264,7 +269,6 @@
         html[data-theme='dark'] .theme-btn .sun-icon { transform: translateY(-150%); opacity: 0; }
         html[data-theme='dark'] .theme-btn .moon-icon { transform: translateY(0); opacity: 1; }
 
-        
         /* Language Selector */
         .language-selector { position: relative; }
         .language-btn { width: auto; padding: 0 12px; gap: 6px; }
@@ -285,7 +289,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px) scale(0.95);
-            transition: all var(--transition-fast);
+            transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
         }
         .language-selector.open .language-dropdown {
             opacity: 1;
@@ -328,7 +332,7 @@
         .chat-messages {
             flex-grow: 1;
             overflow-y: auto;
-            padding: var(--space-4); /* Mobile padding */
+            padding: var(--space-4);
             display: flex;
             flex-direction: column;
             min-height: 0;
@@ -350,7 +354,6 @@
             padding: 40px 20px;
             flex-grow: 1;
             animation: fadeIn 0.8s var(--transition-slow) forwards;
-            /* 🪄 CHANGE: Pushes the content up from the vertical center */
             padding-bottom: 15vh; 
         }
 
@@ -360,25 +363,29 @@
             border-radius: var(--radius-full);
             object-fit: cover;
             margin-bottom: 20px;
-            animation: popIn 0.8s 0.2s var(--transition-slow) forwards;
+            animation: popIn 0.8s 0.2s ease-out forwards;
             transform: scale(0);
         }
+        
         .welcome-message h2 {
             font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 8px;
-            animation: slideUp 0.6s 0.4s var(--transition-slow) forwards;
+            animation: slideUp 0.6s 0.4s ease-out forwards;
         }
+        
         .welcome-message p {
             color: var(--text-secondary);
             margin-bottom: 24px;
             max-width: 300px;
-            animation: slideUp 0.6s 0.5s var(--transition-slow) forwards;
+            animation: slideUp 0.6s 0.5s ease-out forwards;
         }
         
+        /* Welcome Suggestions */
         .welcome-suggestions {
             display: flex;
-            flex-direction: column; /* Stack vertically on mobile */
+            flex-direction: row;
+            flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
             width: 100%;
@@ -386,6 +393,8 @@
         }
 
         .suggestion-chip {
+            width: auto;
+            max-width: 280px;
             padding: 10px 18px;
             border-radius: var(--radius-full);
             background: transparent;
@@ -395,12 +404,12 @@
             font-weight: 500;
             cursor: pointer;
             transition: all var(--transition-fast);
-            animation: popIn 0.5s var(--transition-slow) forwards;
+            animation: popIn 0.5s ease-out forwards;
             transform: scale(0);
             opacity: 0;
-            width: 90%;
-            max-width: 280px;
+            -webkit-tap-highlight-color: transparent;
         }
+        
         .suggestion-chip:nth-child(1) { animation-delay: 0.7s; }
         .suggestion-chip:nth-child(2) { animation-delay: 0.8s; }
         .suggestion-chip:nth-child(3) { animation-delay: 0.9s; }
@@ -412,54 +421,57 @@
             color: var(--text-primary);
             background: var(--bg-secondary);
         }
-
-        /* Enhanced Message Bubbles */
+        
+        @media (max-width: 480px) {
+            .welcome-suggestions {
+                flex-direction: column;
+            }
+            .suggestion-chip {
+                width: 90%;
+            }
+        }
+        
+        /* Message Styles */
         .message {
             display: flex;
             gap: var(--space-2);
             margin-bottom: var(--space-2);
             max-width: 100%;
-            animation: messageSlideIn 0.4s var(--transition-bounce) forwards;
             opacity: 0;
-            transform: translateY(20px) scale(0.95);
+            transform: translateY(20px);
+        }
+        /* Slide-in animation trigger class */
+        .message-enter {
+            animation: messageSlideIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         
         .message:last-child {
             margin-bottom: 0;
         }
-        
-        .message-wrapper {
-            max-width: 85%; /* Mobile max-width */
-            width: fit-content;
-            position: relative;
-        }
-        
-        .message.bot .message-wrapper {
-            width: 100%;
-            max-width: 100%;
-        }
 
         .message.user {
-            margin-left: auto;
             flex-direction: row-reverse;
         }
         
+        .message.bot .message-wrapper {
+            max-width: 100%;
+        }
+
         .message.user .message-wrapper {
             margin-left: auto;
+            max-width: 85%;
+            width: auto;
         }
         
         .message-content {
-            padding: var(--space-3) var(--space-4);
-            border-radius: var(--radius-xl);
             line-height: 1.6;
-            word-wrap: break-word;
             overflow-wrap: break-word;
             font-size: var(--font-size-base);
             position: relative;
-            box-shadow: var(--shadow-sm);
-            transition: all var(--transition-base);
-            width: 100%;
             box-sizing: border-box;
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
         }
         
         .message.bot .message-content {
@@ -469,16 +481,15 @@
             border: none;
             box-shadow: none;
             padding: 0;
-            font-size: var(--font-size-base);
             line-height: 1.7;
         }
 
         .message.user .message-content {
-            background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
-            color: var(--on-primary);
+            display: inline-block;
             text-align: left;
             word-break: normal;
-            white-space: normal;
+            background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
+            color: var(--on-primary);
         }
         
         .message-avatar {
@@ -501,8 +512,8 @@
         .message.bot .message-timestamp {
             text-align: left;
         }
-
-        /* Markdown Content Styling */
+        
+        /* Markdown Content */
         .markdown-content p { margin-bottom: 1em; }
         .markdown-content p:last-child { margin-bottom: 0; }
         .markdown-content a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
@@ -528,8 +539,11 @@
         }
         .markdown-content pre code { background: none; padding: 0; border: none; }
 
-
-        /* Enhanced Typing Indicator */
+        /* Typing Indicator */
+        .typing-indicator-container.is-hiding {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+        
         .typing-indicator { 
             display: flex; 
             align-items: center; 
@@ -552,7 +566,6 @@
             margin-left: var(--space-2);
         }
         
-        /* Error message styling */
         .message.error .message-content {
             background: color-mix(in srgb, var(--error-color) 10%, var(--bg-secondary));
             border: 1px solid color-mix(in srgb, var(--error-color) 30%, transparent);
@@ -571,9 +584,17 @@
             box-shadow: var(--shadow-xl);
             z-index: 1000;
             opacity: 0;
-            transform: translateY(-100%);
+            transform: translateY(-20px);
+            visibility: hidden;
+            transition: all 0.3s ease-out;
         }
         
+        .notification.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
         .notification-content {
             display: flex;
             align-items: flex-start;
@@ -614,10 +635,10 @@
         .notification-error { border-left: 4px solid var(--error-color); }
         .notification-success { border-left: 4px solid var(--success-color); }
 
-        /* Enhanced Input Pane */
+        /* Input Pane */
         .input-pane {
             flex-shrink: 0;
-            padding: var(--space-4); /* Mobile padding */
+            padding: var(--space-4);
             padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
             background: var(--bg-main);
             border-top: 1px solid var(--border-color);
@@ -677,7 +698,7 @@
             pointer-events: none;
         }
 
-        /* Enhanced Send Button */
+        /* Send Button */
         .send-btn {
             width: 44px;
             height: 44px;
@@ -693,6 +714,7 @@
             opacity: 0.5;
             box-shadow: var(--shadow-sm);
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .send-btn img, .send-btn svg {
             width: 20px;
@@ -721,69 +743,6 @@
             opacity: 0.3;
         }
 
-        /* Enhanced Animation Keyframes */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes messageSlideIn {
-            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.8); }
-            50% { transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-3deg); }
-            75% { transform: rotate(3deg); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        @keyframes typing-bounce {
-            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-            40% { transform: scale(1.2); opacity: 1; }
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes shimmer {
-            0% { background-position: -200px 0; }
-            100% { background-position: calc(200px + 100%) 0; }
-        }
-        @keyframes bounce {
-            0%, 20%, 53%, 80%, 100% { transform: translate3d(0, 0, 0); }
-            40%, 43% { transform: translate3d(0, -8px, 0); }
-            70% { transform: translate3d(0, -4px, 0); }
-            90% { transform: translate3d(0, -2px, 0); }
-        }
-
-        /* Loading States */
-        .loading-skeleton {
-            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-hover) 50%, var(--bg-secondary) 75%);
-            background-size: 200px 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: var(--radius-md);
-        }
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border-color);
-            border-top: 2px solid var(--primary-color-start);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
         /* Accessibility */
         .sr-only {
             position: absolute;
@@ -797,7 +756,7 @@
             border: 0;
         }
         
-        /* Landscape mobile orientation */
+        /* Responsive Design */
         @media (max-height: 500px) and (orientation: landscape) {
             .welcome-message { padding: 10px 16px; padding-bottom: 5vh;}
             .welcome-avatar { width: 50px; height: 50px; margin-bottom: 10px; }
@@ -806,16 +765,14 @@
             .message-input { max-height: 80px; }
         }
 
-        /* Styles for Tablet & Desktop (screens wider than 768px) */
         @media (min-width: 769px) {
             :root {
-                --header-height: 72px; /* Taller header for desktop */
+                --header-height: 72px;
             }
 
             html[data-theme='light'] { --bg-page: #e2e8f0; }
             html[data-theme='dark'] { --bg-page: #020617; }
             
-            /* Center the main container on the page */
             .chat-layout-wrapper {
                 padding: var(--space-6);
                 align-items: center;
@@ -823,14 +780,13 @@
             }
 
             .chatbot-container {
-                max-width: 960px; /* Max width for the chat UI */
+                max-width: 960px;
                 height: 100%;
                 border-radius: var(--radius-2xl);
                 box-shadow: var(--shadow-xl);
                 border: 1px solid var(--border-color);
             }
             
-            /* Increase padding and font sizes for better readability */
             .chatbot-header {
                 padding: var(--space-4) var(--space-6);
             }
@@ -846,24 +802,60 @@
                 height: 48px;
             }
 
-            /* Adjust message bubble widths for desktop */
-            .message-wrapper {
-                max-width: 70%;
-            }
             .message.user .message-wrapper {
                  max-width: 60%;
             }
-            
-            .welcome-suggestions {
-                flex-direction: row; /* Horizontal suggestions on desktop */
-            }
+        }
+        
+        /* Animation Keyframes */
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
 
-            .suggestion-chip {
-                width: auto;
-                max-width: none;
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        @keyframes messageSlideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
             }
         }
         
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            80% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+        
+        @keyframes typing-bounce {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
@@ -871,15 +863,18 @@
         <div class="chatbot-container" id="chatbotContainer">
             <header class="chatbot-header">
                 <div class="bot-profile">
-                    <img src="assets/avatar.png" alt="Bot Avatar" class="bot-avatar">
+                    <img src="assets/avatar.png" alt="Bot Avatar" class="bot-avatar" onerror="this.style.display='none'">
                     <div class="bot-title">
-                        <span class="bot-name">Shiksha Saathi</span>
+                        <span class="bot-name">
+                            <span class="bot-name-line">Shiksha</span>
+                            <span class="bot-name-line">Saathi</span>
+                        </span>
                     </div>
                 </div>
                 <div class="header-controls">
                     <div class="language-selector" id="languageSelector">
                         <button class="icon-btn language-btn" id="languageBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageDropdown">
-                            <img src="assets/language.svg" alt="Language" class="icon">
+                            <img src="assets/language.svg" alt="Language" class="icon" onerror="this.style.display='none'">
                             <span id="languageText">English</span>
                             <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
                         </button>
@@ -892,15 +887,15 @@
                     </div>
                     <button class="icon-btn theme-btn" id="themeModeBtn" title="Toggle theme">
                         <span class="sr-only">Toggle theme</span>
-                        <img src="assets/sun.png" alt="Light Mode" class="icon sun-icon">
-                        <img src="assets/moon.png" alt="Dark Mode" class="icon moon-icon">
+                        <img src="assets/sun.png" alt="Light Mode" class="icon sun-icon" onerror="this.style.display='none'">
+                        <img src="assets/moon.png" alt="Dark Mode" class="icon moon-icon" onerror="this.style.display='none'">
                     </button>
                 </div>
             </header>
 
             <main class="chat-messages" id="chatMessages">
                 <div class="welcome-message" id="welcomeScreen">
-                    <img src="assets/avatar.png" alt="Shiksha Saathi Avatar" class="welcome-avatar">
+                    <img src="assets/avatar.png" alt="Shiksha Saathi Avatar" class="welcome-avatar" onerror="this.style.display='none'">
                     <h2>Welcome to Shiksha Saathi</h2>
                     <p>How may I help you today?</p>
                     <div class="welcome-suggestions">
@@ -915,7 +910,7 @@
                 <div class="input-wrapper">
                     <div class="message-input" id="messageInput" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Ask me anything..."></div>
                     <button id="sendBtn" class="send-btn" aria-label="Send message" disabled>
-                         <img src="assets/send_button.svg" alt="Send icon">
+                         <img src="assets/send_button.svg" alt="Send icon" onerror="this.style.display='none'">
                     </button>
                 </div>
             </footer>
@@ -924,17 +919,30 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Set CSS custom property for viewport height (fallback for older browsers)
+        // Simple asset replacement if they fail to load
+        const FAILED_ASSETS = {};
+        function handleAssetError(e) {
+            if (FAILED_ASSETS[e.target.src]) return; // Prevent infinite loops
+            FAILED_ASSETS[e.target.src] = true;
+            console.warn(`Asset failed to load, replacing: ${e.target.src}`);
+            if (e.target.alt.toLowerCase().includes('avatar')) {
+                e.target.outerHTML = `<span class="message-avatar" style="display:grid;place-items:center;background:#764ba2;color:white;font-weight:bold;">SS</span>`;
+            } else {
+                e.target.style.display = 'none';
+            }
+        }
+        document.addEventListener('error', handleAssetError, true);
+
+
         function setVhProperty() {
             const vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         }
 
-        // Initial set and update on resize/orientation change
         setVhProperty();
         window.addEventListener('resize', setVhProperty);
         window.addEventListener('orientationchange', () => {
-            setTimeout(setVhProperty, 100); // Small delay for orientation change
+            setTimeout(setVhProperty, 100);
         });
 
         class SikshaSathiChatbot {
@@ -944,7 +952,6 @@
                 this.selectedLanguage = 'en';
                 this.welcomeDismissed = false;
 
-                // Language data
                 this.languages = [
                     { code: 'en', name: 'English', native: 'English' },
                     { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
@@ -1029,16 +1036,16 @@
 
                 this.dom.themeModeBtn.addEventListener('click', () => {
                     this.dom.themeModeBtn.style.animation = 'wiggle 0.5s ease-in-out';
-                    setTimeout(() => {
-                        this.dom.themeModeBtn.style.animation = '';
-                    }, 500);
+                    this.dom.themeModeBtn.addEventListener('animationend', () => {
+                         this.dom.themeModeBtn.style.animation = '';
+                    }, { once: true });
                     this.toggleTheme();
                 });
 
                 this.setupLanguageSelector();
                 this.setupSuggestionChips();
                 
-                window.addEventListener('error', this.handleGlobalError.bind(this));
+                window.addEventListener('error', this.handleGlobalError.bind(this), true);
                 window.addEventListener('unhandledrejection', this.handleGlobalError.bind(this));
             }
             
@@ -1057,11 +1064,7 @@
                 this.dom.languageOptions.addEventListener('click', (e) => {
                     const option = e.target.closest('.language-option');
                     if (option) {
-                        option.style.animation = 'bounce 0.5s ease-out';
-                        setTimeout(() => {
-                            this.selectLanguage(option.dataset.lang);
-                            option.style.animation = '';
-                        }, 200);
+                        this.selectLanguage(option.dataset.lang);
                     }
                 });
                 
@@ -1075,21 +1078,12 @@
             }
             
             setupSuggestionChips() {
-                this.dom.welcomeScreen.querySelectorAll('.suggestion-chip').forEach((chip, index) => {
+                this.dom.welcomeScreen.querySelectorAll('.suggestion-chip').forEach((chip) => {
                     chip.addEventListener('click', () => {
-                        chip.style.animation = 'popIn 0.3s ease-out';
-                        chip.style.transform = 'scale(0.95)';
-                        
-                        setTimeout(() => {
-                            this.dom.messageInput.textContent = chip.dataset.suggestion;
-                            this.handleSendButtonState();
-                            this.sendMessage();
-                            chip.style.animation = '';
-                            chip.style.transform = '';
-                        }, 150);
+                        this.dom.messageInput.textContent = chip.dataset.suggestion;
+                        this.handleSendButtonState();
+                        this.sendMessage();
                     });
-                    
-                    chip.style.animationDelay = `${0.7 + (index * 0.1)}s`;
                 });
             }
             
@@ -1112,32 +1106,49 @@
             }
             
             handleGlobalError(event) {
-                console.error('Global error caught:', event);
-                this.showNotification('Something went wrong. Please try again.', 'error');
+                 if (event.target.tagName === 'IMG') return; // Ignore asset loading errors
+                 console.error('Global error caught:', event);
+                 this.showNotification('Something went wrong. Please try again.', 'error');
             }
             
             sendMessage() {
                 const messageText = this.dom.messageInput.textContent.trim();
                 if (!messageText || this.isWaitingForResponse) return;
 
-                if (!this.welcomeDismissed) {
-                    this.dom.welcomeScreen.style.animation = 'slideUp 0.3s ease-out forwards';
-                    setTimeout(() => {
-                        this.dom.welcomeScreen.style.display = 'none';
-                    }, 300);
-                    this.welcomeDismissed = true;
-                }
+                const proceed = () => {
+                    this.isWaitingForResponse = true;
+                    this.handleSendButtonState();
+                    this.addMessage('user', messageText);
+                    this.dom.messageInput.textContent = '';
+                    this.handleInputResize();
+                    this.showTypingIndicator();
+                    this.fetchBotResponseWithRetry(messageText);
+                };
 
-                this.isWaitingForResponse = true;
-                this.handleSendButtonState();
-                
-                this.addMessage('user', messageText);
-                this.dom.messageInput.textContent = '';
-                this.handleInputResize();
-                
-                this.showTypingIndicator();
-                
-                this.fetchBotResponseWithRetry(messageText);
+                if (!this.welcomeDismissed) {
+                    this.dismissWelcome().then(proceed);
+                } else {
+                    proceed();
+                }
+            }
+
+            dismissWelcome() {
+                return new Promise(resolve => {
+                    if (this.welcomeDismissed) return resolve();
+                    const el = this.dom.welcomeScreen;
+                    if (!el) { this.welcomeDismissed = true; return resolve(); }
+                    el.style.animation = 'fadeOut 0.3s ease-out forwards';
+                    el.addEventListener('animationend', () => {
+                        // Remove and then ensure container scrolled to bottom before first message animates
+                        el.remove();
+                        this.welcomeDismissed = true;
+                        requestAnimationFrame(() => {
+                            this.scrollToBottom();
+                            // Small delay to let scroll settle
+                            setTimeout(() => resolve(), 30);
+                        });
+                    }, { once: true });
+                });
             }
             
             async fetchBotResponseWithRetry(userMessage, retryCount = 0) {
@@ -1161,7 +1172,8 @@
                     }
                     
                     const data = await response.json();
-                    this.hideTypingIndicator();
+                    // Ensure typing indicator is fully gone before showing reply
+                    await this.hideTypingIndicator();
                     this.addMessage('bot', data.reply, { timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
                     
                     this.isWaitingForResponse = false;
@@ -1177,7 +1189,7 @@
                             this.fetchBotResponseWithRetry(userMessage, retryCount + 1);
                         }, retryDelay);
                     } else {
-                        this.hideTypingIndicator();
+                        await this.hideTypingIndicator();
                         this.handleFinalError(error);
                     }
                 }
@@ -1237,22 +1249,22 @@
                     messageEl.classList.add('error');
                 }
 
-                const messageWrapper = document.createElement('div');
-                messageWrapper.className = 'message-wrapper';
+                messageEl.innerHTML = `
+                    <div class="message-wrapper">
+                        <div class="message-content">
+                            <div class="markdown-content"></div>
+                        </div>
+                    </div>
+                `;
                 
-                const contentWrapper = document.createElement('div');
-                contentWrapper.className = 'message-content';
-                
-                const markdownContent = document.createElement('div');
-                markdownContent.className = 'markdown-content';
-                
+                const markdownContent = messageEl.querySelector('.markdown-content');
+                const contentWrapper = messageEl.querySelector('.message-content');
+
                 if (sender === 'bot') {
                     markdownContent.innerHTML = this.renderMarkdown(text);
                 } else {
                     markdownContent.textContent = text;
                 }
-                
-                contentWrapper.appendChild(markdownContent);
                 
                 if (options.timestamp) {
                     const timestampEl = document.createElement('div');
@@ -1261,16 +1273,11 @@
                     contentWrapper.appendChild(timestampEl);
                 }
                 
-                messageWrapper.appendChild(contentWrapper);
-                messageEl.appendChild(messageWrapper);
-                
+                const container = this.dom.chatMessages;
+                const shouldAutoScroll = (container.scrollHeight - (container.scrollTop + container.clientHeight)) < 80;
                 this.dom.chatMessages.appendChild(messageEl);
-                
-                requestAnimationFrame(() => {
-                    messageEl.style.animation = 'messageSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
-                });
-                
-                this.scrollToBottom();
+                requestAnimationFrame(() => messageEl.classList.add('message-enter'));
+                if (shouldAutoScroll) this.scrollToBottom();
                 
                 if (sender === 'bot') {
                     this.announceToScreenReader(text);
@@ -1278,6 +1285,8 @@
             }
 
             showTypingIndicator() {
+                // Avoid duplicating indicator
+                if (this.dom.chatMessages.querySelector('.typing-indicator-container')) return;
                 const typingEl = document.createElement('div');
                 typingEl.className = 'message bot typing-indicator-container';
                 typingEl.innerHTML = `
@@ -1288,34 +1297,36 @@
                                 <div class="dot"></div>
                                 <div class="dot"></div>
                             </div>
-                            <span class="typing-text">Thinking...</span>
                         </div>
                     </div>`;
                 this.dom.chatMessages.appendChild(typingEl);
+                requestAnimationFrame(() => typingEl.classList.add('message-enter'));
                 this.scrollToBottom();
             }
             
             updateTypingIndicator(message) {
-                const indicator = this.dom.chatMessages.querySelector('.typing-indicator-container .typing-text');
-                if (indicator) {
-                    indicator.textContent = message;
-                }
+                // No longer needed since we removed the text element
+                // Just keep the dots animation
             }
 
             hideTypingIndicator() {
-                const indicator = this.dom.chatMessages.querySelector('.typing-indicator-container');
-                if (indicator) {
-                    indicator.style.animation = 'fadeOut 0.3s ease-out forwards';
-                    setTimeout(() => indicator.remove(), 300);
-                }
+                return new Promise(resolve => {
+                    const indicator = this.dom.chatMessages.querySelector('.typing-indicator-container');
+                    if (!indicator) return resolve();
+                    // Remove slide-in animation class to allow fadeOut to apply cleanly
+                    indicator.classList.remove('message-enter');
+                    // Use fade out class
+                    indicator.classList.add('is-hiding');
+                    const done = () => { indicator.remove(); resolve(); };
+                    indicator.addEventListener('animationend', done, { once: true });
+                    // Fallback in case animationend doesn't fire
+                    setTimeout(done, 400);
+                });
             }
 
             scrollToBottom() {
-                const chatContainer = this.dom.chatMessages;
-                chatContainer.scrollTo({
-                    top: chatContainer.scrollHeight,
-                    behavior: 'smooth'
-                });
+                const el = this.dom.chatMessages;
+                el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
             }
             
             showNotification(message, type = 'info') {
@@ -1325,41 +1336,46 @@
                 notification.className = `notification notification-${type}`;
                 notification.innerHTML = `
                     <div class="notification-content">
-                        <span class="notification-message">${message}</span>
+                        <span class="notification-message"></span>
                         <button class="notification-close" aria-label="Close notification">&times;</button>
                     </div>
                 `;
-                
+                notification.querySelector('.notification-message').textContent = message;
+
                 document.body.appendChild(notification);
+                
+                requestAnimationFrame(() => {
+                    notification.classList.add('is-visible');
+                });
                 
                 const hideTimeout = setTimeout(() => {
                     this.hideNotification(notification);
-                }, 5000);
+}, 5000);
                 
                 notification.querySelector('.notification-close').addEventListener('click', () => {
                     clearTimeout(hideTimeout);
                     this.hideNotification(notification);
                 });
-                
-                requestAnimationFrame(() => {
-                    notification.style.animation = 'slideDown 0.3s ease-out forwards';
-                });
             }
             
             hideNotification(notification) {
-                notification.style.animation = 'slideUp 0.3s ease-out forwards';
-                setTimeout(() => notification.remove(), 300);
+                notification.classList.remove('is-visible');
+                notification.addEventListener('transitionend', () => {
+                    notification.remove();
+                }, { once: true });
             }
             
             announceToScreenReader(message) {
-                const announcement = document.createElement('div');
-                announcement.setAttribute('aria-live', 'polite');
-                announcement.setAttribute('aria-atomic', 'true');
-                announcement.className = 'sr-only';
+                let announcement = document.getElementById('sr-announcement');
+                if (!announcement) {
+                    announcement = document.createElement('div');
+                    announcement.id = 'sr-announcement';
+                    announcement.setAttribute('aria-live', 'polite');
+                    announcement.setAttribute('aria-atomic', 'true');
+                    announcement.className = 'sr-only';
+                    document.body.appendChild(announcement);
+                }
                 announcement.textContent = `Bot says: ${message}`;
-                document.body.appendChild(announcement);
-                
-                setTimeout(() => announcement.remove(), 1000);
             }
 
             handleSendButtonState() {
@@ -1380,11 +1396,9 @@
             sanitizeHtml(html) {
                 const temp = document.createElement('div');
                 temp.innerHTML = html;
-                temp.querySelectorAll('script, style, link, meta').forEach(el => el.remove());
+                temp.querySelectorAll('script, style, link, meta, [onclick], [onerror]').forEach(el => el.remove());
                 return temp.innerHTML;
             }
-
-            // --- Theme and Language ---
 
             initializeTheme() {
                 const savedTheme = localStorage.getItem('chat-theme') || 'dark';
@@ -1445,20 +1459,30 @@
             }
             
             updateUILanguage(languageCode) {
-                // 🪄 CHANGE: Updated all translation text
                 const translations = {
-                    en: { headerTitle: "Shiksha Saathi", welcomeTitle: "Welcome to Shiksha saathi", welcomeDesc: "how may I help you today", inputPlaceholder: "Type your query...", suggestions: { whoAreYou: "Who are you?", whoMaintains: "Who maintains you?", whatCanYouDo: "What can you do?" } },
-                    hi: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं आपकी क्या मदद कर सकता हूँ", inputPlaceholder: "अपना प्रश्न लिखें...", suggestions: { whoAreYou: "आप कौन हैं?", whoMaintains: "आपको कौन संचालित करता है?", whatCanYouDo: "आप क्या कर सकते हैं?" } },
-                    bn: { headerTitle: "শিক্ষা সাথী", welcomeTitle: "শিক্ষা সাথীতে স্বাগতম", welcomeDesc: "আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি", inputPlaceholder: "আপনার প্রশ্ন লিখুন...", suggestions: { whoAreYou: "আপনি কে?", whoMaintains: "আপনাকে কে রক্ষণাবেক্ষণ করে?", whatCanYouDo: "আপনি কী করতে পারেন?" } },
-                    raj: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपनो स्वागत है", welcomeDesc: "आज मैं थारी के मदद कर सकूँ", inputPlaceholder: "आपनो सवाल लिखो...", suggestions: { whoAreYou: "थे कुण सो?", whoMaintains: "थमनै कुण चलावै?", whatCanYouDo: "थे के कर सको?" } },
-                    hr: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं तेरी के मदद कर सकूँ", inputPlaceholder: "अपना सवाल लिखो...", suggestions: { whoAreYou: "तू कौण सै?", whoMaintains: "तेरै न कौण चलावै सै?", whatCanYouDo: "तू के कर सकै सै?" } },
-                    ta: { headerTitle: "ஷிக்ஷா சாத்தி", welcomeTitle: "ஷிக்ஷா சாத்திக்கு வரவேற்கிறோம்", welcomeDesc: "இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்", inputPlaceholder: "உங்கள் கேள்வியை டைப் செய்யுங்கள்...", suggestions: { whoAreYou: "நீங்கள் யார்?", whoMaintains: "உங்களை யார் பராமரிக்கிறார்கள்?", whatCanYouDo: "நீங்கள் என்ன செய்ய முடியும்?" } }
+                    en: { headerTitle: "Shiksha Saathi", welcomeTitle: "Welcome to Shiksha Saathi", welcomeDesc: "How may I help you today?", inputPlaceholder: "Type your query...", suggestions: { whoAreYou: "Who are you?", whoMaintains: "Who maintains you?", whatCanYouDo: "What can you do?" } },
+                    hi: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं आपकी क्या मदद कर सकता हूँ?", inputPlaceholder: "अपना प्रश्न लिखें...", suggestions: { whoAreYou: "आप कौन हैं?", whoMaintains: "आपको कौन संचालित करता है?", whatCanYouDo: "आप क्या कर सकते हैं?" } },
+                    bn: { headerTitle: "শিক্ষা সাথী", welcomeTitle: "শিক্ষা সাথীতে স্বাগতম", welcomeDesc: "আজ আমি আপনাকে কিভাবে সাহায্য করতে পারি?", inputPlaceholder: "আপনার প্রশ্ন লিখুন...", suggestions: { whoAreYou: "আপনি কে?", whoMaintains: "আপনাকে কে রক্ষণাবেক্ষণ করে?", whatCanYouDo: "আপনি কী করতে পারেন?" } },
+                    raj: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपनो स्वागत है", welcomeDesc: "आज मैं थारी के मदद कर सकूँ?", inputPlaceholder: "आपनो सवाल लिखो...", suggestions: { whoAreYou: "थे कुण सो?", whoMaintains: "थमनै कुण चलावै?", whatCanYouDo: "थे के कर सको?" } },
+                    hr: { headerTitle: "शिक्षा साथी", welcomeTitle: "शिक्षा साथी में आपका स्वागत है", welcomeDesc: "आज मैं तेरी के मदद कर सकूँ?", inputPlaceholder: "अपना सवाल लिखो...", suggestions: { whoAreYou: "तू कौण सै?", whoMaintains: "तेरै न कौण चलावै सै?", whatCanYouDo: "तू के कर सकै सै?" } },
+                    ta: { headerTitle: "ஷிக்ஷா சாத்தி", welcomeTitle: "ஷிக்ஷா சாத்திக்கு வரவேற்கிறோம்", welcomeDesc: "இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?", inputPlaceholder: "உங்கள் கேள்வியை டைப் செய்யுங்கள்...", suggestions: { whoAreYou: "நீங்கள் யார்?", whoMaintains: "உங்களை யார் பராமரிக்கிறார்கள்?", whatCanYouDo: "நீங்கள் என்ன செய்ய முடியும்?" } }
                 };
                 
                 const t = translations[languageCode] || translations.en;
                 
-                // 🪄 CHANGE: Simplified JS to handle a single title element
-                document.querySelector('.bot-title .bot-name').textContent = t.headerTitle;
+                const botNameElement = document.querySelector('.bot-title .bot-name');
+                const nameLines = botNameElement.querySelectorAll('.bot-name-line');
+                const titleParts = t.headerTitle.split(' ');
+                
+                if (nameLines.length >= 2 && titleParts.length >= 2) {
+                    nameLines[0].textContent = titleParts[0];
+                    nameLines[1].textContent = titleParts.slice(1).join(' ');
+                } else if (nameLines.length > 0) {
+                    nameLines[0].textContent = t.headerTitle;
+                    if(nameLines.length > 1) nameLines[1].textContent = '';
+                } else {
+                    botNameElement.textContent = t.headerTitle;
+                }
 
                 document.querySelector('.welcome-message h2').textContent = t.welcomeTitle;
                 document.querySelector('.welcome-message p').textContent = t.welcomeDesc;
