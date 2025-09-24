@@ -1,4 +1,6 @@
-Flask
-Flask-Cors
-python-dotenv
+fastapi
+uvicorn
 google-generativeai
+firebase-admin
+pydantic
+python-dotenv
