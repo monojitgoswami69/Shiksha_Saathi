@@ -1,0 +1,77 @@
+/* Animation Keyframes */
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes messageSlideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.8); }
+    80% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+@keyframes typing-bounce {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Animation Classes */
+.message-enter {
+    animation: messageSlideIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.welcome-message {
+    animation: fadeIn 0.8s var(--transition-slow) forwards;
+}
+
+.welcome-avatar {
+    animation: popIn 0.8s 0.2s ease-out forwards;
+}
+
+.welcome-message h2 {
+    animation: slideUp 0.6s 0.4s ease-out forwards;
+}
+
+.welcome-message p {
+    animation: slideUp 0.6s 0.5s ease-out forwards;
+}
+
+.suggestion-chip {
+    animation: popIn 0.5s ease-out forwards;
+}
+
+.suggestion-chip:nth-child(1) { animation-delay: 0.7s; }
+.suggestion-chip:nth-child(2) { animation-delay: 0.8s; }
+.suggestion-chip:nth-child(3) { animation-delay: 0.9s; }
