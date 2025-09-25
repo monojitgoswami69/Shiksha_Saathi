@@ -6,8 +6,8 @@
 
 ## Project Status
 
-* **Version:** 0.1.8
-* **Current Maintainer:** [monojitgoswami69](https://github.com/monojitgoswami69)
+* **Version:** 0.2.5
+* **Current Maintainers:** [monojitgoswami69](https://github.com/monojitgoswami69), [karfa113](https://github.com/karfa113), [BiswasNamrata06](https://github.com/BiswasNamrata06)
 * **Development Status:** Production-ready prototype
 * **Last Updated:** September 21, 2025
 * **Project Type:** Campus Chatbot (AI, Multilingual, RAG)
