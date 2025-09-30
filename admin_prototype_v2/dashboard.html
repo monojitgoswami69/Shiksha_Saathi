@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bot Manager - Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'sans': ['Inter', 'system-ui', 'sans-serif'],
+              'display': ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              'page-bg': '#F8FAFF',
+              'sidebar-bg': '#FFFFFF',
+              'active-item': '#4F46E5',
+              'active-item-text': '#FFFFFF',
+              'subtle-text': '#6B7280',
+              'heading-text': '#111827',
+              'card-bg': '#FFFFFF',
+              'border-color': '#E5E7EB',
+              'accent-blue': '#3B82F6',
+              'accent-purple': '#8B5CF6',
+              'success-green': '#10B981',
+              'warning-amber': '#F59E0B',
+              'error-red': '#EF4444',
+            },
+            boxShadow: {
+              'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .table-responsive::-webkit-scrollbar { height: 8px; }
+      .table-responsive::-webkit-scrollbar-track { background: #f1f5f9; }
+      .table-responsive::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+      
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      
+      .metric-card {
+        transition: all 0.3s ease;
+      }
+      
+      .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-light-bg font-body">
+    <div class="flex h-screen bg-light-bg">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
+            <nav class="flex flex-col h-full p-4">
+                <!-- Logo -->
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-display font-bold text-lg">SS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-display font-bold text-heading-text">Shiksha Saathi</h1>
+                        <p class="text-xs text-subtle-text">Admin Panel</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Items -->
+                <a href="dashboard.html" class="flex items-center px-3 py-2.5 text-white bg-accent-blue rounded-lg mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3" viewBox="0 0 256 256">
+                        <path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77Z"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="querries.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/>
+                    </svg>
+                    <span class="font-medium">Queries</span>
+                </a>
+
+                <a href="knowledge_base.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                        <path d="M224,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h64a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Z"/>
+                    </svg>
+                    <span class="font-medium">Knowledge Base</span>
+                </a>
+
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="px-3 text-xs font-medium text-subtle-text uppercase tracking-wider mb-3">Management</p>
+                    
+                    <a href="settings.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                            <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/>
+                        </svg>
+                        <span class="font-medium">Settings</span>
+                    </a>
+
+                    <a href="help.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                            <path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176Z"/>
+                        </svg>
+                        <span class="font-medium">Help</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col">
+            <!-- Header (Sticky) -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-display font-bold text-heading-text">Dashboard</h1>
+                        <p class="text-subtle-text mt-1">Monitor and manage your bot's performance</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative" id="date-range-dropdown-container">
+                            <input type="date" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-transparent text-sm" value="2025-09-29">
+                        </div>
+                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content (Scrollable) -->
+            <div class="flex-1 overflow-auto p-6 max-w-7xl">
+
+            <section>
+              <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Key Metrics</h2>
+              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Total Queries Today</p>
+                          <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                  <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H216v48H40ZM40,200V120H216v80Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">1,234</p>
+                      <p class="text-xs text-success-green font-medium">+12% from yesterday</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Success Rate</p>
+                          <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                  <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">95%</p>
+                      <p class="text-xs text-success-green font-medium">Answered successfully</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Avg. Confidence</p>
+                          <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-purple" viewBox="0 0 256 256">
+                                  <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">85%</p>
+                      <p class="text-xs text-warning-amber font-medium">AI confidence score</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Human Handoffs</p>
+                          <div class="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-warning-amber" viewBox="0 0 256 256">
+                                  <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.27,98.63a8,8,0,0,1-11.07,2.22A79.71,79.71,0,0,0,196,188a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.94-14.85,60,60,0,0,1,55.53,105.64,95.83,95.83,0,0,1,47.22,37.71A8,8,0,0,1,250.27,206.63Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">50</p>
+                      <p class="text-xs text-error-red font-medium">-8% from last week</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Documents Indexed</p>
+                          <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-indigo-600" viewBox="0 0 256 256">
+                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">500</p>
+                      <p class="text-xs text-success-green font-medium">Knowledge base size</p>
+                  </div>
+              </div>
+            </section>
+
+            <section class="mt-12">
+              <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Visual Insights</h2>
+              <div class="space-y-8">
+                <!-- Query Volume Trend -->
+                <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                  <div class="flex items-center justify-between mb-6">
+                      <div>
+                          <p class="font-display text-lg font-semibold text-heading-text">Query Volume Trend</p>
+                          <p class="text-sm text-subtle-text mt-1">Daily query patterns and growth metrics</p>
+                      </div>
+                      <div class="text-right">
+                          <p class="text-2xl font-bold text-heading-text">+15%</p>
+                          <p class="text-sm font-medium text-success-green">↗ Growth rate</p>
+                      </div>
+                  </div>
+                  <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                      <canvas id="queryVolumeChart" width="400" height="200"></canvas>
+                  </div>
+                </div>
+                
+                <!-- Human Handoff Trend -->
+                <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                  <div class="flex items-center justify-between mb-6">
+                      <div>
+                          <p class="font-display text-lg font-semibold text-heading-text">Human Handoff Trend</p>
+                          <p class="text-sm text-subtle-text mt-1">Cases requiring human intervention</p>
+                      </div>
+                      <div class="text-right">
+                          <p class="text-2xl font-bold text-heading-text">20%</p>
+                          <p class="text-sm font-medium text-error-red">↓ -5% decrease</p>
+                      </div>
+                  </div>
+                  <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                      <canvas id="handoffTrendChart" width="400" height="200"></canvas>
+                  </div>
+                </div>
+                
+                <!-- Bot Performance Over Time -->
+                <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                  <div class="flex items-center justify-between mb-6">
+                      <div>
+                          <p class="font-display text-lg font-semibold text-heading-text">Bot Performance Over Time</p>
+                          <p class="text-sm text-subtle-text mt-1">Accuracy and response time metrics</p>
+                      </div>
+                      <div class="text-right">
+                          <p class="text-2xl font-bold text-heading-text">92%</p>
+                          <p class="text-sm font-medium text-success-green">Avg. accuracy</p>
+                      </div>
+                  </div>
+                  <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                      <canvas id="performanceChart" width="400" height="200"></canvas>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="mt-12">
+              <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Confusion Hotspots</h2>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Table Section -->
+                <div class="lg:col-span-2">
+                  <div class="table-responsive rounded-2xl bg-card-bg shadow-card border border-border-color overflow-hidden">
+                    <div class="px-6 py-4 border-b border-border-color">
+                        <h3 class="font-medium text-heading-text">Most Problematic Topics</h3>
+                        <p class="text-sm text-subtle-text mt-1">Areas where the bot struggles most</p>
+                    </div>
+                    <table class="min-w-full text-left">
+                      <thead class="bg-gray-50">
+                        <tr class="border-b border-border-color">
+                          <th class="px-6 py-4 text-sm font-semibold text-heading-text">Topic</th>
+                          <th class="px-6 py-4 text-sm font-semibold text-heading-text">Frequency</th>
+                          <th class="px-6 py-4 text-sm font-semibold text-heading-text">Success Rate</th>
+                          <th class="px-6 py-4 text-sm font-semibold text-heading-text">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-border-color">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-6 py-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-2 w-2 rounded-full bg-error-red"></div>
+                                  <span class="text-sm font-medium text-heading-text">Returns Policy</span>
+                              </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-subtle-text">25</td>
+                          <td class="px-6 py-4">
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">65%</span>
+                          </td>
+                          <td class="px-6 py-4">
+                              <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-6 py-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-2 w-2 rounded-full bg-warning-amber"></div>
+                                  <span class="text-sm font-medium text-heading-text">Shipping Delays</span>
+                              </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-subtle-text">20</td>
+                          <td class="px-6 py-4">
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">72%</span>
+                          </td>
+                          <td class="px-6 py-4">
+                              <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-6 py-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-2 w-2 rounded-full bg-warning-amber"></div>
+                                  <span class="text-sm font-medium text-heading-text">Product Availability</span>
+                              </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-subtle-text">15</td>
+                          <td class="px-6 py-4">
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">78%</span>
+                          </td>
+                          <td class="px-6 py-4">
+                              <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-6 py-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-2 w-2 rounded-full bg-success-green"></div>
+                                  <span class="text-sm font-medium text-heading-text">Payment Issues</span>
+                              </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-subtle-text">12</td>
+                          <td class="px-6 py-4">
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">85%</span>
+                          </td>
+                          <td class="px-6 py-4">
+                              <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-6 py-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-2 w-2 rounded-full bg-success-green"></div>
+                                  <span class="text-sm font-medium text-heading-text">Account Management</span>
+                              </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-subtle-text">8</td>
+                          <td class="px-6 py-4">
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">90%</span>
+                          </td>
+                          <td class="px-6 py-4">
+                              <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                <!-- Pie Chart Section -->
+                <div class="lg:col-span-1">
+                  <div class="rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                    <div class="mb-6">
+                        <h3 class="font-medium text-heading-text">Topic Distribution</h3>
+                        <p class="text-sm text-subtle-text mt-1">Breakdown of confusion areas</p>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <canvas id="confusionPieChart" width="280" height="280"></canvas>
+                    </div>
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="h-3 w-3 rounded-full bg-red-500"></div>
+                                <span class="text-sm text-subtle-text">Returns Policy</span>
+                            </div>
+                            <span class="text-sm font-medium text-heading-text">31.3%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="h-3 w-3 rounded-full bg-orange-500"></div>
+                                <span class="text-sm text-subtle-text">Shipping Delays</span>
+                            </div>
+                            <span class="text-sm font-medium text-heading-text">25%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="h-3 w-3 rounded-full bg-yellow-500"></div>
+                                <span class="text-sm text-subtle-text">Product Availability</span>
+                            </div>
+                            <span class="text-sm font-medium text-heading-text">18.8%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="h-3 w-3 rounded-full bg-blue-500"></div>
+                                <span class="text-sm text-subtle-text">Payment Issues</span>
+                            </div>
+                            <span class="text-sm font-medium text-heading-text">15%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="h-3 w-3 rounded-full bg-green-500"></div>
+                                <span class="text-sm text-subtle-text">Account Management</span>
+                            </div>
+                            <span class="text-sm font-medium text-heading-text">10%</span>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+        </main>
+      </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Charts
+            initializeCharts();
+            
+            // Dropdown functionality
+            const dropdownContainer = document.getElementById('date-range-dropdown-container');
+            if (dropdownContainer) {
+                const button = document.getElementById('date-range-button');
+                const menu = document.getElementById('date-range-menu');
+                const buttonText = document.getElementById('date-range-button-text');
+                const menuItems = menu.querySelectorAll('a');
+
+                button.addEventListener('click', (event) => { 
+                    event.stopPropagation(); 
+                    menu.classList.toggle('hidden'); 
+                });
+                
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        buttonText.textContent = this.getAttribute('data-range');
+                        menu.classList.add('hidden');
+                        updateCharts(this.getAttribute('data-range'));
+                    });
+                });
+                
+                window.addEventListener('click', (e) => { 
+                    if (!dropdownContainer.contains(e.target)) { 
+                        menu.classList.add('hidden'); 
+                    } 
+                });
+            }
+        });
+
+        function initializeCharts() {
+            // Query Volume Trend Chart
+            const queryCtx = document.getElementById('queryVolumeChart');
+            if (queryCtx) {
+                new Chart(queryCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Queries',
+                            data: [120, 190, 300, 500, 200, 300, 450],
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#3B82F6',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#E5E7EB' },
+                                ticks: { color: '#6B7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6B7280' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Human Handoff Trend Chart
+            const handoffCtx = document.getElementById('handoffTrendChart');
+            if (handoffCtx) {
+                new Chart(handoffCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Handoffs',
+                            data: [12, 19, 8, 15, 10, 8, 6],
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: '#EF4444',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#E5E7EB' },
+                                ticks: { color: '#6B7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6B7280' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart');
+            if (performanceCtx) {
+                new Chart(performanceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        datasets: [{
+                            label: 'Accuracy %',
+                            data: [88, 90, 92, 94],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y'
+                        }, {
+                            label: 'Avg Response Time (s)',
+                            data: [2.5, 2.2, 2.0, 1.8],
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: '#6B7280', usePointStyle: true }
+                            },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                grid: { color: '#E5E7EB' },
+                                ticks: { color: '#6B7280' }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: { drawOnChartArea: false },
+                                ticks: { color: '#6B7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6B7280' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Confusion Hotspots Pie Chart
+            const pieCtx = document.getElementById('confusionPieChart');
+            if (pieCtx) {
+                new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Returns Policy', 'Shipping Delays', 'Product Availability', 'Payment Issues', 'Account Management'],
+                        datasets: [{
+                            data: [25, 20, 15, 12, 8],
+                            backgroundColor: [
+                                '#EF4444',
+                                '#F97316', 
+                                '#EAB308',
+                                '#3B82F6',
+                                '#10B981'
+                            ],
+                            borderWidth: 0,
+                            cutout: '60%'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                        return context.label + ': ' + percentage + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateCharts(range) {
+            // Update chart data based on selected time range
+            console.log('Updating charts for range:', range);
+            // This would typically fetch new data from an API
+        }
+    </script>
+            </div>
+        </main>
+    </div>
+  </body>
+</html>

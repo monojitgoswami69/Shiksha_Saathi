@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bot Manager - Knowledge Base</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'sans': ['Inter', 'system-ui', 'sans-serif'],
+              'display': ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              'page-bg': '#F8FAFF',
+              'sidebar-bg': '#FFFFFF',
+              'active-item': '#4F46E5',
+              'active-item-text': '#FFFFFF',
+              'subtle-text': '#6B7280',
+              'heading-text': '#111827',
+              'card-bg': '#FFFFFF',
+              'border-color': '#E5E7EB',
+              'accent-blue': '#3B82F6',
+              'accent-purple': '#8B5CF6',
+              'success-green': '#10B981',
+              'warning-amber': '#F59E0B',
+              'error-red': '#EF4444',
+            },
+            boxShadow: {
+              'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .table-responsive::-webkit-scrollbar { height: 8px; }
+      .table-responsive::-webkit-scrollbar-track { background: #f1f5f9; }
+      .table-responsive::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+      
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      
+      .metric-card {
+        transition: all 0.3s ease;
+      }
+      
+      .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+      }
+      
+      .upload-area {
+        transition: all 0.3s ease;
+      }
+      
+      .upload-area:hover {
+        border-color: #4F46E5;
+        background-color: rgba(79, 70, 229, 0.02);
+      }
+    </style>
+  </head>
+  <body class="bg-light-bg font-body">
+    <div class="flex h-screen bg-light-bg">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
+            <nav class="flex flex-col h-full p-4">
+                <!-- Logo -->
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-display font-bold text-lg">SS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-display font-bold text-heading-text">Shiksha Saathi</h1>
+                        <p class="text-xs text-subtle-text">Admin Panel</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <a href="dashboard.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+
+                    <a href="knowledge_base.html" class="flex items-center px-4 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group">
+                        <svg class="w-5 h-5 mr-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                        </svg>
+                        Knowledge Base
+                    </a>
+
+                    <a href="querries.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                        </svg>
+                        Queries
+                    </a>
+
+                    <a href="help.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Help & Support
+                    </a>
+
+                    <a href="settings.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                        </svg>
+                        Settings
+                    </a>
+                </div>
+
+                <!-- User Profile -->
+                <div class="mt-auto pt-4 border-t border-gray-200">
+                    <div class="flex items-center px-4 py-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">A</span>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-700">Admin User</p>
+                            <p class="text-xs text-gray-500">admin@shiksha.edu</p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col bg-light-bg">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-display font-bold text-heading-text">Knowledge Base</h1>
+                        <p class="text-subtle-text mt-1">Manage bot's knowledge and training data</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" class="text-success-green">
+                              <path d="M208,24H72A32,32,0,0,0,40,56V224a8,8,0,0,0,8,8H192a8,8,0,0,0,0-16H56a16,16,0,0,1,16-16H208a8,8,0,0,0,8-8V32A8,8,0,0,0,208,24ZM72,40H200V184H72a31.82,31.82,0,0,0-16,4.29V56A16,16,0,0,1,72,40Z"/>
+                            </svg>
+                            <span class="font-medium text-subtle-text">5 Documents Active</span>
+                        </div>
+                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Sync Knowledge Base
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 p-6 overflow-auto">
+            <!-- Overview Stats -->
+            <section class="mb-8">
+              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Total Documents</p>
+                          <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                  <path d="M208,24H72A32,32,0,0,0,40,56V224a8,8,0,0,0,8,8H192a8,8,0,0,0,0-16H56a16,16,0,0,1,16-16H208a8,8,0,0,0,8-8V32A8,8,0,0,0,208,24ZM72,40H200V184H72a31.82,31.82,0,0,0-16,4.29V56A16,16,0,0,1,72,40Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">27</p>
+                      <p class="text-xs text-success-green font-medium">+3 this week</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Active Documents</p>
+                          <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                  <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">22</p>
+                      <p class="text-xs text-success-green font-medium">81% active rate</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Storage Used</p>
+                          <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-purple" viewBox="0 0 256 256">
+                                  <path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM32,64H224V88H32ZM32,192V104H224v88Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">2.4GB</p>
+                      <p class="text-xs text-warning-amber font-medium">Of 10GB limit</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Last Updated</p>
+                          <div class="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-warning-amber" viewBox="0 0 256 256">
+                                  <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">2h</p>
+                      <p class="text-xs text-subtle-text font-medium">ago</p>
+                  </div>
+              </div>
+            </section>
+
+            <!-- Document Management Section -->
+            <section>
+              <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Document Management</h2>
+              
+              <!-- Search and Filters -->
+              <div class="rounded-2xl bg-card-bg p-6 shadow-card border border-border-color mb-6">
+                  <div class="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6">
+                      <div class="flex-1 max-w-md">
+                          <div class="relative">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-subtle-text" viewBox="0 0 256 256">
+                                      <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>
+                                  </svg>
+                              </div>
+                              <input
+                                  type="text"
+                                  placeholder="Search documents..."
+                                  class="block w-full pl-10 pr-4 py-3 border border-border-color rounded-xl text-sm focus:ring-2 focus:ring-active-item focus:border-active-item"
+                              />
+                          </div>
+                      </div>
+                      
+                      <div class="flex gap-3">
+                          <button class="inline-flex items-center px-4 py-2 border border-border-color rounded-lg text-sm font-medium text-heading-text bg-white hover:bg-gray-50 transition-colors">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                  <path d="M200,136H176V112a8,8,0,0,0-16,0v24H136a8,8,0,0,0,0,16h24v24a8,8,0,0,0,16,0V152h24a8,8,0,0,0,0-16Z"/>
+                              </svg>
+                              All Documents
+                          </button>
+                          <button class="inline-flex items-center px-4 py-2 border border-border-color rounded-lg text-sm font-medium text-heading-text bg-white hover:bg-gray-50 transition-colors">
+                              Active Only
+                          </button>
+                          <button class="inline-flex items-center px-4 py-2 border border-border-color rounded-lg text-sm font-medium text-heading-text bg-white hover:bg-gray-50 transition-colors">
+                              Archived
+                          </button>
+                      </div>
+                  </div>
+                  <!-- Documents Table -->
+                  <div class="overflow-x-auto">
+                      <table class="min-w-full">
+                          <thead>
+                              <tr class="border-b border-border-color">
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">
+                                      <input type="checkbox" id="selectAll" class="rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Document</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Type</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Size</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Upload Date</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Last Used</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Status</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody class="divide-y divide-border-color">
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-red-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Company_Policies_2024.pdf</p>
+                                              <p class="text-sm text-subtle-text">HR Guidelines and Procedures</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">PDF</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">2.4 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Aug 15, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">2 hours ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-warning-amber hover:text-amber-700 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-colors text-center">Archive</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+                              
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-blue-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Product_Catalog_Q3.docx</p>
+                                              <p class="text-sm text-subtle-text">Latest product specifications</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">DOCX</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">1.8 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Sep 22, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">1 day ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-warning-amber hover:text-amber-700 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-colors text-center">Archive</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-green-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">FAQ_Database.xlsx</p>
+                                              <p class="text-sm text-subtle-text">Frequently asked questions</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">XLSX</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">0.9 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Oct 05, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">3 days ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-warning-amber hover:text-amber-700 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-colors text-center">Archive</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-gray-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Legacy_Manual_v1.pdf</p>
+                                              <p class="text-sm text-subtle-text">Outdated user manual</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">PDF</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">3.2 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Nov 18, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">2 weeks ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Archived</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-success-green hover:text-green-700 bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors text-center">Restore</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-gray-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Old_Training_Materials.pptx</p>
+                                              <p class="text-sm text-subtle-text">Outdated presentation slides</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">PPTX</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">5.1 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Dec 01, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">1 month ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Archived</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-success-green hover:text-green-700 bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors text-center">Restore</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  
+                  <!-- Bulk Actions - Hidden by default, expands within the card -->
+                  <div id="bulkActionsSection" class="hidden border-t border-border-color mt-6 pt-6 animate-fade-in">
+                      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
+                          <div class="flex items-center justify-between mb-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-8 w-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-blue-600" viewBox="0 0 256 256">
+                                          <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/>
+                                      </svg>
+                                  </div>
+                                  <div>
+                                      <h4 class="font-medium text-heading-text">Bulk Actions</h4>
+                                      <p class="text-sm text-subtle-text"><span id="selectedCount">0</span> documents selected</p>
+                                  </div>
+                              </div>
+                              <button id="clearSelection" class="text-sm text-subtle-text hover:text-heading-text transition-colors font-medium">
+                                  Clear selection
+                              </button>
+                          </div>
+                          
+                          <div class="flex flex-wrap gap-2">
+                              <button class="inline-flex items-center px-3 py-2 bg-warning-amber hover:bg-amber-600 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M184,89.57V84c0-25.08-37.83-44-88-44S8,58.92,8,84v40c0,20.89,26.25,37.49,64,42.46V172c0,25.08,37.83,44,88,44s88-18.92,88-44V132C248,111.3,222.58,94.68,184,89.57ZM232,132c0,13.22-30.79,28-72,28-3.73,0-7.43-.13-11.08-.37C170.49,151.77,184,139,184,124V105.74C213.87,110.19,232,122.27,232,132Z"/>
+                                  </svg>
+                                  Archive Selected
+                              </button>
+                              <button class="inline-flex items-center px-3 py-2 bg-success-green hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/>
+                                  </svg>
+                                  Restore Selected
+                              </button>
+                              <button class="inline-flex items-center px-3 py-2 bg-error-red hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16Z"/>
+                                  </svg>
+                                  Delete Selected
+                              </button>
+                              <button class="inline-flex items-center px-3 py-2 border border-blue-300 text-blue-700 hover:bg-blue-100 bg-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96H80a8,8,0,0,1,0,16H56v96H200V112H176a8,8,0,0,1,0-16h24A16,16,0,0,1,216,112ZM93.66,69.66,120,43.31V128a8,8,0,0,0,16,0V43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66Z"/>
+                                  </svg>
+                                  Export Selected
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </section>
+            <!-- Document Upload Section -->
+            <section class="mt-12">
+                <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Upload Documents</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- File Upload -->
+                    <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-medium text-heading-text">File Upload</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="upload-area border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                        <path d="M74.34,85.66A8,8,0,0,1,85.66,74.34L120,108.69V24a8,8,0,0,1,16,0v84.69l34.34-34.35a8,8,0,0,1,11.32,11.32l-48,48a8,8,0,0,1-11.32,0ZM216,152v56a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H200V152a8,8,0,0,1,16,0Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-heading-text mb-2">Drop files here or click to browse</p>
+                                    <p class="text-sm text-subtle-text">PDF, DOC, DOCX, TXT files up to 10MB</p>
+                                </div>
+                                <button class="inline-flex items-center px-6 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-active-item hover:bg-indigo-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                        <path d="M200,136H176V112a8,8,0,0,0-16,0v24H136a8,8,0,0,0,0,16h24v24a8,8,0,0,0,16,0V152h24a8,8,0,0,0,0-16Z"/>
+                                    </svg>
+                                    Choose Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web Crawling -->
+                    <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-medium text-heading-text">Web Content Import</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,152H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,152Zm-3.9-16H140.5a140.81,140.81,0,0,1,0-32H98.1a140.81,140.81,0,0,1,0,32ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128Z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-heading-text mb-2">Website URL</label>
+                                <input
+                                    type="url"
+                                    placeholder="https://example.com"
+                                    class="block w-full px-4 py-3 border border-border-color rounded-lg text-sm focus:ring-2 focus:ring-active-item focus:border-active-item"
+                                />
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="rounded border-border-color text-active-item focus:ring-active-item" />
+                                    <div>
+                                        <p class="text-sm font-medium text-heading-text">Auto-update content</p>
+                                        <p class="text-xs text-subtle-text">Check for changes daily</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-success-green hover:bg-green-700 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128Z"/>
+                                </svg>
+                                Import Website Content
+                            </button>
+                            
+                            <p class="text-xs text-subtle-text mt-2">
+                                The bot will crawl and index content from the specified website automatically.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </main>
+      </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const documentCheckboxes = document.querySelectorAll('.document-checkbox');
+            const bulkActionsSection = document.getElementById('bulkActionsSection');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const clearSelectionBtn = document.getElementById('clearSelection');
+
+            // Function to update bulk actions visibility and count
+            function updateBulkActions() {
+                const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+                const selectedCount = selectedCheckboxes.length;
+                
+                if (selectedCount > 0) {
+                    bulkActionsSection.classList.remove('hidden');
+                    selectedCountSpan.textContent = selectedCount;
+                } else {
+                    bulkActionsSection.classList.add('hidden');
+                }
+
+                // Update select all checkbox state
+                if (selectedCount === 0) {
+                    selectAllCheckbox.indeterminate = false;
+                    selectAllCheckbox.checked = false;
+                } else if (selectedCount === documentCheckboxes.length) {
+                    selectAllCheckbox.indeterminate = false;
+                    selectAllCheckbox.checked = true;
+                } else {
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+
+            // Handle select all checkbox
+            selectAllCheckbox.addEventListener('change', function() {
+                const isChecked = this.checked;
+                documentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
+                updateBulkActions();
+            });
+
+            // Handle individual document checkboxes
+            documentCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateBulkActions);
+            });
+
+            // Handle clear selection button
+            clearSelectionBtn.addEventListener('click', function() {
+                documentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+                updateBulkActions();
+            });
+
+            // Initial state
+            updateBulkActions();
+
+            console.log('Knowledge Base page loaded with enhanced functionality');
+        });
+    </script>
+            </div>
+        </main>
+    </div>
+  </body>
+</html>

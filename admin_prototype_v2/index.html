@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <body class="bg-page-bg font-sans">
+    <div class="flex h-screen bg-page-bg"><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shiksha Saathi - Admin Panel</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      // Unified Tailwind CSS Configuration (Dashboard Compatible)
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'sans': ['Inter', 'system-ui', 'sans-serif'],
+              'display': ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              'page-bg': '#F8FAFF',
+              'sidebar-bg': '#FFFFFF',
+              'active-item': '#4F46E5',
+              'active-item-text': '#FFFFFF',
+              'subtle-text': '#6B7280',
+              'heading-text': '#111827',
+              'card-bg': '#FFFFFF',
+              'border-color': '#E5E7EB',
+              'accent-blue': '#3B82F6',
+              'accent-purple': '#8B5CF6',
+              'success-green': '#10B981',
+              'warning-amber': '#F59E0B',
+              'error-red': '#EF4444',
+              // Legacy compatibility colors
+              'light-bg': '#F8FAFF',
+              'brand-blue': '#3B82F6',
+              'brand-light': '#eff6ff',
+              'info-blue': '#0ea5e9',
+            },
+            boxShadow: {
+              'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .table-responsive::-webkit-scrollbar { height: 8px; }
+      .table-responsive::-webkit-scrollbar-track { background: #f1f5f9; }
+      .table-responsive::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+      
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.9);
+      }
+      
+      .metric-card {
+        transition: all 0.3s ease;
+      }
+      
+      .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Fix container width issues */
+      .content-panel {
+        width: 100%;
+        max-width: none;
+      }
+      
+      .flex-1 {
+        min-width: 0; /* This prevents flex items from overflowing */
+      }
+    </style>
+</head>
+<body class="bg-page-bg font-sans">
+    <div class="flex h-screen bg-page-bg w-full">
+        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
+            <nav class="flex flex-col h-full p-4">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-display font-bold text-lg">SS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-display font-bold text-heading-text">Shiksha Saathi</h1>
+                        <p class="text-xs text-subtle-text">Admin Panel</p>
+                    </div>
+                </div>
+
+                <div id="sidebar-nav">
+                    <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1" data-target="dashboard" data-title="Dashboard" data-subtitle="Monitor and manage your bot's performance">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3" viewBox="0 0 256 256"><path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77Z"/></svg>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+
+                    <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="queries" data-title="Queries Management" data-subtitle="Monitor and resolve user queries">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/></svg>
+                        <span class="font-medium">Queries</span>
+                    </a>
+
+                    <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="knowledge-base" data-title="Knowledge Base" data-subtitle="Manage bot's knowledge and training data">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M224,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h64a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Z"/></svg>
+                        <span class="font-medium">Knowledge Base</span>
+                    </a>
+
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <p class="px-3 text-xs font-medium text-subtle-text uppercase tracking-wider mb-3">Management</p>
+                        
+                        <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="settings" data-title="Settings" data-subtitle="Configure your bot's behavior and preferences">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/></svg>
+                            <span class="font-medium">Settings</span>
+                        </a>
+
+                        <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="help" data-title="Help & Support" data-subtitle="Find answers and get assistance">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176Z"/></svg>
+                            <span class="font-medium">Help</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="flex-1 flex flex-col w-full min-w-0">
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 sticky top-0 z-10 w-full">
+                <div class="flex items-center justify-between w-full">
+                    <div>
+                        <h1 id="main-title" class="text-2xl font-display font-bold text-heading-text"></h1>
+                        <p id="main-subtitle" class="text-subtle-text mt-1"></p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="date" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-transparent text-sm" value="2025-09-30">
+                        </div>
+                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-auto p-6 w-full">
+                
+                <div id="dashboard-content" class="content-panel">
+                    <section>
+                      <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Key Metrics</h2>
+                      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                              <div class="flex items-center justify-between mb-3">
+                                  <p class="text-sm font-medium text-subtle-text">Total Queries Today</p>
+                                  <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                          <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H216v48H40ZM40,200V120H216v80Z"/>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">1,234</p>
+                              <p class="text-xs text-success-green font-medium">+12% from yesterday</p>
+                          </div>
+                          
+                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                              <div class="flex items-center justify-between mb-3">
+                                  <p class="text-sm font-medium text-subtle-text">Success Rate</p>
+                                  <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                          <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"/>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">95%</p>
+                              <p class="text-xs text-success-green font-medium">Answered successfully</p>
+                          </div>
+                          
+                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                              <div class="flex items-center justify-between mb-3">
+                                  <p class="text-sm font-medium text-subtle-text">Avg. Confidence</p>
+                                  <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-purple" viewBox="0 0 256 256">
+                                          <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">85%</p>
+                              <p class="text-xs text-warning-amber font-medium">AI confidence score</p>
+                          </div>
+                          
+                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                              <div class="flex items-center justify-between mb-3">
+                                  <p class="text-sm font-medium text-subtle-text">Human Handoffs</p>
+                                  <div class="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-warning-amber" viewBox="0 0 256 256">
+                                          <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.27,98.63a8,8,0,0,1-11.07,2.22A79.71,79.71,0,0,0,196,188a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.94-14.85,60,60,0,0,1,55.53,105.64,95.83,95.83,0,0,1,47.22,37.71A8,8,0,0,1,250.27,206.63Z"/>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">50</p>
+                              <p class="text-xs text-error-red font-medium">-8% from last week</p>
+                          </div>
+                          
+                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                              <div class="flex items-center justify-between mb-3">
+                                  <p class="text-sm font-medium text-subtle-text">Documents Indexed</p>
+                                  <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-indigo-600" viewBox="0 0 256 256">
+                                          <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">500</p>
+                              <p class="text-xs text-success-green font-medium">Knowledge base size</p>
+                          </div>
+                      </div>
+                    </section>
+
+                    <section class="mt-12">
+                      <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Visual Insights</h2>
+                      <div class="space-y-8">
+                        <!-- Query Volume Trend -->
+                        <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                          <div class="flex items-center justify-between mb-6">
+                              <div>
+                                  <p class="font-display text-lg font-semibold text-heading-text">Query Volume Trend</p>
+                                  <p class="text-sm text-subtle-text mt-1">Daily query patterns and growth metrics</p>
+                              </div>
+                              <div class="text-right">
+                                  <p class="text-2xl font-bold text-heading-text">+15%</p>
+                                  <p class="text-sm font-medium text-success-green">↗ Growth rate</p>
+                              </div>
+                          </div>
+                          <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                              <canvas id="queryVolumeChart" width="400" height="200"></canvas>
+                          </div>
+                        </div>
+                        
+                        <!-- Human Handoff Trend -->
+                        <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                          <div class="flex items-center justify-between mb-6">
+                              <div>
+                                  <p class="font-display text-lg font-semibold text-heading-text">Human Handoff Trend</p>
+                                  <p class="text-sm text-subtle-text mt-1">Cases requiring human intervention</p>
+                              </div>
+                              <div class="text-right">
+                                  <p class="text-2xl font-bold text-heading-text">20%</p>
+                                  <p class="text-sm font-medium text-error-red">↓ -5% decrease</p>
+                              </div>
+                          </div>
+                          <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                              <canvas id="handoffTrendChart" width="400" height="200"></canvas>
+                          </div>
+                        </div>
+                        
+                        <!-- Bot Performance Over Time -->
+                        <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                          <div class="flex items-center justify-between mb-6">
+                              <div>
+                                  <p class="font-display text-lg font-semibold text-heading-text">Bot Performance Over Time</p>
+                                  <p class="text-sm text-subtle-text mt-1">Accuracy and response time metrics</p>
+                              </div>
+                              <div class="text-right">
+                                  <p class="text-2xl font-bold text-heading-text">92%</p>
+                                  <p class="text-sm font-medium text-success-green">Avg. accuracy</p>
+                              </div>
+                          </div>
+                          <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                              <canvas id="performanceChart" width="400" height="200"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section class="mt-12">
+                      <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Confusion Hotspots</h2>
+                      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Table Section -->
+                        <div class="lg:col-span-2">
+                          <div class="table-responsive rounded-2xl bg-card-bg shadow-card border border-border-color overflow-hidden">
+                            <div class="px-6 py-4 border-b border-border-color">
+                                <h3 class="font-medium text-heading-text">Most Problematic Topics</h3>
+                                <p class="text-sm text-subtle-text mt-1">Areas where the bot struggles most</p>
+                            </div>
+                            <table class="min-w-full text-left">
+                              <thead class="bg-gray-50">
+                                <tr class="border-b border-border-color">
+                                  <th class="px-6 py-4 text-sm font-semibold text-heading-text">Topic</th>
+                                  <th class="px-6 py-4 text-sm font-semibold text-heading-text">Frequency</th>
+                                  <th class="px-6 py-4 text-sm font-semibold text-heading-text">Success Rate</th>
+                                  <th class="px-6 py-4 text-sm font-semibold text-heading-text">Action</th>
+                                </tr>
+                              </thead>
+                              <tbody class="divide-y divide-border-color">
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="px-6 py-4">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-2 w-2 rounded-full bg-error-red"></div>
+                                          <span class="text-sm font-medium text-heading-text">Returns Policy</span>
+                                      </div>
+                                  </td>
+                                  <td class="px-6 py-4 text-sm text-subtle-text">25</td>
+                                  <td class="px-6 py-4">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">65%</span>
+                                  </td>
+                                  <td class="px-6 py-4">
+                                      <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                                  </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="px-6 py-4">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-2 w-2 rounded-full bg-warning-amber"></div>
+                                          <span class="text-sm font-medium text-heading-text">Shipping Delays</span>
+                                      </div>
+                                  </td>
+                                  <td class="px-6 py-4 text-sm text-subtle-text">20</td>
+                                  <td class="px-6 py-4">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">72%</span>
+                                  </td>
+                                  <td class="px-6 py-4">
+                                      <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                                  </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="px-6 py-4">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-2 w-2 rounded-full bg-warning-amber"></div>
+                                          <span class="text-sm font-medium text-heading-text">Product Availability</span>
+                                      </div>
+                                  </td>
+                                  <td class="px-6 py-4 text-sm text-subtle-text">15</td>
+                                  <td class="px-6 py-4">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">78%</span>
+                                  </td>
+                                  <td class="px-6 py-4">
+                                      <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                                  </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="px-6 py-4">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-2 w-2 rounded-full bg-success-green"></div>
+                                          <span class="text-sm font-medium text-heading-text">Payment Issues</span>
+                                      </div>
+                                  </td>
+                                  <td class="px-6 py-4 text-sm text-subtle-text">12</td>
+                                  <td class="px-6 py-4">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">85%</span>
+                                  </td>
+                                  <td class="px-6 py-4">
+                                      <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                                  </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="px-6 py-4">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-2 w-2 rounded-full bg-success-green"></div>
+                                          <span class="text-sm font-medium text-heading-text">Account Management</span>
+                                      </div>
+                                  </td>
+                                  <td class="px-6 py-4 text-sm text-subtle-text">8</td>
+                                  <td class="px-6 py-4">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">90%</span>
+                                  </td>
+                                  <td class="px-6 py-4">
+                                      <button class="text-accent-blue hover:text-blue-700 text-sm font-medium">Review</button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        
+                        <!-- Pie Chart Section -->
+                        <div class="lg:col-span-1">
+                          <div class="rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                            <div class="mb-6">
+                                <h3 class="font-medium text-heading-text">Topic Distribution</h3>
+                                <p class="text-sm text-subtle-text mt-1">Breakdown of confusion areas</p>
+                            </div>
+                            <div class="flex items-center justify-center">
+                                <canvas id="confusionPieChart" width="280" height="280"></canvas>
+                            </div>
+                            <div class="mt-6 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-3 w-3 rounded-full bg-red-500"></div>
+                                        <span class="text-sm text-subtle-text">Returns Policy</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-heading-text">31.3%</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-3 w-3 rounded-full bg-orange-500"></div>
+                                        <span class="text-sm text-subtle-text">Shipping Delays</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-heading-text">25%</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-3 w-3 rounded-full bg-yellow-500"></div>
+                                        <span class="text-sm text-subtle-text">Product Availability</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-heading-text">18.8%</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-3 w-3 rounded-full bg-blue-500"></div>
+                                        <span class="text-sm text-subtle-text">Payment Issues</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-heading-text">15%</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="h-3 w-3 rounded-full bg-green-500"></div>
+                                        <span class="text-sm text-subtle-text">Account Management</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-heading-text">10%</span>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                </div>
+
+                <div id="queries-content" class="content-panel hidden">
+                    <!-- Query Statistics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-subtle-text text-sm font-medium">Total Queries</p>
+                                    <p class="text-2xl font-bold text-heading-text mt-1">1,247</p>
+                                    <p class="text-success-green text-sm mt-1">+12% from yesterday</p>
+                                </div>
+                                <div class="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-subtle-text text-sm font-medium">Answered</p>
+                                    <p class="text-2xl font-bold text-heading-text mt-1">1,089</p>
+                                    <p class="text-success-green text-sm mt-1">87.3% success rate</p>
+                                </div>
+                                <div class="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                        <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-subtle-text text-sm font-medium">Needs Review</p>
+                                    <p class="text-2xl font-bold text-heading-text mt-1">89</p>
+                                    <p class="text-warning-amber text-sm mt-1">Requires attention</p>
+                                </div>
+                                <div class="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-warning-amber" viewBox="0 0 256 256">
+                                        <path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-subtle-text text-sm font-medium">Unanswered</p>
+                                    <p class="text-2xl font-bold text-heading-text mt-1">69</p>
+                                    <p class="text-error-red text-sm mt-1">Urgent action needed</p>
+                                </div>
+                                <div class="h-12 w-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-error-red" viewBox="0 0 256 256">
+                                        <path d="M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Queries Feed -->
+                    <section class="mb-8">
+                        <div class="rounded-2xl bg-card-bg shadow-card border border-border-color p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                            <path d="M224,128a96,96,0,1,1-96-96A96.11,96.11,0,0,1,224,128ZM128,48a80,80,0,1,0,80,80A80.09,80.09,0,0,0,128,48Zm16,40a8,8,0,0,1,8,8v32a8,8,0,0,1-16,0V104H120a8,8,0,0,1,0-16Z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-xl font-display font-semibold text-heading-text">Recent Queries Feed</h2>
+                                        <p class="text-subtle-text text-sm">Real-time user query monitoring</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors">Refresh</button>
+                                    <button class="px-3 py-1 text-xs bg-accent-blue text-white rounded-full hover:bg-blue-700 transition-colors">View All</button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="border border-border-color rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-heading-text mb-2">What are the tuition fees for the upcoming semester?</p>
+                                            <div class="flex items-center gap-4 text-sm">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-success-green text-xs font-medium">
+                                                    <div class="w-1.5 h-1.5 bg-success-green rounded-full mr-1"></div>
+                                                    Answered
+                                                </span>
+                                                <span class="text-subtle-text">Confidence: 95%</span>
+                                                <span class="text-subtle-text">Category: Fees</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right text-sm text-subtle-text">
+                                            <p>2 hours ago</p>
+                                            <p class="text-xs">User #1247</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-border-color rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-heading-text mb-2">When is the deadline for exam registration?</p>
+                                            <div class="flex items-center gap-4 text-sm">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-success-green text-xs font-medium">
+                                                    <div class="w-1.5 h-1.5 bg-success-green rounded-full mr-1"></div>
+                                                    Answered
+                                                </span>
+                                                <span class="text-subtle-text">Confidence: 88%</span>
+                                                <span class="text-subtle-text">Category: Exams</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right text-sm text-subtle-text">
+                                            <p>3 hours ago</p>
+                                            <p class="text-xs">User #1246</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-border-color rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-heading-text mb-2">Can I apply for multiple scholarships?</p>
+                                            <div class="flex items-center gap-4 text-sm">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full bg-amber-100 text-warning-amber text-xs font-medium">
+                                                    <div class="w-1.5 h-1.5 bg-warning-amber rounded-full mr-1"></div>
+                                                    Needs Review
+                                                </span>
+                                                <span class="text-subtle-text">Confidence: 75%</span>
+                                                <span class="text-subtle-text">Category: Scholarships</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right text-sm text-subtle-text">
+                                            <p>4 hours ago</p>
+                                            <p class="text-xs">User #1245</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border border-border-color rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-heading-text mb-2">What is the process for appealing a grade?</p>
+                                            <div class="flex items-center gap-4 text-sm">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-error-red text-xs font-medium">
+                                                    <div class="w-1.5 h-1.5 bg-error-red rounded-full mr-1"></div>
+                                                    Unanswered
+                                                </span>
+                                                <span class="text-subtle-text">Confidence: 60%</span>
+                                                <span class="text-subtle-text">Category: Academic</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right text-sm text-subtle-text">
+                                            <p>5 hours ago</p>
+                                            <p class="text-xs">User #1244</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Categorized View -->
+                    <section class="mb-8">
+                        <div class="rounded-2xl bg-card-bg shadow-card border border-border-color p-6">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-indigo-600" viewBox="0 0 256 256">
+                                        <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-display font-semibold text-heading-text">Query Categories</h2>
+                                    <p class="text-subtle-text text-sm">Filter by status and topic</p>
+                                </div>
+                            </div>
+
+                            <!-- Status Tabs -->
+                            <div class="border-b border-border-color mb-6">
+                                <nav class="flex space-x-8">
+                                    <button class="py-2 px-1 border-b-2 border-transparent text-subtle-text hover:text-accent-blue hover:border-blue-300 font-medium text-sm transition-colors">
+                                        All Queries
+                                    </button>
+                                    <button class="py-2 px-1 border-b-2 border-accent-blue text-accent-blue font-medium text-sm">
+                                        Unanswered
+                                    </button>
+                                    <button class="py-2 px-1 border-b-2 border-transparent text-subtle-text hover:text-accent-blue hover:border-blue-300 font-medium text-sm transition-colors">
+                                        Needs Review
+                                    </button>
+                                    <button class="py-2 px-1 border-b-2 border-transparent text-subtle-text hover:text-accent-blue hover:border-blue-300 font-medium text-sm transition-colors">
+                                        Escalated
+                                    </button>
+                                </nav>
+                            </div>
+
+                            <!-- Category Tags -->
+                            <div class="flex flex-wrap gap-3">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-accent-blue text-sm font-medium cursor-pointer hover:bg-blue-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                        <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                    </svg>
+                                    Fees (23)
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-success-green text-sm font-medium cursor-pointer hover:bg-green-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                        <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                    </svg>
+                                    Exams (18)
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-600 text-sm font-medium cursor-pointer hover:bg-purple-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                        <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                    </svg>
+                                    Scholarships (15)
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-sm font-medium cursor-pointer hover:bg-orange-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                        <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                    </svg>
+                                    Academic (12)
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-error-red text-sm font-medium cursor-pointer hover:bg-red-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                        <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                    </svg>
+                                    Technical (8)
+                                </span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Unanswered Queries Resolution -->
+                    <section class="mb-8">
+                        <div class="rounded-2xl bg-card-bg shadow-card border border-border-color p-6">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-error-red" viewBox="0 0 256 256">
+                                        <path d="M216,48H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,48Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-display font-semibold text-heading-text">Query Resolution</h2>
+                                    <p class="text-subtle-text text-sm">Resolve unanswered queries and improve bot responses</p>
+                                </div>
+                            </div>
+
+                            <!-- Query Item -->
+                            <div class="border border-red-200 rounded-xl p-6 bg-red-50/30">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-error-red text-xs font-medium">
+                                                <div class="w-1.5 h-1.5 bg-error-red rounded-full mr-1"></div>
+                                                Unanswered
+                                            </span>
+                                            <span class="text-xs text-subtle-text">5 hours ago</span>
+                                            <span class="text-xs text-subtle-text">User #1244</span>
+                                        </div>
+                                        <p class="font-medium text-heading-text text-lg mb-2">What is the process for appealing a grade?</p>
+                                        <div class="flex items-center gap-4 text-sm text-subtle-text mb-4">
+                                            <span>Bot Confidence: 60%</span>
+                                            <span>Category: Academic</span>
+                                            <span>Similar queries: 3</span>
+                                        </div>
+                                    </div>
+                                    <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                        Quick Resolve
+                                    </button>
+                                </div>
+
+                                <!-- Resolution Interface -->
+                                <div class="bg-white rounded-xl p-4 border border-border-color">
+                                    <label class="block text-sm font-medium text-heading-text mb-2">Provide Answer</label>
+                                    <textarea 
+                                        placeholder="Provide a comprehensive answer to help resolve this query..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-transparent resize-none h-32 text-sm placeholder-gray-500"
+                                    ></textarea>
+                                    
+                                    <div class="flex items-center justify-between mt-4">
+                                        <div class="flex items-center gap-4">
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded border-gray-300 text-accent-blue focus:ring-accent-blue mr-2">
+                                                <span class="text-sm text-subtle-text">Add to knowledge base</span>
+                                            </label>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded border-gray-300 text-accent-blue focus:ring-accent-blue mr-2">
+                                                <span class="text-sm text-subtle-text">Notify user</span>
+                                            </label>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                                                Cancel
+                                            </button>
+                                            <button class="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                                Mark as Resolved
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Analytics and Trends -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Top Repeated Questions -->
+                        <div class="rounded-2xl bg-card-bg shadow-card border border-border-color p-6">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                        <path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176ZM104,120v24a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32-16v40a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32-16v56a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-display font-semibold text-heading-text">Top Repeated Questions</h3>
+                                    <p class="text-subtle-text text-sm">This week's most frequent queries</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                    <span class="text-sm font-medium text-heading-text truncate">What are the tuition fees for the upcoming semester?</span>
+                                    <span class="text-xs bg-accent-blue text-white px-2 py-1 rounded-full">47×</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                    <span class="text-sm font-medium text-heading-text truncate">When is the deadline for exam registration?</span>
+                                    <span class="text-xs bg-accent-blue text-white px-2 py-1 rounded-full">32×</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                    <span class="text-sm font-medium text-heading-text truncate">Can I apply for multiple scholarships?</span>
+                                    <span class="text-xs bg-accent-blue text-white px-2 py-1 rounded-full">28×</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                    <span class="text-sm font-medium text-heading-text truncate">What is the process for appealing a grade?</span>
+                                    <span class="text-xs bg-accent-blue text-white px-2 py-1 rounded-full">23×</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                    <span class="text-sm font-medium text-heading-text truncate">How do I request a transcript?</span>
+                                    <span class="text-xs bg-accent-blue text-white px-2 py-1 rounded-full">19×</span>
+                                </div>
+                            </div>
+
+                            <button class="w-full mt-4 text-accent-blue hover:bg-blue-50 py-2 rounded-lg text-sm font-medium transition-colors">
+                                View All Trending Questions
+                            </button>
+                        </div>
+
+                        <!-- Emerging Topics -->
+                        <div class="rounded-2xl bg-card-bg shadow-card border border-border-color p-6">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-purple-600" viewBox="0 0 256 256">
+                                        <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-display font-semibold text-heading-text">Emerging Topics</h3>
+                                    <p class="text-subtle-text text-sm">New trending query categories</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-purple-500 pl-4 py-2">
+                                    <p class="font-medium text-heading-text text-sm">New Online Learning Platform</p>
+                                    <p class="text-xs text-subtle-text">15 queries in last 24h • +127% increase</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">Trending</span>
+                                        <span class="text-xs text-subtle-text">Action needed</span>
+                                    </div>
+                                </div>
+
+                                <div class="border-l-4 border-amber-500 pl-4 py-2">
+                                    <p class="font-medium text-heading-text text-sm">Upcoming Career Fair</p>
+                                    <p class="text-xs text-subtle-text">12 queries in last 24h • +89% increase</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="text-xs bg-amber-100 text-amber-600 px-2 py-1 rounded-full">Rising</span>
+                                        <span class="text-xs text-subtle-text">Monitor</span>
+                                    </div>
+                                </div>
+
+                                <div class="border-l-4 border-red-500 pl-4 py-2">
+                                    <p class="font-medium text-heading-text text-sm">Recent Policy Changes</p>
+                                    <p class="text-xs text-subtle-text">8 queries in last 24h • +65% increase</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="text-xs bg-red-100 text-error-red px-2 py-1 rounded-full">Critical</span>
+                                        <span class="text-xs text-subtle-text">Needs KB update</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="w-full mt-4 text-purple-600 hover:bg-purple-50 py-2 rounded-lg text-sm font-medium transition-colors">
+                                Analyze Emerging Patterns
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="knowledge-base-content" class="content-panel hidden">
+            <!-- Overview Stats -->
+            <section class="mb-8">
+              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Total Documents</p>
+                          <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                  <path d="M208,24H72A32,32,0,0,0,40,56V224a8,8,0,0,0,8,8H192a8,8,0,0,0,0-16H56a16,16,0,0,1,16-16H208a8,8,0,0,0,8-8V32A8,8,0,0,0,208,24ZM72,40H200V184H72a31.82,31.82,0,0,0-16,4.29V56A16,16,0,0,1,72,40Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">27</p>
+                      <p class="text-xs text-success-green font-medium">+3 this week</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Active Documents</p>
+                          <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                  <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">22</p>
+                      <p class="text-xs text-success-green font-medium">81% active rate</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Storage Used</p>
+                          <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-accent-purple" viewBox="0 0 256 256">
+                                  <path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48ZM32,64H224V88H32ZM32,192V104H224v88Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">2.4GB</p>
+                      <p class="text-xs text-warning-amber font-medium">Of 10GB limit</p>
+                  </div>
+                  
+                  <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                      <div class="flex items-center justify-between mb-3">
+                          <p class="text-sm font-medium text-subtle-text">Last Updated</p>
+                          <div class="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-warning-amber" viewBox="0 0 256 256">
+                                  <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"/>
+                              </svg>
+                          </div>
+                      </div>
+                      <p class="text-3xl font-bold tracking-tight text-heading-text mb-1">2h</p>
+                      <p class="text-xs text-subtle-text font-medium">ago</p>
+                  </div>
+              </div>
+            </section>
+
+            <!-- Document Management Section -->
+            <section>
+              <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Document Management</h2>
+              
+              <!-- Search and Filters -->
+              <div class="rounded-2xl bg-card-bg p-6 shadow-card border border-border-color mb-6">
+                  <div class="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6">
+                      <div class="flex-1 max-w-md">
+                          <div class="relative">
+                              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-subtle-text" viewBox="0 0 256 256">
+                                      <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>
+                                  </svg>
+                              </div>
+                              <input
+                                  type="text"
+                                  placeholder="Search documents..."
+                                  class="block w-full pl-10 pr-4 py-3 border border-border-color rounded-xl text-sm focus:ring-2 focus:ring-active-item focus:border-active-item"
+                              />
+                          </div>
+                      </div>
+                      
+                      <div class="flex gap-3">
+                          <button class="inline-flex items-center px-4 py-2 border border-border-color rounded-lg text-sm font-medium text-heading-text bg-white hover:bg-gray-50 transition-colors">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                  <path d="M200,136H176V112a8,8,0,0,0-16,0v24H136a8,8,0,0,0,0,16h24v24a8,8,0,0,0,16,0V152h24a8,8,0,0,0,0-16Z"/>
+                              </svg>
+                              All Documents
+                          </button>
+                          <button class="inline-flex items-center px-4 py-2 border border-border-color rounded-lg text-sm font-medium text-heading-text bg-white hover:bg-gray-50 transition-colors">
+                              Active Only
+                          </button>
+                          <button class="inline-flex items-center px-4 py-2 border border-border-color rounded-lg text-sm font-medium text-heading-text bg-white hover:bg-gray-50 transition-colors">
+                              Archived
+                          </button>
+                      </div>
+                  </div>
+                  <!-- Documents Table -->
+                  <div class="overflow-x-auto">
+                      <table class="min-w-full">
+                          <thead>
+                              <tr class="border-b border-border-color">
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">
+                                      <input type="checkbox" id="selectAll" class="rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Document</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Type</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Size</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Upload Date</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Last Used</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Status</th>
+                                  <th class="text-left py-4 px-6 font-semibold text-heading-text text-sm">Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody class="divide-y divide-border-color">
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-red-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Company_Policies_2024.pdf</p>
+                                              <p class="text-sm text-subtle-text">HR Guidelines and Procedures</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">PDF</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">2.4 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Aug 15, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">2 hours ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-warning-amber hover:text-amber-700 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-colors text-center">Archive</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+                              
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-blue-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Product_Catalog_Q3.docx</p>
+                                              <p class="text-sm text-subtle-text">Latest product specifications</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">DOCX</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">1.8 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Sep 22, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">1 day ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-warning-amber hover:text-amber-700 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-colors text-center">Archive</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-green-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">FAQ_Database.xlsx</p>
+                                              <p class="text-sm text-subtle-text">Frequently asked questions</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">XLSX</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">0.9 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Oct 05, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">3 days ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-warning-amber hover:text-amber-700 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-colors text-center">Archive</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-gray-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Legacy_Manual_v1.pdf</p>
+                                              <p class="text-sm text-subtle-text">Outdated user manual</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">PDF</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">3.2 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Nov 18, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">2 weeks ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Archived</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-success-green hover:text-green-700 bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors text-center">Restore</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+
+                              <tr class="hover:bg-gray-50 transition-colors">
+                                  <td class="py-4 px-6">
+                                      <input type="checkbox" class="document-checkbox rounded border-border-color text-active-item focus:ring-active-item" />
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-3">
+                                          <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-gray-600" viewBox="0 0 256 256">
+                                                  <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                                              </svg>
+                                          </div>
+                                          <div>
+                                              <p class="font-medium text-heading-text">Old_Training_Materials.pptx</p>
+                                              <p class="text-sm text-subtle-text">Outdated presentation slides</p>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">PPTX</span>
+                                  </td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">5.1 MB</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">Dec 01, 2023</td>
+                                  <td class="py-4 px-6 text-sm text-subtle-text">1 month ago</td>
+                                  <td class="py-4 px-6">
+                                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Archived</span>
+                                  </td>
+                                  <td class="py-4 px-6">
+                                      <div class="flex items-center gap-2">
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-success-green hover:text-green-700 bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors text-center">Restore</button>
+                                          <button class="w-16 px-2 py-1 text-xs font-medium text-error-red hover:text-red-700 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors text-center">Delete</button>
+                                      </div>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  
+                  <!-- Bulk Actions - Hidden by default, expands within the card -->
+                  <div id="bulkActionsSection" class="hidden border-t border-border-color mt-6 pt-6 animate-fade-in">
+                      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
+                          <div class="flex items-center justify-between mb-4">
+                              <div class="flex items-center gap-3">
+                                  <div class="h-8 w-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-blue-600" viewBox="0 0 256 256">
+                                          <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/>
+                                      </svg>
+                                  </div>
+                                  <div>
+                                      <h4 class="font-medium text-heading-text">Bulk Actions</h4>
+                                      <p class="text-sm text-subtle-text"><span id="selectedCount">0</span> documents selected</p>
+                                  </div>
+                              </div>
+                              <button id="clearSelection" class="text-sm text-subtle-text hover:text-heading-text transition-colors font-medium">
+                                  Clear selection
+                              </button>
+                          </div>
+                          
+                          <div class="flex flex-wrap gap-2">
+                              <button class="inline-flex items-center px-3 py-2 bg-warning-amber hover:bg-amber-600 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M184,89.57V84c0-25.08-37.83-44-88-44S8,58.92,8,84v40c0,20.89,26.25,37.49,64,42.46V172c0,25.08,37.83,44,88,44s88-18.92,88-44V132C248,111.3,222.58,94.68,184,89.57ZM232,132c0,13.22-30.79,28-72,28-3.73,0-7.43-.13-11.08-.37C170.49,151.77,184,139,184,124V105.74C213.87,110.19,232,122.27,232,132Z"/>
+                                  </svg>
+                                  Archive Selected
+                              </button>
+                              <button class="inline-flex items-center px-3 py-2 bg-success-green hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/>
+                                  </svg>
+                                  Restore Selected
+                              </button>
+                              <button class="inline-flex items-center px-3 py-2 bg-error-red hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16Z"/>
+                                  </svg>
+                                  Delete Selected
+                              </button>
+                              <button class="inline-flex items-center px-3 py-2 border border-blue-300 text-blue-700 hover:bg-blue-100 bg-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                      <path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96H80a8,8,0,0,1,0,16H56v96H200V112H176a8,8,0,0,1,0-16h24A16,16,0,0,1,216,112ZM93.66,69.66,120,43.31V128a8,8,0,0,0,16,0V43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66Z"/>
+                                  </svg>
+                                  Export Selected
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </section>
+            <!-- Document Upload Section -->
+            <section class="mt-12">
+                <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Upload Documents</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- File Upload -->
+                    <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-medium text-heading-text">File Upload</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="upload-area border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
+                                        <path d="M74.34,85.66A8,8,0,0,1,85.66,74.34L120,108.69V24a8,8,0,0,1,16,0v84.69l34.34-34.35a8,8,0,0,1,11.32,11.32l-48,48a8,8,0,0,1-11.32,0ZM216,152v56a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H200V152a8,8,0,0,1,16,0Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-heading-text mb-2">Drop files here or click to browse</p>
+                                    <p class="text-sm text-subtle-text">PDF, DOC, DOCX, TXT files up to 10MB</p>
+                                </div>
+                                <button class="inline-flex items-center px-6 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-active-item hover:bg-indigo-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                        <path d="M200,136H176V112a8,8,0,0,0-16,0v24H136a8,8,0,0,0,0,16h24v24a8,8,0,0,0,16,0V152h24a8,8,0,0,0,0-16Z"/>
+                                    </svg>
+                                    Choose Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web Crawling -->
+                    <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-medium text-heading-text">Web Content Import</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,152H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,152Zm-3.9-16H140.5a140.81,140.81,0,0,1,0-32H98.1a140.81,140.81,0,0,1,0,32ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128Z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-heading-text mb-2">Website URL</label>
+                                <input
+                                    type="url"
+                                    placeholder="https://example.com"
+                                    class="block w-full px-4 py-3 border border-border-color rounded-lg text-sm focus:ring-2 focus:ring-active-item focus:border-active-item"
+                                />
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="rounded border-border-color text-active-item focus:ring-active-item" />
+                                    <div>
+                                        <p class="text-sm font-medium text-heading-text">Auto-update content</p>
+                                        <p class="text-xs text-subtle-text">Check for changes daily</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-success-green hover:bg-green-700 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 256 256">
+                                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128Z"/>
+                                </svg>
+                                Import Website Content
+                            </button>
+                            
+                            <p class="text-xs text-subtle-text mt-2">
+                                The bot will crawl and index content from the specified website automatically.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                </div>
+
+                <div id="settings-content" class="content-panel hidden">
+            <div class="p-6 space-y-6">
+                <!-- Bot Configuration Section -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-brand-blue" viewBox="0 0 256 256">
+                                <path d="M216,130.16q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.6,107.6,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.29,107.29,0,0,0-26.25-10.86,8,8,0,0,0-7.06,1.48L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.6,107.6,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Bot Configuration</h2>
+                            <p class="text-subtle-text text-sm">Customize your chatbot's personality and behavior</p>
+                        </div>
+                    </div>
+
+                    <!-- Bot Personality -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-heading-text mb-3">Bot Personality</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="personality" value="formal" class="peer sr-only">
+                                <div class="border-2 border-gray-200 peer-checked:border-brand-blue peer-checked:bg-blue-50 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-lg mb-2">🎓</div>
+                                    <div class="font-medium text-heading-text">Formal</div>
+                                    <div class="text-sm text-subtle-text">Professional and structured responses</div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="personality" value="friendly" class="peer sr-only" checked>
+                                <div class="border-2 border-gray-200 peer-checked:border-brand-blue peer-checked:bg-blue-50 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-lg mb-2">😊</div>
+                                    <div class="font-medium text-heading-text">Friendly</div>
+                                    <div class="text-sm text-subtle-text">Casual and conversational tone</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Response Settings -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-heading-text mb-3">Response Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-heading-text mb-2">Default Greeting Message</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" value="Hello! I'm here to help you with your questions.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-heading-text mb-2">Fallback Message</label>
+                                <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent">I'm sorry, I don't understand that question. Could you please rephrase it or ask something else?</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Settings -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-heading-text mb-3">Supported Languages</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" checked class="h-4 w-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
+                                <span class="ml-3 text-heading-text">English</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
+                                <span class="ml-3 text-heading-text">Hindi</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
+                                <span class="ml-3 text-heading-text">Spanish</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notification Settings -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-yellow-600" viewBox="0 0 256 256">
+                                <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Notifications</h2>
+                            <p class="text-subtle-text text-sm">Configure how you receive updates and alerts</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Email Notifications -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Email Notifications</div>
+                                <div class="text-sm text-subtle-text">Receive alerts for unanswered queries</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+
+                        <!-- Daily Summary -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Daily Summary Report</div>
+                                <div class="text-sm text-subtle-text">Get daily analytics and performance reports</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+
+                        <!-- Weekly Reports -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Weekly Reports</div>
+                                <div class="text-sm text-subtle-text">Comprehensive weekly performance analysis</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Management -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-purple-600" viewBox="0 0 256 256">
+                                <path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,144H32V64H224V192Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Data Management</h2>
+                            <p class="text-subtle-text text-sm">Configure data retention and privacy settings</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Data Retention -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <div class="font-medium text-heading-text">Query Logs Retention</div>
+                                    <div class="text-sm text-subtle-text">How long to keep conversation logs</div>
+                                </div>
+                                <div class="text-sm font-medium text-brand-blue">30 days</div>
+                            </div>
+                            <input type="range" min="7" max="365" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-subtle-text mt-1">
+                                <span>7 days</span>
+                                <span>1 year</span>
+                            </div>
+                        </div>
+
+                        <!-- Auto-deletion -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Auto-delete Resolved Queries</div>
+                                <div class="text-sm text-subtle-text">Automatically remove resolved queries after retention period</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Settings -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-red-600" viewBox="0 0 256 256">
+                                <path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96Zm112,152H48V96H208V208Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Security</h2>
+                            <p class="text-subtle-text text-sm">Manage security and access settings</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Rate Limiting -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Rate Limiting</div>
+                                <div class="text-sm text-subtle-text">Limit queries per user per minute</div>
+                            </div>
+                            <input type="number" value="10" min="1" max="100" class="w-20 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-blue">
+                        </div>
+
+                        <!-- Content Filtering -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Content Filtering</div>
+                                <div class="text-sm text-subtle-text">Filter inappropriate content automatically</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+            </div>
+                </div>
+
+                <div id="help-content" class="content-panel hidden">
+            <div class="flex-1 p-6 overflow-auto">
+                <!-- FAQ Section -->
+                <section class="mb-8">
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-brand-blue" viewBox="0 0 256 256">
+                                    <path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180ZM128,72c-22.06,0-40,16.15-40,36v4a8,8,0,0,0,16,0v-4c0-11,10.77-20,24-20s24,9,24,20-10.77,20-24,20a8,8,0,0,0-8,8v8a8,8,0,0,0,16,0v-.72c18.24-3.35,32-17.9,32-35.28C168,88.15,150.06,72,128,72Zm104,56A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-display font-semibold text-heading-text">Frequently Asked Questions</h2>
+                                <p class="text-subtle-text text-sm">Quick answers to common questions</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- FAQ Item 1 -->
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <button class="flex justify-between items-center w-full text-left" onclick="toggleFAQ(1)">
+                                    <h3 class="text-lg font-medium text-heading-text">How do I upload documents to the knowledge base?</h3>
+                                    <svg id="faq-icon-1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-subtle-text transition-transform" viewBox="0 0 256 256">
+                                        <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/>
+                                    </svg>
+                                </button>
+                                <div id="faq-content-1" class="hidden mt-3 text-subtle-text">
+                                    <p>Navigate to the Knowledge Base section and click "Upload Documents". You can upload PDF, DOC, or TXT files up to 10MB. The system will automatically process and index your documents for the chatbot.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 2 -->
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <button class="flex justify-between items-center w-full text-left" onclick="toggleFAQ(2)">
+                                    <h3 class="text-lg font-medium text-heading-text">How can I monitor user queries and responses?</h3>
+                                    <svg id="faq-icon-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-subtle-text transition-transform" viewBox="0 0 256 256">
+                                        <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/>
+                                    </svg>
+                                </button>
+                                <div id="faq-content-2" class="hidden mt-3 text-subtle-text">
+                                    <p>Use the Queries section to view all user interactions, response accuracy, and identify areas needing improvement. You can filter by date range, query type, and resolution status.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 3 -->
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <button class="flex justify-between items-center w-full text-left" onclick="toggleFAQ(3)">
+                                    <h3 class="text-lg font-medium text-heading-text">What file formats are supported for knowledge base documents?</h3>
+                                    <svg id="faq-icon-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-subtle-text transition-transform" viewBox="0 0 256 256">
+                                        <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/>
+                                    </svg>
+                                </button>
+                                <div id="faq-content-3" class="hidden mt-3 text-subtle-text">
+                                    <p>Currently supported formats include PDF, Microsoft Word (.doc, .docx), plain text (.txt), and markdown (.md) files. Each file should not exceed 10MB in size.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 4 -->
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <button class="flex justify-between items-center w-full text-left" onclick="toggleFAQ(4)">
+                                    <h3 class="text-lg font-medium text-heading-text">How do I customize the chatbot's responses?</h3>
+                                    <svg id="faq-icon-4" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-subtle-text transition-transform" viewBox="0 0 256 256">
+                                        <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/>
+                                    </svg>
+                                </button>
+                                <div id="faq-content-4" class="hidden mt-3 text-subtle-text">
+                                    <p>Navigate to Settings to adjust response tone, fallback messages, and conversation flow. You can also set up custom greetings and define response templates for common queries.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Support Section -->
+                <section class="mb-8">
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-green-600" viewBox="0 0 256 256">
+                                    <path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-display font-semibold text-heading-text">Contact Support</h2>
+                                <p class="text-subtle-text text-sm">Need help? Get in touch with our support team</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Support Form -->
+                            <div>
+                                <h3 class="text-lg font-medium text-heading-text mb-4">Send us a message</h3>
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-heading-text mb-2">Subject</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" placeholder="Brief description of your issue">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-heading-text mb-2">Message</label>
+                                        <textarea rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" placeholder="Describe your issue in detail"></textarea>
+                                    </div>
+                                    <button type="submit" class="bg-brand-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Send Message</button>
+                                </form>
+                            </div>
+
+                            <!-- Contact Info -->
+                            <div>
+                                <h3 class="text-lg font-medium text-heading-text mb-4">Other ways to reach us</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-brand-blue" viewBox="0 0 256 256">
+                                                <path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-heading-text">Email Support</p>
+                                            <p class="text-subtle-text text-sm">support@shiksha-saathi.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-green-600" viewBox="0 0 256 256">
+                                                <path d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46Z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-heading-text">Phone Support</p>
+                                            <p class="text-subtle-text text-sm">+1 (555) 123-4567</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-purple-600" viewBox="0 0 256 256">
+                                                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM64,105V95a64,64,0,0,1,128,0v10a8,8,0,0,1-16,0V95a48,48,0,0,0-96,0v10a8,8,0,0,1-16,0Zm96,23v64a8,8,0,0,1-16,0V128a8,8,0,0,1,16,0ZM96,128v64a8,8,0,0,1-16,0V128a8,8,0,0,1,16,0Z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-heading-text">Live Chat</p>
+                                            <p class="text-subtle-text text-sm">Available 9 AM - 6 PM EST</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Documentation Section -->
+                <section class="mb-8">
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-purple-600" viewBox="0 0 256 256">
+                                    <path d="M208,24H72A32,32,0,0,0,40,56V224a8,8,0,0,0,13.66,5.66L64,219.31l10.34,10.35a8,8,0,0,0,11.32,0L96,219.31l10.34,10.35a8,8,0,0,0,11.32,0L128,219.31l10.34,10.35a8,8,0,0,0,11.32,0L160,219.31l10.34,10.35a8,8,0,0,0,11.32,0L192,219.31l10.34,10.35A8,8,0,0,0,216,224V56A32,32,0,0,0,208,24ZM72,40H208a16,16,0,0,1,16,16V208.69l-2.34-2.35a8,8,0,0,0-11.32,0L200,216.69l-10.34-10.35a8,8,0,0,0-11.32,0L168,216.69l-10.34-10.35a8,8,0,0,0-11.32,0L136,216.69l-10.34-10.35a8,8,0,0,0-11.32,0L104,216.69,93.66,206.34a8,8,0,0,0-11.32,0L72,216.69l-10.34-10.35a8,8,0,0,0-11.32,0L56,200.69V56A16,16,0,0,1,72,40ZM168,112a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,112Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,144Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-display font-semibold text-heading-text">Documentation</h2>
+                                <p class="text-subtle-text text-sm">Comprehensive guides and tutorials</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <a href="#" class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <h3 class="font-medium text-heading-text mb-2">Getting Started Guide</h3>
+                                <p class="text-subtle-text text-sm">Learn the basics of setting up your chatbot</p>
+                            </a>
+                            <a href="#" class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <h3 class="font-medium text-heading-text mb-2">Advanced Configuration</h3>
+                                <p class="text-subtle-text text-sm">Customize your chatbot for specific needs</p>
+                            </a>
+                            <a href="#" class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                <h3 class="font-medium text-heading-text mb-2">API Reference</h3>
+                                <p class="text-subtle-text text-sm">Technical documentation for developers</p>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // --- Core Navigation and Page Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+            const contentPanels = document.querySelectorAll('.content-panel');
+            const mainTitle = document.getElementById('main-title');
+            const mainSubtitle = document.getElementById('main-subtitle');
+
+            function showPanel(targetId) {
+                // Hide all content panels
+                contentPanels.forEach(panel => {
+                    panel.classList.add('hidden');
+                });
+                
+                // Show the target panel
+                const targetPanel = document.getElementById(targetId + '-content');
+                if (targetPanel) {
+                    targetPanel.classList.remove('hidden');
+                }
+
+                // Update active state in sidebar and header
+                navLinks.forEach(link => {
+                    if (link.dataset.target === targetId) {
+                        link.classList.add('text-white', 'bg-accent-blue');
+                        link.classList.remove('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
+                        mainTitle.textContent = link.dataset.title;
+                        mainSubtitle.textContent = link.dataset.subtitle;
+                    } else {
+                        link.classList.remove('text-white', 'bg-accent-blue');
+                        link.classList.add('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
+                    }
+                });
+            }
+
+            // Add click event listeners to nav links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.dataset.target;
+                    showPanel(targetId);
+                });
+            });
+
+            // Show the default panel (Dashboard) on page load
+            showPanel('dashboard');
+            
+            // --- Page-Specific Initializations ---
+            initializeDashboardCharts();
+            initializeQueriesPage();
+            initializeKnowledgeBasePage();
+        });
+
+        // --- Dashboard Chart Logic ---
+        function initializeDashboardCharts() {
+            // Query Volume Trend Chart
+            const queryCtx = document.getElementById('queryVolumeChart');
+            if (queryCtx) {
+                new Chart(queryCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Queries',
+                            data: [120, 190, 300, 500, 200, 300, 450],
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#3B82F6',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#E5E7EB' },
+                                ticks: { color: '#6B7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6B7280' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Human Handoff Trend Chart
+            const handoffCtx = document.getElementById('handoffTrendChart');
+            if (handoffCtx) {
+                new Chart(handoffCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Handoffs',
+                            data: [12, 19, 8, 15, 10, 8, 6],
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: '#EF4444',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#E5E7EB' },
+                                ticks: { color: '#6B7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6B7280' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart');
+            if (performanceCtx) {
+                new Chart(performanceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        datasets: [{
+                            label: 'Accuracy %',
+                            data: [88, 90, 92, 94],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y'
+                        }, {
+                            label: 'Avg Response Time (s)',
+                            data: [2.5, 2.2, 2.0, 1.8],
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: '#6B7280', usePointStyle: true }
+                            },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                grid: { color: '#E5E7EB' },
+                                ticks: { color: '#6B7280' }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: { drawOnChartArea: false },
+                                ticks: { color: '#6B7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6B7280' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Confusion Hotspots Pie Chart
+            const pieCtx = document.getElementById('confusionPieChart');
+            if (pieCtx) {
+                new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Returns Policy', 'Shipping Delays', 'Product Availability', 'Payment Issues', 'Account Management'],
+                        datasets: [{
+                            data: [25, 20, 15, 12, 8],
+                            backgroundColor: [
+                                '#EF4444',
+                                '#F97316', 
+                                '#EAB308',
+                                '#3B82F6',
+                                '#10B981'
+                            ],
+                            borderWidth: 0,
+                            cutout: '60%'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1F2937',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                cornerRadius: 8,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                        return context.label + ': ' + percentage + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Queries Page Logic ---
+        function initializeQueriesPage() {
+            const queriesPanel = document.getElementById('queries-content');
+            if (!queriesPanel) return;
+
+            const tabButtons = queriesPanel.querySelectorAll('nav button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    tabButtons.forEach(tab => tab.classList.remove('border-brand-blue', 'text-brand-blue'));
+                    this.classList.add('border-brand-blue', 'text-brand-blue');
+                });
+            });
+        }
+        
+        // --- Knowledge Base Page Logic ---
+        function initializeKnowledgeBasePage() {
+            const kbPanel = document.getElementById('knowledge-base-content');
+            if (!kbPanel) return;
+            // Note: Bulk actions functionality would be added here if needed
+        }
+
+        // --- Help Page Logic (FAQ Toggle) ---
+        function toggleFAQ(id) {
+            const content = document.getElementById(`faq-content-${id}`);
+            const icon = document.getElementById(`faq-icon-${id}`);
+            if (content && icon) {
+                content.classList.toggle('hidden');
+                icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        }
+    </script>
+</body>
+</html>

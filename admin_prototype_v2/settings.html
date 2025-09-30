@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Shiksha Saathi Admin</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+        rel="stylesheet"
+        as="style"
+        onload="this.rel='stylesheet'"
+        href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Poppins', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-blue': '#1380ec',
+                        'accent-blue': '#2563eb',
+                        'heading-text': '#0d141b',
+                        'subtle-text': '#4c739a',
+                        'light-bg': '#f8fafc',
+                    },
+                    boxShadow: {
+                        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light-bg font-body">
+    <div class="flex h-screen bg-light-bg">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
+            <nav class="flex flex-col h-full p-4">
+                <!-- Logo -->
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-display font-bold text-lg">SS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-display font-bold text-heading-text">Shiksha Saathi</h1>
+                        <p class="text-xs text-subtle-text">Admin Panel</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Items -->
+                <a href="dashboard.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                        <path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77Z"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="querries.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/>
+                    </svg>
+                    <span class="font-medium">Queries</span>
+                </a>
+
+                <a href="knowledge_base.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                        <path d="M224,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h64a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Z"/>
+                    </svg>
+                    <span class="font-medium">Knowledge Base</span>
+                </a>
+
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="px-3 text-xs font-medium text-subtle-text uppercase tracking-wider mb-3">Management</p>
+                    
+                    <a href="settings.html" class="flex items-center px-3 py-2.5 text-white bg-accent-blue rounded-lg mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3" viewBox="0 0 256 256">
+                            <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/>
+                        </svg>
+                        <span class="font-medium">Settings</span>
+                    </a>
+
+                    <a href="help.html" class="flex items-center px-3 py-2.5 text-subtle-text hover:text-accent-blue hover:bg-blue-50 rounded-lg transition-all duration-200 group mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256">
+                            <path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176Z"/>
+                        </svg>
+                        <span class="font-medium">Help</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-display font-bold text-heading-text">Settings</h1>
+                        <p class="text-subtle-text mt-1">Configure your bot's behavior and preferences</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6 space-y-6">
+                <!-- Bot Configuration Section -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-brand-blue" viewBox="0 0 256 256">
+                                <path d="M216,130.16q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.6,107.6,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.29,107.29,0,0,0-26.25-10.86,8,8,0,0,0-7.06,1.48L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.6,107.6,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Bot Configuration</h2>
+                            <p class="text-subtle-text text-sm">Customize your chatbot's personality and behavior</p>
+                        </div>
+                    </div>
+
+                    <!-- Bot Personality -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-heading-text mb-3">Bot Personality</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="personality" value="formal" class="peer sr-only">
+                                <div class="border-2 border-gray-200 peer-checked:border-brand-blue peer-checked:bg-blue-50 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-lg mb-2">🎓</div>
+                                    <div class="font-medium text-heading-text">Formal</div>
+                                    <div class="text-sm text-subtle-text">Professional and structured responses</div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="personality" value="friendly" class="peer sr-only" checked>
+                                <div class="border-2 border-gray-200 peer-checked:border-brand-blue peer-checked:bg-blue-50 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-lg mb-2">😊</div>
+                                    <div class="font-medium text-heading-text">Friendly</div>
+                                    <div class="text-sm text-subtle-text">Casual and conversational tone</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Response Settings -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-heading-text mb-3">Response Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-heading-text mb-2">Default Greeting Message</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" value="Hello! I'm here to help you with your questions.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-heading-text mb-2">Fallback Message</label>
+                                <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent">I'm sorry, I don't understand that question. Could you please rephrase it or ask something else?</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Settings -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-heading-text mb-3">Supported Languages</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" checked class="h-4 w-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
+                                <span class="ml-3 text-heading-text">English</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
+                                <span class="ml-3 text-heading-text">Hindi</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
+                                <span class="ml-3 text-heading-text">Spanish</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notification Settings -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-yellow-600" viewBox="0 0 256 256">
+                                <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Notifications</h2>
+                            <p class="text-subtle-text text-sm">Configure how you receive updates and alerts</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Email Notifications -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Email Notifications</div>
+                                <div class="text-sm text-subtle-text">Receive alerts for unanswered queries</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+
+                        <!-- Daily Summary -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Daily Summary Report</div>
+                                <div class="text-sm text-subtle-text">Get daily analytics and performance reports</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+
+                        <!-- Weekly Reports -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Weekly Reports</div>
+                                <div class="text-sm text-subtle-text">Comprehensive weekly performance analysis</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Management -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-purple-600" viewBox="0 0 256 256">
+                                <path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,144H32V64H224V192Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Data Management</h2>
+                            <p class="text-subtle-text text-sm">Configure data retention and privacy settings</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Data Retention -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <div class="font-medium text-heading-text">Query Logs Retention</div>
+                                    <div class="text-sm text-subtle-text">How long to keep conversation logs</div>
+                                </div>
+                                <div class="text-sm font-medium text-brand-blue">30 days</div>
+                            </div>
+                            <input type="range" min="7" max="365" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs text-subtle-text mt-1">
+                                <span>7 days</span>
+                                <span>1 year</span>
+                            </div>
+                        </div>
+
+                        <!-- Auto-deletion -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Auto-delete Resolved Queries</div>
+                                <div class="text-sm text-subtle-text">Automatically remove resolved queries after retention period</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Settings -->
+                <section class="bg-white rounded-2xl shadow-card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-red-600" viewBox="0 0 256 256">
+                                <path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96Zm112,152H48V96H208V208Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-display font-semibold text-heading-text">Security</h2>
+                            <p class="text-subtle-text text-sm">Manage security and access settings</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Rate Limiting -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Rate Limiting</div>
+                                <div class="text-sm text-subtle-text">Limit queries per user per minute</div>
+                            </div>
+                            <input type="number" value="10" min="1" max="100" class="w-20 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-blue">
+                        </div>
+
+                        <!-- Content Filtering -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-heading-text">Content Filtering</div>
+                                <div class="text-sm text-subtle-text">Filter inappropriate content automatically</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

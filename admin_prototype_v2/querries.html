@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queries - Shiksha Saathi Admin</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'display': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-blue': '#2563eb',
+                        'brand-light': '#eff6ff',
+                        'subtle-text': '#64748b',
+                        'heading-text': '#1e293b',
+                        'success-green': '#059669',
+                        'warning-amber': '#d97706',
+                        'error-red': '#dc2626',
+                        'info-blue': '#0ea5e9',
+                    },
+                    boxShadow: {
+                        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light-bg font-body">
+    <div class="flex h-screen bg-light-bg">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
+            <nav class="flex flex-col h-full p-4">
+                <!-- Logo -->
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-display font-bold text-lg">SS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-display font-bold text-heading-text">Shiksha Saathi</h1>
+                        <p class="text-xs text-subtle-text">Admin Panel</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Items -->
+                <div class="flex flex-col space-y-2">
+                    <a href="dashboard.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+
+                    <a href="knowledge_base.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                        </svg>
+                        Knowledge Base
+                    </a>
+
+                    <a href="querries.html" class="flex items-center px-4 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group">
+                        <svg class="w-5 h-5 mr-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                        </svg>
+                        Queries
+                    </a>
+
+                    <a href="help.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                        </svg>
+                        Help & Support
+                    </a>
+
+                    <a href="settings.html" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors group">
+                        <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                        </svg>
+                        Settings
+                    </a>
+                </div>
+
+                <!-- User Profile -->
+                <div class="mt-auto pt-4 border-t border-gray-200">
+                    <div class="flex items-center px-4 py-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">A</span>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-700">Admin User</p>
+                            <p class="text-xs text-gray-500">admin@shiksha.edu</p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col bg-light-bg">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-display font-bold text-heading-text">Queries Management</h1>
+                        <p class="text-subtle-text mt-1">Monitor and resolve user queries</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="date" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm" value="2025-09-29">
+                        </div>
+                        <button class="bg-brand-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 p-6 overflow-auto">
+                <!-- Query Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-subtle-text text-sm font-medium">Total Queries</p>
+                                <p class="text-2xl font-bold text-heading-text mt-1">1,247</p>
+                                <p class="text-success-green text-sm mt-1">+12% from yesterday</p>
+                            </div>
+                            <div class="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-brand-blue" viewBox="0 0 256 256">
+                                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-subtle-text text-sm font-medium">Answered</p>
+                                <p class="text-2xl font-bold text-heading-text mt-1">1,089</p>
+                                <p class="text-success-green text-sm mt-1">87.3% success rate</p>
+                            </div>
+                            <div class="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                    <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-subtle-text text-sm font-medium">Needs Review</p>
+                                <p class="text-2xl font-bold text-heading-text mt-1">89</p>
+                                <p class="text-warning-amber text-sm mt-1">Requires attention</p>
+                            </div>
+                            <div class="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-warning-amber" viewBox="0 0 256 256">
+                                    <path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-subtle-text text-sm font-medium">Unanswered</p>
+                                <p class="text-2xl font-bold text-heading-text mt-1">69</p>
+                                <p class="text-error-red text-sm mt-1">Urgent action needed</p>
+                            </div>
+                            <div class="h-12 w-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-error-red" viewBox="0 0 256 256">
+                                    <path d="M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent Queries Feed -->
+                <section class="mb-8">
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-brand-blue" viewBox="0 0 256 256">
+                                        <path d="M224,128a96,96,0,1,1-96-96A96.11,96.11,0,0,1,224,128ZM128,48a80,80,0,1,0,80,80A80.09,80.09,0,0,0,128,48Zm16,40a8,8,0,0,1,8,8v32a8,8,0,0,1-16,0V104H120a8,8,0,0,1,0-16Z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-display font-semibold text-heading-text">Recent Queries Feed</h2>
+                                    <p class="text-subtle-text text-sm">Real-time user query monitoring</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors">Refresh</button>
+                                <button class="px-3 py-1 text-xs bg-brand-blue text-white rounded-full hover:bg-blue-700 transition-colors">View All</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-heading-text mb-2">What are the tuition fees for the upcoming semester?</p>
+                                        <div class="flex items-center gap-4 text-sm">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-success-green text-xs font-medium">
+                                                <div class="w-1.5 h-1.5 bg-success-green rounded-full mr-1"></div>
+                                                Answered
+                                            </span>
+                                            <span class="text-subtle-text">Confidence: 95%</span>
+                                            <span class="text-subtle-text">Category: Fees</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right text-sm text-subtle-text">
+                                        <p>2 hours ago</p>
+                                        <p class="text-xs">User #1247</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-heading-text mb-2">When is the deadline for exam registration?</p>
+                                        <div class="flex items-center gap-4 text-sm">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-success-green text-xs font-medium">
+                                                <div class="w-1.5 h-1.5 bg-success-green rounded-full mr-1"></div>
+                                                Answered
+                                            </span>
+                                            <span class="text-subtle-text">Confidence: 88%</span>
+                                            <span class="text-subtle-text">Category: Exams</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right text-sm text-subtle-text">
+                                        <p>3 hours ago</p>
+                                        <p class="text-xs">User #1246</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-heading-text mb-2">Can I apply for multiple scholarships?</p>
+                                        <div class="flex items-center gap-4 text-sm">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full bg-amber-100 text-warning-amber text-xs font-medium">
+                                                <div class="w-1.5 h-1.5 bg-warning-amber rounded-full mr-1"></div>
+                                                Needs Review
+                                            </span>
+                                            <span class="text-subtle-text">Confidence: 75%</span>
+                                            <span class="text-subtle-text">Category: Scholarships</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right text-sm text-subtle-text">
+                                        <p>4 hours ago</p>
+                                        <p class="text-xs">User #1245</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-100 rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-heading-text mb-2">What is the process for appealing a grade?</p>
+                                        <div class="flex items-center gap-4 text-sm">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-error-red text-xs font-medium">
+                                                <div class="w-1.5 h-1.5 bg-error-red rounded-full mr-1"></div>
+                                                Unanswered
+                                            </span>
+                                            <span class="text-subtle-text">Confidence: 60%</span>
+                                            <span class="text-subtle-text">Category: Academic</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right text-sm text-subtle-text">
+                                        <p>5 hours ago</p>
+                                        <p class="text-xs">User #1244</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Categorized View -->
+                <section class="mb-8">
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-indigo-600" viewBox="0 0 256 256">
+                                    <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-display font-semibold text-heading-text">Query Categories</h2>
+                                <p class="text-subtle-text text-sm">Filter by status and topic</p>
+                            </div>
+                        </div>
+
+                        <!-- Status Tabs -->
+                        <div class="border-b border-gray-200 mb-6">
+                            <nav class="flex space-x-8">
+                                <button class="py-2 px-1 border-b-2 border-transparent text-subtle-text hover:text-brand-blue hover:border-blue-300 font-medium text-sm transition-colors">
+                                    All Queries
+                                </button>
+                                <button class="py-2 px-1 border-b-2 border-brand-blue text-brand-blue font-medium text-sm">
+                                    Unanswered
+                                </button>
+                                <button class="py-2 px-1 border-b-2 border-transparent text-subtle-text hover:text-brand-blue hover:border-blue-300 font-medium text-sm transition-colors">
+                                    Needs Review
+                                </button>
+                                <button class="py-2 px-1 border-b-2 border-transparent text-subtle-text hover:text-brand-blue hover:border-blue-300 font-medium text-sm transition-colors">
+                                    Escalated
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Category Tags -->
+                        <div class="flex flex-wrap gap-3">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-brand-blue text-sm font-medium cursor-pointer hover:bg-blue-200 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                    <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                </svg>
+                                Fees (23)
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-success-green text-sm font-medium cursor-pointer hover:bg-green-200 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                    <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                </svg>
+                                Exams (18)
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-600 text-sm font-medium cursor-pointer hover:bg-purple-200 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                    <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                </svg>
+                                Scholarships (15)
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-sm font-medium cursor-pointer hover:bg-orange-200 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                    <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                </svg>
+                                Academic (12)
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-error-red text-sm font-medium cursor-pointer hover:bg-red-200 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="mr-1.5" viewBox="0 0 256 256">
+                                    <path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64Z"/>
+                                </svg>
+                                Technical (8)
+                            </span>
+                        </div>
+                    </div>
+                </section>
+                <!-- Unanswered Queries Resolution -->
+                <section class="mb-8">
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-error-red" viewBox="0 0 256 256">
+                                    <path d="M216,48H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,48Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-display font-semibold text-heading-text">Query Resolution</h2>
+                                <p class="text-subtle-text text-sm">Resolve unanswered queries and improve bot responses</p>
+                            </div>
+                        </div>
+
+                        <!-- Query Item -->
+                        <div class="border border-red-200 rounded-xl p-6 bg-red-50/30">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-error-red text-xs font-medium">
+                                            <div class="w-1.5 h-1.5 bg-error-red rounded-full mr-1"></div>
+                                            Unanswered
+                                        </span>
+                                        <span class="text-xs text-subtle-text">5 hours ago</span>
+                                        <span class="text-xs text-subtle-text">User #1244</span>
+                                    </div>
+                                    <p class="font-medium text-heading-text text-lg mb-2">What is the process for appealing a grade?</p>
+                                    <div class="flex items-center gap-4 text-sm text-subtle-text mb-4">
+                                        <span>Bot Confidence: 60%</span>
+                                        <span>Category: Academic</span>
+                                        <span>Similar queries: 3</span>
+                                    </div>
+                                </div>
+                                <button class="bg-brand-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                    Quick Resolve
+                                </button>
+                            </div>
+
+                            <!-- Resolution Interface -->
+                            <div class="bg-white rounded-xl p-4 border border-gray-200">
+                                <label class="block text-sm font-medium text-heading-text mb-2">Provide Answer</label>
+                                <textarea 
+                                    placeholder="Provide a comprehensive answer to help resolve this query..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent resize-none h-32 text-sm placeholder-gray-500"
+                                ></textarea>
+                                
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center gap-4">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded border-gray-300 text-brand-blue focus:ring-brand-blue mr-2">
+                                            <span class="text-sm text-subtle-text">Add to knowledge base</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded border-gray-300 text-brand-blue focus:ring-brand-blue mr-2">
+                                            <span class="text-sm text-subtle-text">Notify user</span>
+                                        </label>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                                            Cancel
+                                        </button>
+                                        <button class="px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                            Mark as Resolved
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Analytics and Trends -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Top Repeated Questions -->
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
+                                    <path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176ZM104,120v24a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32-16v40a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32-16v56a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-display font-semibold text-heading-text">Top Repeated Questions</h3>
+                                <p class="text-subtle-text text-sm">This week's most frequent queries</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-heading-text truncate">What are the tuition fees for the upcoming semester?</span>
+                                <span class="text-xs bg-brand-blue text-white px-2 py-1 rounded-full">47×</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-heading-text truncate">When is the deadline for exam registration?</span>
+                                <span class="text-xs bg-brand-blue text-white px-2 py-1 rounded-full">32×</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-heading-text truncate">Can I apply for multiple scholarships?</span>
+                                <span class="text-xs bg-brand-blue text-white px-2 py-1 rounded-full">28×</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-heading-text truncate">What is the process for appealing a grade?</span>
+                                <span class="text-xs bg-brand-blue text-white px-2 py-1 rounded-full">23×</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-heading-text truncate">How do I request a transcript?</span>
+                                <span class="text-xs bg-brand-blue text-white px-2 py-1 rounded-full">19×</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full mt-4 text-brand-blue hover:bg-blue-50 py-2 rounded-lg text-sm font-medium transition-colors">
+                            View All Trending Questions
+                        </button>
+                    </div>
+
+                    <!-- Emerging Topics -->
+                    <div class="bg-white rounded-2xl shadow-card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-purple-600" viewBox="0 0 256 256">
+                                    <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-display font-semibold text-heading-text">Emerging Topics</h3>
+                                <p class="text-subtle-text text-sm">New trending query categories</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-purple-500 pl-4 py-2">
+                                <p class="font-medium text-heading-text text-sm">New Online Learning Platform</p>
+                                <p class="text-xs text-subtle-text">15 queries in last 24h • +127% increase</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">Trending</span>
+                                    <span class="text-xs text-subtle-text">Action needed</span>
+                                </div>
+                            </div>
+
+                            <div class="border-l-4 border-amber-500 pl-4 py-2">
+                                <p class="font-medium text-heading-text text-sm">Upcoming Career Fair</p>
+                                <p class="text-xs text-subtle-text">12 queries in last 24h • +89% increase</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="text-xs bg-amber-100 text-amber-600 px-2 py-1 rounded-full">Rising</span>
+                                    <span class="text-xs text-subtle-text">Monitor</span>
+                                </div>
+                            </div>
+
+                            <div class="border-l-4 border-red-500 pl-4 py-2">
+                                <p class="font-medium text-heading-text text-sm">Recent Policy Changes</p>
+                                <p class="text-xs text-subtle-text">8 queries in last 24h • +65% increase</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="text-xs bg-red-100 text-error-red px-2 py-1 rounded-full">Critical</span>
+                                    <span class="text-xs text-subtle-text">Needs KB update</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="w-full mt-4 text-purple-600 hover:bg-purple-50 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Analyze Emerging Patterns
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize page functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate real-time updates
+            function updateQueryCounts() {
+                // Simulate live query count updates
+                const totalQueries = document.querySelector('.text-2xl.font-bold.text-heading-text');
+                if (totalQueries) {
+                    let count = parseInt(totalQueries.textContent.replace(',', ''));
+                    if (Math.random() > 0.7) { // 30% chance to update
+                        count += Math.floor(Math.random() * 3) + 1;
+                        totalQueries.textContent = count.toLocaleString();
+                    }
+                }
+            }
+
+            // Tab functionality for status filters
+            const tabButtons = document.querySelectorAll('nav button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active state from all tabs
+                    tabButtons.forEach(tab => {
+                        tab.classList.remove('border-brand-blue', 'text-brand-blue');
+                        tab.classList.add('border-transparent', 'text-subtle-text');
+                    });
+                    
+                    // Add active state to clicked tab
+                    this.classList.remove('border-transparent', 'text-subtle-text');
+                    this.classList.add('border-brand-blue', 'text-brand-blue');
+                });
+            });
+
+            // Auto-refresh functionality
+            setInterval(updateQueryCounts, 30000); // Update every 30 seconds
+
+            // Add hover effects to query cards
+            const queryCards = document.querySelectorAll('.border.border-gray-100.rounded-xl');
+            queryCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Search and filter functionality
+            function setupSearchFilter() {
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Search queries...';
+                searchInput.className = 'px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm w-64';
+                
+                const headerDiv = document.querySelector('header .flex.items-center.space-x-4');
+                if (headerDiv) {
+                    headerDiv.insertBefore(searchInput, headerDiv.firstChild);
+                }
+
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const queryItems = document.querySelectorAll('.border.border-gray-100.rounded-xl');
+                    
+                    queryItems.forEach(item => {
+                        const queryText = item.querySelector('.font-medium.text-heading-text').textContent.toLowerCase();
+                        if (queryText.includes(searchTerm)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            setupSearchFilter();
+
+            console.log('Queries Management Dashboard Initialized');
+        });
+
+        // Status badge color mapping
+        function getStatusBadgeClass(status) {
+            const statusMap = {
+                'answered': 'bg-green-100 text-success-green',
+                'needs-review': 'bg-amber-100 text-warning-amber',
+                'unanswered': 'bg-red-100 text-error-red',
+                'escalated': 'bg-purple-100 text-purple-600'
+            };
+            return statusMap[status] || 'bg-gray-100 text-gray-600';
+        }
+
+        // Export functionality
+        function exportQueries(format = 'csv') {
+            // Simulate export functionality
+            const timestamp = new Date().toISOString().split('T')[0];
+            const filename = `queries_report_${timestamp}.${format}`;
+            
+            // In a real implementation, this would generate and download the actual file
+            console.log(`Exporting queries to ${filename}`);
+            
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-success-green text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            toast.textContent = `Report exported as ${filename}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 3000);
+        }
+
+        // Add export functionality to export button
+        document.addEventListener('DOMContentLoaded', function() {
+            const exportButton = document.querySelector('button:contains("Export Report")');
+            if (exportButton) {
+                exportButton.addEventListener('click', () => exportQueries('csv'));
+            }
+        });
+    </script>
+</body>
+</html>
