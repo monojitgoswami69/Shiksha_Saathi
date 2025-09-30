@@ -38,7 +38,7 @@
               'error-red': '#EF4444',
               // Legacy compatibility colors
               'light-bg': '#F8FAFF',
-              'brand-blue': '#3B82F6',
+              'brand-blue': '#1380ec',
               'brand-light': '#eff6ff',
               'info-blue': '#0ea5e9',
             },
@@ -65,8 +65,191 @@
       }
       
       .metric-card:hover {
-        transform: translateY(-2px);
         box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+      }
+      
+      .upload-area {
+        transition: all 0.3s ease;
+      }
+      
+      .upload-area:hover {
+        border-color: #4F46E5;
+        background-color: rgba(79, 70, 229, 0.02);
+      }
+
+      /* Modern Animations & Transitions */
+      .content-panel {
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .nav-link {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.6s;
+      }
+
+      .nav-link:hover::before {
+        left: 100%;
+      }
+
+
+
+      /* Card Animations */
+      .metric-card, .bg-white, .bg-card-bg {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .metric-card:hover, .bg-white:hover, .bg-card-bg:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      /* Button Animations */
+      button, .btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      button::after, .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+      }
+
+      button:active::after, .btn:active::after {
+        width: 300px;
+        height: 300px;
+      }
+
+      /* Smooth Focus States */
+      input:focus, textarea:focus, select:focus {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Stagger Animation for Lists */
+      .stagger-item {
+        animation: slideInStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+      .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+
+      @keyframes slideInStagger {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Loading Spinner */
+      .loading-spinner {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Pulse Animation */
+      .pulse-animation {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      /* Slide Animation */
+      .slide-in-right {
+        animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Status Badge Animations */
+      .status-badge {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+
+
+      /* Table Row Animations */
+      tr {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      tr:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+      }
+
+      /* Chart Container Animation */
+      .chart-container {
+        animation: chartFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes chartFadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Gradient Animations */
+      .gradient-bg {
+        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
       }
       
       /* Fix container width issues */
@@ -77,6 +260,113 @@
       
       .flex-1 {
         min-width: 0; /* This prevents flex items from overflowing */
+      }
+      
+      /* Enhanced User Experience */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Enhanced loading states */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(4px);
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* Enhanced accessibility */
+      *:focus-visible {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* Improved button interactions */
+      .btn-enhanced {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-enhanced::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s ease, height 0.3s ease;
+      }
+
+      .btn-enhanced:hover::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Enhanced table interactions */
+      .table-row-hover {
+        transition: all 0.2s ease;
+      }
+
+      .table-row-hover:hover {
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+      }
+
+      /* Notification animations */
+      @keyframes slideInRight {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes slideOutRight {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+
+      /* Enhanced form elements */
+      input, textarea, select {
+        transition: all 0.2s ease;
+      }
+
+      input:focus, textarea:focus, select:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+
+      /* Pulse animation for important elements */
+      .pulse-subtle {
+        animation: pulseSubtle 2s ease-in-out infinite;
+      }
+
+      @keyframes pulseSubtle {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
       }
     </style>
 </head>
@@ -101,12 +391,12 @@
                     </a>
 
                     <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="queries" data-title="Queries Management" data-subtitle="Monitor and resolve user queries">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 transition-colors" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z"/></svg>
                         <span class="font-medium">Queries</span>
                     </a>
 
                     <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="knowledge-base" data-title="Knowledge Base" data-subtitle="Manage bot's knowledge and training data">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M224,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h64a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 transition-colors" viewBox="0 0 256 256"><path d="M224,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h64a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Z"/></svg>
                         <span class="font-medium">Knowledge Base</span>
                     </a>
 
@@ -114,12 +404,12 @@
                         <p class="px-3 text-xs font-medium text-subtle-text uppercase tracking-wider mb-3">Management</p>
                         
                         <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="settings" data-title="Settings" data-subtitle="Configure your bot's behavior and preferences">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 transition-colors" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/></svg>
                             <span class="font-medium">Settings</span>
                         </a>
 
                         <a href="#" class="nav-link flex items-center px-3 py-2.5 rounded-lg mb-1 group" data-target="help" data-title="Help & Support" data-subtitle="Find answers and get assistance">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 group-hover:scale-110 transition-transform" viewBox="0 0 256 256"><path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-3 transition-colors" viewBox="0 0 256 256"><path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176Z"/></svg>
                             <span class="font-medium">Help</span>
                         </a>
                     </div>
@@ -138,7 +428,7 @@
                         <div class="relative">
                             <input type="date" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-transparent text-sm" value="2025-09-30">
                         </div>
-                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium btn-enhanced">
                             Export Report
                         </button>
                     </div>
@@ -151,7 +441,7 @@
                     <section>
                       <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Key Metrics</h2>
                       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                          <div class="metric-card stagger-item rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                               <div class="flex items-center justify-between mb-3">
                                   <p class="text-sm font-medium text-subtle-text">Total Queries Today</p>
                                   <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -164,7 +454,7 @@
                               <p class="text-xs text-success-green font-medium">+12% from yesterday</p>
                           </div>
                           
-                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                          <div class="metric-card stagger-item rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                               <div class="flex items-center justify-between mb-3">
                                   <p class="text-sm font-medium text-subtle-text">Success Rate</p>
                                   <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center">
@@ -177,7 +467,7 @@
                               <p class="text-xs text-success-green font-medium">Answered successfully</p>
                           </div>
                           
-                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                          <div class="metric-card stagger-item rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                               <div class="flex items-center justify-between mb-3">
                                   <p class="text-sm font-medium text-subtle-text">Avg. Confidence</p>
                                   <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
@@ -190,7 +480,7 @@
                               <p class="text-xs text-warning-amber font-medium">AI confidence score</p>
                           </div>
                           
-                          <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
+                          <div class="metric-card stagger-item rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                               <div class="flex items-center justify-between mb-3">
                                   <p class="text-sm font-medium text-subtle-text">Human Handoffs</p>
                                   <div class="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -256,7 +546,7 @@
                         </div>
                         
                         <!-- Bot Performance Over Time -->
-                        <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
+                        <div class="chart-container rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
                           <div class="flex items-center justify-between mb-6">
                               <div>
                                   <p class="font-display text-lg font-semibold text-heading-text">Bot Performance Over Time</p>
@@ -533,7 +823,7 @@
                                     </div>
                                 </div>
 
-                                <div class="border border-border-color rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm">
+                                <div class="border border-border-color rounded-xl p-4 hover:border-blue-200 transition-all duration-200 hover:shadow-sm table-row-hover">
                                     <div class="flex justify-between items-start">
                                         <div class="flex-1">
                                             <p class="font-medium text-heading-text mb-2">When is the deadline for exam registration?</p>
@@ -1652,30 +1942,59 @@
             const mainTitle = document.getElementById('main-title');
             const mainSubtitle = document.getElementById('main-subtitle');
 
-            function showPanel(targetId) {
-                // Hide all content panels
-                contentPanels.forEach(panel => {
-                    panel.classList.add('hidden');
-                });
-                
-                // Show the target panel
-                const targetPanel = document.getElementById(targetId + '-content');
-                if (targetPanel) {
-                    targetPanel.classList.remove('hidden');
-                }
+            // Add loading state animation
+            function showLoadingState() {
+                document.body.style.cursor = 'wait';
+                setTimeout(() => {
+                    document.body.style.cursor = 'default';
+                }, 300);
+            }
 
-                // Update active state in sidebar and header
-                navLinks.forEach(link => {
-                    if (link.dataset.target === targetId) {
-                        link.classList.add('text-white', 'bg-accent-blue');
-                        link.classList.remove('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
-                        mainTitle.textContent = link.dataset.title;
-                        mainSubtitle.textContent = link.dataset.subtitle;
-                    } else {
-                        link.classList.remove('text-white', 'bg-accent-blue');
-                        link.classList.add('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
+            function showPanel(targetId) {
+                showLoadingState();
+                
+                // Add fade out animation to current panel
+                const currentPanel = document.querySelector('.content-panel:not(.hidden)');
+                if (currentPanel) {
+                    currentPanel.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    currentPanel.style.opacity = '0';
+                }
+                
+                setTimeout(() => {
+                    // Hide all content panels
+                    contentPanels.forEach(panel => {
+                        panel.classList.add('hidden');
+                        panel.style.opacity = '';
+                        panel.style.transform = '';
+                    });
+                    
+                    // Show the target panel with animation
+                    const targetPanel = document.getElementById(targetId + '-content');
+                    if (targetPanel) {
+                        targetPanel.classList.remove('hidden');
+                        targetPanel.style.opacity = '0';
+                        
+                        requestAnimationFrame(() => {
+                            targetPanel.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                            targetPanel.style.opacity = '1';
+                        });
                     }
-                });
+
+                    // Update active state in sidebar and header with animations
+                    navLinks.forEach(link => {
+                        if (link.dataset.target === targetId) {
+                            link.classList.add('text-white', 'bg-accent-blue');
+                            link.classList.remove('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
+
+                            mainTitle.textContent = link.dataset.title;
+                            mainSubtitle.textContent = link.dataset.subtitle;
+                        } else {
+                            link.classList.remove('text-white', 'bg-accent-blue');
+                            link.classList.add('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
+                            link.style.transform = '';
+                        }
+                    });
+                }, 200);
             }
 
             // Add click event listeners to nav links
@@ -1687,6 +2006,75 @@
                 });
             });
 
+            // Add notification system
+            window.showNotification = function(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transition-all duration-500`;
+                
+                const colors = {
+                    success: 'bg-green-500 text-white',
+                    error: 'bg-red-500 text-white',
+                    warning: 'bg-yellow-500 text-white',
+                    info: 'bg-blue-500 text-white'
+                };
+                
+                notification.className += ` ${colors[type] || colors.info}`;
+                notification.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span>${message}</span>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">×</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Trigger animation
+                requestAnimationFrame(() => {
+                    notification.style.opacity = '1';
+                });
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.style.opacity = '0';
+                        setTimeout(() => notification.remove(), 300);
+                    }
+                }, 5000);
+            };
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.altKey) {
+                    switch(e.key) {
+                        case '1':
+                            e.preventDefault();
+                            showPanel('dashboard');
+                            showNotification('Switched to Dashboard (Alt+1)', 'info');
+                            break;
+                        case '2':
+                            e.preventDefault();
+                            showPanel('queries');
+                            showNotification('Switched to Queries (Alt+2)', 'info');
+                            break;
+                        case '3':
+                            e.preventDefault();
+                            showPanel('knowledge-base');
+                            showNotification('Switched to Knowledge Base (Alt+3)', 'info');
+                            break;
+                        case '4':
+                            e.preventDefault();
+                            showPanel('settings');
+                            showNotification('Switched to Settings (Alt+4)', 'info');
+                            break;
+                        case '5':
+                            e.preventDefault();
+                            showPanel('help');
+                            showNotification('Switched to Help & Support (Alt+5)', 'info');
+                            break;
+                    }
+                }
+            });
+
             // Show the default panel (Dashboard) on page load
             showPanel('dashboard');
             
@@ -1694,6 +2082,9 @@
             initializeDashboardCharts();
             initializeQueriesPage();
             initializeKnowledgeBasePage();
+
+            console.log('🚀 Shiksha Saathi Admin Panel loaded successfully with modern enhancements!');
+            setTimeout(() => showNotification('Welcome to Shiksha Saathi Admin Panel! Use Alt+1-5 for quick navigation.', 'success'), 500);
         });
 
         // --- Dashboard Chart Logic ---
@@ -1906,20 +2297,159 @@
             const queriesPanel = document.getElementById('queries-content');
             if (!queriesPanel) return;
 
+            // Simulate real-time updates
+            function updateQueryCounts() {
+                // Simulate live query count updates
+                const totalQueries = queriesPanel.querySelector('.text-3xl.font-bold.tracking-tight.text-heading-text');
+                if (totalQueries) {
+                    let count = parseInt(totalQueries.textContent.replace(',', ''));
+                    if (Math.random() > 0.7) { // 30% chance to update
+                        count += Math.floor(Math.random() * 3) + 1;
+                        totalQueries.textContent = count.toLocaleString();
+                    }
+                }
+            }
+
+            // Tab functionality for status filters
             const tabButtons = queriesPanel.querySelectorAll('nav button');
             tabButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    tabButtons.forEach(tab => tab.classList.remove('border-brand-blue', 'text-brand-blue'));
+                    // Remove active state from all tabs
+                    tabButtons.forEach(tab => {
+                        tab.classList.remove('border-brand-blue', 'text-brand-blue');
+                        tab.classList.add('border-transparent', 'text-subtle-text');
+                    });
+                    
+                    // Add active state to clicked tab
+                    this.classList.remove('border-transparent', 'text-subtle-text');
                     this.classList.add('border-brand-blue', 'text-brand-blue');
                 });
             });
+
+            // Auto-refresh functionality
+            const refreshInterval = setInterval(updateQueryCounts, 30000); // Update every 30 seconds
+
+            // Add hover effects to query cards
+            const queryCards = queriesPanel.querySelectorAll('.border.border-gray-100.rounded-xl');
+            queryCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                    this.style.transition = 'background-color 0.2s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+
+            // Search and filter functionality
+            function setupSearchFilter() {
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Search queries...';
+                searchInput.className = 'px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm w-64';
+                
+                const headerDiv = document.querySelector('header .flex.items-center.space-x-4');
+                if (headerDiv && !headerDiv.querySelector('input[placeholder="Search queries..."]')) {
+                    headerDiv.insertBefore(searchInput, headerDiv.firstChild);
+
+                    searchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const queryItems = queriesPanel.querySelectorAll('.border.border-gray-100.rounded-xl');
+                        
+                        queryItems.forEach(item => {
+                            const queryTextElement = item.querySelector('.font-medium.text-heading-text');
+                            if (queryTextElement) {
+                                const queryText = queryTextElement.textContent.toLowerCase();
+                                if (queryText.includes(searchTerm) || searchTerm === '') {
+                                    item.style.display = 'block';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+
+            setupSearchFilter();
+
+            console.log('Queries Management Dashboard Initialized');
+            
+            // Cleanup function for when switching panels
+            return function cleanup() {
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                }
+            };
         }
         
         // --- Knowledge Base Page Logic ---
         function initializeKnowledgeBasePage() {
             const kbPanel = document.getElementById('knowledge-base-content');
             if (!kbPanel) return;
-            // Note: Bulk actions functionality would be added here if needed
+            
+            // Get elements
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const documentCheckboxes = document.querySelectorAll('.document-checkbox');
+            const bulkActionsSection = document.getElementById('bulkActionsSection');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const clearSelectionBtn = document.getElementById('clearSelection');
+
+            if (!selectAllCheckbox || !bulkActionsSection || !selectedCountSpan || !clearSelectionBtn) return;
+
+            // Function to update bulk actions visibility and count
+            function updateBulkActions() {
+                const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+                const selectedCount = selectedCheckboxes.length;
+                
+                if (selectedCount > 0) {
+                    bulkActionsSection.classList.remove('hidden');
+                    selectedCountSpan.textContent = selectedCount;
+                } else {
+                    bulkActionsSection.classList.add('hidden');
+                }
+
+                // Update select all checkbox state
+                if (selectedCount === 0) {
+                    selectAllCheckbox.indeterminate = false;
+                    selectAllCheckbox.checked = false;
+                } else if (selectedCount === documentCheckboxes.length) {
+                    selectAllCheckbox.indeterminate = false;
+                    selectAllCheckbox.checked = true;
+                } else {
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+
+            // Handle select all checkbox
+            selectAllCheckbox.addEventListener('change', function() {
+                const isChecked = this.checked;
+                documentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
+                updateBulkActions();
+            });
+
+            // Handle individual document checkboxes
+            documentCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateBulkActions);
+            });
+
+            // Handle clear selection button
+            clearSelectionBtn.addEventListener('click', function() {
+                documentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+                updateBulkActions();
+            });
+
+            // Initial state
+            updateBulkActions();
+
+            console.log('Knowledge Base functionality initialized');
         }
 
         // --- Help Page Logic (FAQ Toggle) ---
