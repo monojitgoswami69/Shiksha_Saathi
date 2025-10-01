@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <body class="bg-page-bg font-sans">
-    <div class="flex h-screen bg-page-bg"><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shiksha Saathi - Admin Panel</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -112,8 +111,6 @@
         left: 100%;
       }
 
-
-
       /* Card Animations */
       .metric-card, .bg-white, .bg-card-bg {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -178,11 +175,6 @@
         animation: spin 1s linear infinite;
       }
 
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-
       /* Pulse Animation */
       .pulse-animation {
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -213,8 +205,6 @@
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
-
 
       /* Table Row Animations */
       tr {
@@ -267,6 +257,12 @@
         scroll-behavior: smooth;
       }
 
+      /* Keyframe Animations */
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
       /* Enhanced loading states */
       .loading-overlay {
         position: fixed;
@@ -289,11 +285,6 @@
         border-top: 4px solid #3b82f6;
         border-radius: 50%;
         animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
       }
 
       /* Enhanced accessibility */
@@ -339,15 +330,6 @@
       }
 
       /* Notification animations */
-      @keyframes slideInRight {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-
-      @keyframes slideOutRight {
-        from { opacity: 1; }
-        to { opacity: 0; }
-      }
 
       /* Enhanced form elements */
       input, textarea, select {
@@ -368,8 +350,219 @@
         0%, 100% { opacity: 1; }
         50% { opacity: 0.8; }
       }
+
+      /* Dark Mode Styles - Modern & Elegant */
+      .dark-mode {
+        background-color: #0d1117;
+        color: #f0f6fc;
+      }
+
+      .dark-mode aside {
+        background-color: #161b22;
+        border-color: #30363d;
+        box-shadow: 0 0 0 1px #21262d;
+      }
+
+      .dark-mode header {
+        background-color: #161b22;
+        border-color: #21262d;
+        backdrop-filter: blur(12px);
+        background: rgba(22, 27, 34, 0.8);
+      }
+
+      .dark-mode .bg-white,
+      .dark-mode .bg-card-bg {
+        background-color: #0d1117;
+        border-color: #21262d;
+      }
+
+      .dark-mode .metric-card,
+      .dark-mode .rounded-2xl.bg-card-bg {
+        background-color: #161b22;
+        border-color: #30363d;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark-mode .text-heading-text {
+        color: #f0f6fc;
+      }
+
+      .dark-mode .text-subtle-text {
+        color: #8b949e;
+      }
+
+      .dark-mode .text-gray-900 {
+        color: #f0f6fc;
+      }
+
+      .dark-mode .text-gray-700 {
+        color: #c9d1d9;
+      }
+
+      .dark-mode .text-gray-600 {
+        color: #8b949e;
+      }
+
+      .dark-mode .text-gray-500 {
+        color: #6e7681;
+      }
+
+      .dark-mode .border-gray-200,
+      .dark-mode .border-border-color {
+        border-color: #30363d;
+      }
+
+      .dark-mode .border-gray-100 {
+        border-color: #21262d;
+      }
+
+      .dark-mode .hover\\:bg-gray-100:hover {
+        background-color: #21262d;
+      }
+
+      .dark-mode .hover\\:bg-gray-50:hover {
+        background-color: #161b22;
+      }
+
+      .dark-mode .bg-gray-50 {
+        background-color: #161b22;
+      }
+
+      .dark-mode .bg-blue-50 {
+        background-color: rgba(56, 139, 253, 0.1);
+      }
+
+      .dark-mode .bg-green-50 {
+        background-color: rgba(63, 185, 80, 0.1);
+      }
+
+      .dark-mode .bg-red-50 {
+        background-color: rgba(248, 81, 73, 0.1);
+      }
+
+      .dark-mode .bg-yellow-50,
+      .dark-mode .bg-amber-50 {
+        background-color: rgba(255, 212, 59, 0.1);
+      }
+
+      .dark-mode .bg-purple-50 {
+        background-color: rgba(163, 113, 247, 0.1);
+      }
+
+      .dark-mode .bg-indigo-50 {
+        background-color: rgba(99, 102, 241, 0.1);
+      }
+
+      .dark-mode .shadow-lg {
+        box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+
+      .dark-mode .shadow-sm,
+      .dark-mode .shadow-card {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+
+      .dark-mode .bg-page-bg {
+        background-color: #0d1117;
+      }
+
+      .dark-mode #notifications-dropdown,
+      .dark-mode #user-dropdown {
+        background-color: #161b22;
+        border-color: #30363d;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+
+      .dark-mode .hover\\:bg-red-50:hover {
+        background-color: rgba(248, 81, 73, 0.1);
+      }
+
+      .dark-mode .hover\\:bg-blue-50:hover {
+        background-color: rgba(56, 139, 253, 0.1);
+      }
+
+      .dark-mode .hover\\:bg-green-50:hover {
+        background-color: rgba(63, 185, 80, 0.1);
+      }
+
+      .dark-mode .hover\\:bg-purple-50:hover {
+        background-color: rgba(163, 113, 247, 0.1);
+      }
+
+      .dark-mode .hover\\:bg-amber-100:hover,
+      .dark-mode .hover\\:bg-yellow-100:hover {
+        background-color: rgba(255, 212, 59, 0.15);
+      }
+
+      .dark-mode .table-row-hover:hover {
+        background: linear-gradient(90deg, rgba(56, 139, 253, 0.08), rgba(56, 139, 253, 0.12));
+        box-shadow: 0 2px 8px rgba(56, 139, 253, 0.2);
+      }
+
+      .dark-mode tr:hover {
+        background-color: rgba(56, 139, 253, 0.08);
+      }
+
+      .dark-mode input,
+      .dark-mode textarea,
+      .dark-mode select {
+        background-color: #0d1117;
+        border-color: #30363d;
+        color: #f0f6fc;
+      }
+
+      .dark-mode input:focus,
+      .dark-mode textarea:focus,
+      .dark-mode select:focus {
+        border-color: #388bfd;
+        box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.1);
+      }
+
+      .dark-mode .nav-link {
+        color: #8b949e;
+      }
+
+      .dark-mode .nav-link:hover {
+        color: #f0f6fc;
+        background-color: #21262d;
+      }
+
+      .dark-mode .nav-link.text-white.bg-accent-blue {
+        background-color: #238636;
+        color: #ffffff;
+      }
+
+      .dark-mode #notification-badge {
+        box-shadow: 0 0 0 2px #161b22;
+      }
+
+      /* Dropdown animations */
+      #notifications-dropdown,
+      #user-dropdown {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: top right;
+      }
+
+      #notifications-dropdown.hidden,
+      #user-dropdown.hidden {
+        transform: scale(0.95) translateY(-10px);
+        opacity: 0;
+      }
+
+      /* Notification badge styling */
+      #notification-badge {
+        box-shadow: 0 0 0 2px white;
+        line-height: 1;
+        font-size: 0.75rem;
+      }
+
+      /* Ensure notification container doesn't clip badge */
+      #notifications-btn {
+        overflow: visible;
+      }
     </style>
 </head>
+
 <body class="bg-page-bg font-sans">
     <div class="flex h-screen bg-page-bg w-full">
         <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
@@ -425,12 +618,101 @@
                         <p id="main-subtitle" class="text-subtle-text mt-1"></p>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <input type="date" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-blue focus:border-transparent text-sm" value="2025-09-30">
-                        </div>
-                        <button class="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium btn-enhanced">
-                            Export Report
+                        <!-- Theme Selector -->
+                        <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg id="theme-icon" class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
                         </button>
+
+                        <!-- Notifications -->
+                        <div class="relative">
+                            <button id="notifications-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                <span id="notification-badge" class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full min-w-[1.25rem] h-5 flex items-center justify-center font-semibold hidden px-1">3</span>
+                            </button>
+                            
+                            <!-- Notifications Dropdown -->
+                            <div id="notifications-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
+                                <div class="p-4 border-b border-gray-200">
+                                    <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+                                </div>
+                                <div class="max-h-64 overflow-y-auto">
+                                    <div class="p-3 hover:bg-gray-50 border-b border-gray-100">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm text-gray-900">New query received from student</p>
+                                                <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 hover:bg-gray-50 border-b border-gray-100">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm text-gray-900">Knowledge base updated successfully</p>
+                                                <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 hover:bg-gray-50">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm text-gray-900">System maintenance scheduled</p>
+                                                <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-3 border-t border-gray-200">
+                                    <button class="text-sm text-blue-600 hover:text-blue-700 font-medium">View all notifications</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Profile/Login -->
+                        <div class="relative">
+                            <button id="user-menu-btn" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-sm font-semibold">AS</span>
+                                </div>
+                                <div class="text-left">
+                                    <div class="text-sm font-medium text-gray-900">Amit Singh</div>
+                                    <div class="text-xs text-gray-500">Administrator</div>
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            
+                            <!-- User Dropdown -->
+                            <div id="user-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold">AS</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">Amit Singh</div>
+                                            <div class="text-xs text-gray-500">amit.singh@shiksha.edu</div>
+                                            <div class="text-xs text-blue-600 font-medium">Administrator</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account Settings</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Switch Account</a>
+                                </div>
+                                <div class="border-t border-gray-200 py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign Out</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -523,7 +805,7 @@
                                   <p class="text-sm font-medium text-success-green">↗ Growth rate</p>
                               </div>
                           </div>
-                          <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                          <div class="h-64 bg-white rounded-xl flex items-center justify-center">
                               <canvas id="queryVolumeChart" width="400" height="200"></canvas>
                           </div>
                         </div>
@@ -540,7 +822,7 @@
                                   <p class="text-sm font-medium text-error-red">↓ -5% decrease</p>
                               </div>
                           </div>
-                          <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                          <div class="h-64 bg-white rounded-xl flex items-center justify-center">
                               <canvas id="handoffTrendChart" width="400" height="200"></canvas>
                           </div>
                         </div>
@@ -557,7 +839,7 @@
                                   <p class="text-sm font-medium text-success-green">Avg. accuracy</p>
                               </div>
                           </div>
-                          <div class="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
+                          <div class="h-64 bg-white rounded-xl flex items-center justify-center">
                               <canvas id="performanceChart" width="400" height="200"></canvas>
                           </div>
                         </div>
@@ -1942,12 +2224,10 @@
             const mainTitle = document.getElementById('main-title');
             const mainSubtitle = document.getElementById('main-subtitle');
 
-            // Add loading state animation
+            // Loading state animation
             function showLoadingState() {
                 document.body.style.cursor = 'wait';
-                setTimeout(() => {
-                    document.body.style.cursor = 'default';
-                }, 300);
+                setTimeout(() => document.body.style.cursor = 'default', 300);
             }
 
             function showPanel(targetId) {
@@ -1965,7 +2245,6 @@
                     contentPanels.forEach(panel => {
                         panel.classList.add('hidden');
                         panel.style.opacity = '';
-                        panel.style.transform = '';
                     });
                     
                     // Show the target panel with animation
@@ -1991,7 +2270,6 @@
                         } else {
                             link.classList.remove('text-white', 'bg-accent-blue');
                             link.classList.add('text-subtle-text', 'hover:text-accent-blue', 'hover:bg-blue-50');
-                            link.style.transform = '';
                         }
                     });
                 }, 200);
@@ -2006,11 +2284,8 @@
                 });
             });
 
-            // Add notification system
+            // Notification system
             window.showNotification = function(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transition-all duration-500`;
-                
                 const colors = {
                     success: 'bg-green-500 text-white',
                     error: 'bg-red-500 text-white',
@@ -2018,7 +2293,8 @@
                     info: 'bg-blue-500 text-white'
                 };
                 
-                notification.className += ` ${colors[type] || colors.info}`;
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transition-all duration-500 ${colors[type] || colors.info}`;
                 notification.innerHTML = `
                     <div class="flex items-center gap-3">
                         <span>${message}</span>
@@ -2027,11 +2303,7 @@
                 `;
                 
                 document.body.appendChild(notification);
-                
-                // Trigger animation
-                requestAnimationFrame(() => {
-                    notification.style.opacity = '1';
-                });
+                requestAnimationFrame(() => notification.style.opacity = '1');
                 
                 // Auto remove after 5 seconds
                 setTimeout(() => {
@@ -2042,53 +2314,135 @@
                 }, 5000);
             };
 
-            // Add keyboard shortcuts
+            // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
-                if (e.altKey) {
-                    switch(e.key) {
-                        case '1':
-                            e.preventDefault();
-                            showPanel('dashboard');
-                            showNotification('Switched to Dashboard (Alt+1)', 'info');
-                            break;
-                        case '2':
-                            e.preventDefault();
-                            showPanel('queries');
-                            showNotification('Switched to Queries (Alt+2)', 'info');
-                            break;
-                        case '3':
-                            e.preventDefault();
-                            showPanel('knowledge-base');
-                            showNotification('Switched to Knowledge Base (Alt+3)', 'info');
-                            break;
-                        case '4':
-                            e.preventDefault();
-                            showPanel('settings');
-                            showNotification('Switched to Settings (Alt+4)', 'info');
-                            break;
-                        case '5':
-                            e.preventDefault();
-                            showPanel('help');
-                            showNotification('Switched to Help & Support (Alt+5)', 'info');
-                            break;
-                    }
+                if (!e.altKey) return;
+                
+                const shortcuts = {
+                    '1': { panel: 'dashboard', name: 'Dashboard' },
+                    '2': { panel: 'queries', name: 'Queries' },
+                    '3': { panel: 'knowledge-base', name: 'Knowledge Base' },
+                    '4': { panel: 'settings', name: 'Settings' },
+                    '5': { panel: 'help', name: 'Help & Support' }
+                };
+                
+                const shortcut = shortcuts[e.key];
+                if (shortcut) {
+                    e.preventDefault();
+                    showPanel(shortcut.panel);
+                    showNotification(`Switched to ${shortcut.name} (Alt+${e.key})`, 'info');
                 }
             });
 
-            // Show the default panel (Dashboard) on page load
-            showPanel('dashboard');
-            
             // --- Page-Specific Initializations ---
             initializeDashboardCharts();
             initializeQueriesPage();
             initializeKnowledgeBasePage();
 
-            console.log('🚀 Shiksha Saathi Admin Panel loaded successfully with modern enhancements!');
+            // Initialize default view (Dashboard)
+            showPanel('dashboard');
+
+            console.log('🚀 Shiksha Saathi Admin Panel loaded successfully!');
             setTimeout(() => showNotification('Welcome to Shiksha Saathi Admin Panel! Use Alt+1-5 for quick navigation.', 'success'), 500);
         });
 
+        // --- Header Components Logic ---
+        
+        // Theme Toggle Functionality
+        let isDarkMode = false;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        const themeIcons = {
+            light: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>',
+            dark: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>'
+        };
+        
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            themeIcon.innerHTML = themeIcons[isDarkMode ? 'dark' : 'light'];
+            showNotification(`${isDarkMode ? 'Dark' : 'Light'} mode enabled`, 'info');
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Dropdown Management
+        const dropdownElements = {
+            notifications: {
+                btn: document.getElementById('notifications-btn'),
+                dropdown: document.getElementById('notifications-dropdown'),
+                badge: document.getElementById('notification-badge')
+            },
+            user: {
+                btn: document.getElementById('user-menu-btn'),
+                dropdown: document.getElementById('user-dropdown')
+            }
+        };
+
+        // Initialize dropdown events
+        Object.entries(dropdownElements).forEach(([key, elements]) => {
+            if (elements.btn && elements.dropdown) {
+                elements.btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    elements.dropdown.classList.toggle('hidden');
+                    
+                    // Hide notification badge when notifications dropdown opens
+                    if (key === 'notifications' && elements.badge && !elements.dropdown.classList.contains('hidden')) {
+                        elements.badge.classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        // Close all dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            Object.values(dropdownElements).forEach(elements => {
+                if (elements.dropdown && !elements.dropdown.classList.contains('hidden')) {
+                    elements.dropdown.classList.add('hidden');
+                }
+            });
+        });
+
+        // Show notification badge after delay
+        setTimeout(() => {
+            const notificationBadge = document.getElementById('notification-badge');
+            if (notificationBadge) {
+                notificationBadge.classList.remove('hidden');
+            }
+        }, 2000);
+
         // --- Dashboard Chart Logic ---
         function initializeDashboardCharts() {
+            // Common chart options
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1F2937',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: false },
+                        ticks: { color: '#6B7280' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6B7280' }
+                    }
+                }
+            };
+
             // Query Volume Trend Chart
             const queryCtx = document.getElementById('queryVolumeChart');
             if (queryCtx) {
@@ -2110,31 +2464,7 @@
                             pointBorderWidth: 2
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1F2937',
-                                titleColor: '#ffffff',
-                                bodyColor: '#ffffff',
-                                cornerRadius: 8,
-                                displayColors: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: '#E5E7EB' },
-                                ticks: { color: '#6B7280' }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: '#6B7280' }
-                            }
-                        }
-                    }
+                    options: commonOptions
                 });
             }
 
@@ -2154,31 +2484,7 @@
                             borderRadius: 6
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1F2937',
-                                titleColor: '#ffffff',
-                                bodyColor: '#ffffff',
-                                cornerRadius: 8,
-                                displayColors: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: '#E5E7EB' },
-                                ticks: { color: '#6B7280' }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: '#6B7280' }
-                            }
-                        }
-                    }
+                    options: commonOptions
                 });
             }
 
@@ -2208,37 +2514,21 @@
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...commonOptions,
                         plugins: {
+                            ...commonOptions.plugins,
                             legend: {
                                 display: true,
                                 position: 'top',
                                 labels: { color: '#6B7280', usePointStyle: true }
-                            },
-                            tooltip: {
-                                backgroundColor: '#1F2937',
-                                titleColor: '#ffffff',
-                                bodyColor: '#ffffff',
-                                cornerRadius: 8
                             }
                         },
                         scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                grid: { color: '#E5E7EB' },
-                                ticks: { color: '#6B7280' }
-                            },
+                            ...commonOptions.scales,
                             y1: {
                                 type: 'linear',
                                 display: true,
                                 position: 'right',
-                                grid: { drawOnChartArea: false },
-                                ticks: { color: '#6B7280' }
-                            },
-                            x: {
                                 grid: { display: false },
                                 ticks: { color: '#6B7280' }
                             }
@@ -2256,13 +2546,7 @@
                         labels: ['Returns Policy', 'Shipping Delays', 'Product Availability', 'Payment Issues', 'Account Management'],
                         datasets: [{
                             data: [25, 20, 15, 12, 8],
-                            backgroundColor: [
-                                '#EF4444',
-                                '#F97316', 
-                                '#EAB308',
-                                '#3B82F6',
-                                '#10B981'
-                            ],
+                            backgroundColor: ['#EF4444', '#F97316', '#EAB308', '#3B82F6', '#10B981'],
                             borderWidth: 0,
                             cutout: '60%'
                         }]
@@ -2282,7 +2566,7 @@
                                     label: function(context) {
                                         const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                         const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                        return context.label + ': ' + percentage + '%';
+                                        return `${context.label}: ${percentage}%`;
                                     }
                                 }
                             }
@@ -2299,14 +2583,11 @@
 
             // Simulate real-time updates
             function updateQueryCounts() {
-                // Simulate live query count updates
-                const totalQueries = queriesPanel.querySelector('.text-3xl.font-bold.tracking-tight.text-heading-text');
-                if (totalQueries) {
+                const totalQueries = queriesPanel.querySelector('.text-2xl.font-bold.text-heading-text');
+                if (totalQueries && Math.random() > 0.7) { // 30% chance to update
                     let count = parseInt(totalQueries.textContent.replace(',', ''));
-                    if (Math.random() > 0.7) { // 30% chance to update
-                        count += Math.floor(Math.random() * 3) + 1;
-                        totalQueries.textContent = count.toLocaleString();
-                    }
+                    count += Math.floor(Math.random() * 3) + 1;
+                    totalQueries.textContent = count.toLocaleString();
                 }
             }
 
@@ -2327,61 +2608,21 @@
             });
 
             // Auto-refresh functionality
-            const refreshInterval = setInterval(updateQueryCounts, 30000); // Update every 30 seconds
+            setInterval(updateQueryCounts, 30000); // Update every 30 seconds
 
             // Add hover effects to query cards
-            const queryCards = queriesPanel.querySelectorAll('.border.border-gray-100.rounded-xl');
+            const queryCards = queriesPanel.querySelectorAll('.border.border-border-color.rounded-xl');
             queryCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
-                    this.style.transition = 'background-color 0.2s ease';
+                card.addEventListener('mouseenter', () => {
+                    card.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                    card.style.transition = 'background-color 0.2s ease';
                 });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.backgroundColor = '';
+                card.addEventListener('mouseleave', () => {
+                    card.style.backgroundColor = '';
                 });
             });
 
-            // Search and filter functionality
-            function setupSearchFilter() {
-                const searchInput = document.createElement('input');
-                searchInput.type = 'text';
-                searchInput.placeholder = 'Search queries...';
-                searchInput.className = 'px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm w-64';
-                
-                const headerDiv = document.querySelector('header .flex.items-center.space-x-4');
-                if (headerDiv && !headerDiv.querySelector('input[placeholder="Search queries..."]')) {
-                    headerDiv.insertBefore(searchInput, headerDiv.firstChild);
-
-                    searchInput.addEventListener('input', function() {
-                        const searchTerm = this.value.toLowerCase();
-                        const queryItems = queriesPanel.querySelectorAll('.border.border-gray-100.rounded-xl');
-                        
-                        queryItems.forEach(item => {
-                            const queryTextElement = item.querySelector('.font-medium.text-heading-text');
-                            if (queryTextElement) {
-                                const queryText = queryTextElement.textContent.toLowerCase();
-                                if (queryText.includes(searchTerm) || searchTerm === '') {
-                                    item.style.display = 'block';
-                                } else {
-                                    item.style.display = 'none';
-                                }
-                            }
-                        });
-                    });
-                }
-            }
-
-            setupSearchFilter();
-
-            console.log('Queries Management Dashboard Initialized');
-            
-            // Cleanup function for when switching panels
-            return function cleanup() {
-                if (refreshInterval) {
-                    clearInterval(refreshInterval);
-                }
-            };
+            console.log('✓ Queries Management initialized');
         }
         
         // --- Knowledge Base Page Logic ---
@@ -2422,25 +2663,20 @@
                 }
             }
 
-            // Handle select all checkbox
+            // Checkbox event handlers
             selectAllCheckbox.addEventListener('change', function() {
-                const isChecked = this.checked;
                 documentCheckboxes.forEach(checkbox => {
-                    checkbox.checked = isChecked;
+                    checkbox.checked = this.checked;
                 });
                 updateBulkActions();
             });
 
-            // Handle individual document checkboxes
             documentCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateBulkActions);
             });
 
-            // Handle clear selection button
             clearSelectionBtn.addEventListener('click', function() {
-                documentCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
+                documentCheckboxes.forEach(checkbox => checkbox.checked = false);
                 selectAllCheckbox.checked = false;
                 selectAllCheckbox.indeterminate = false;
                 updateBulkActions();
@@ -2449,7 +2685,7 @@
             // Initial state
             updateBulkActions();
 
-            console.log('Knowledge Base functionality initialized');
+            console.log('✓ Knowledge Base functionality initialized');
         }
 
         // --- Help Page Logic (FAQ Toggle) ---
