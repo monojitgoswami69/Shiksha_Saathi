@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>Shiksha Saathi - Admin Panel</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -560,12 +563,200 @@
       #notifications-btn {
         overflow: visible;
       }
+
+      /* Mobile Responsive Styles */
+      @media (max-width: 768px) {
+        /* Mobile Navigation */
+        .mobile-nav-open {
+          transform: translateX(0);
+        }
+
+        .mobile-nav-closed {
+          transform: translateX(-100%);
+        }
+
+        /* Mobile Sidebar */
+        aside {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          z-index: 50;
+          transform: translateX(-100%);
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Mobile Overlay */
+        .mobile-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 40;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        /* Mobile Content */
+        .mobile-content {
+          padding: 1rem;
+        }
+
+        /* Mobile Cards */
+        .mobile-card {
+          margin-bottom: 1rem;
+        }
+
+        /* Mobile Tables */
+        .mobile-table-wrapper {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /* Mobile Forms */
+        .mobile-form input,
+        .mobile-form textarea,
+        .mobile-form select {
+          font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        /* Mobile Buttons */
+        .mobile-touch-target {
+          min-height: 44px;
+          min-width: 44px;
+        }
+
+        /* Mobile Typography */
+        .mobile-text-sm {
+          font-size: 14px;
+        }
+
+        .mobile-text-xs {
+          font-size: 12px;
+        }
+
+        /* Mobile Spacing */
+        .mobile-space-y-2 > * + * {
+          margin-top: 0.5rem;
+        }
+
+        .mobile-space-y-4 > * + * {
+          margin-top: 1rem;
+        }
+
+        /* Mobile Grid Adjustments */
+        .mobile-grid-1 {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .mobile-grid-2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        /* Mobile Chart Containers */
+        .mobile-chart-container {
+          height: 250px;
+        }
+
+        /* Mobile Dropdown Adjustments */
+        #notifications-dropdown,
+        #user-dropdown {
+          width: calc(100vw - 2rem);
+          max-width: 320px;
+          right: 1rem;
+        }
+      }
+
+      /* Tablet Responsive Styles */
+      @media (min-width: 769px) and (max-width: 1024px) {
+        aside {
+          width: 240px;
+        }
+
+        .tablet-grid-2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .tablet-grid-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      /* Dark Mode Mobile Adjustments */
+      .dark-mode .mobile-overlay {
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      /* Mobile-specific improvements */
+      @media (max-width: 480px) {
+        .mobile-small-text {
+          font-size: 12px;
+        }
+        
+        .mobile-compact-padding {
+          padding: 0.75rem;
+        }
+        
+        .mobile-hide {
+          display: none !important;
+        }
+        
+        /* Ensure buttons are always touch-friendly */
+        button, .btn, a {
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        /* Adjust grid for very small screens */
+        .grid-cols-2 {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+      }
+
+      /* Landscape mobile adjustments */
+      @media (max-width: 896px) and (orientation: landscape) {
+        .landscape-adjust {
+          height: calc(100vh - 60px);
+        }
+      }
+
+      /* High DPI displays */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .high-dpi-text {
+          font-weight: 400;
+        }
+      }
+
+      /* Reduce motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
     </style>
 </head>
 
 <body class="bg-page-bg font-sans">
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay md:hidden"></div>
+    
     <div class="flex h-screen bg-page-bg w-full">
-        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
+        <aside id="mobile-sidebar" class="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0 md:relative md:translate-x-0">
             <nav class="flex flex-col h-full p-4">
                 <div class="flex items-center mb-8">
                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
@@ -611,15 +802,24 @@
         </aside>
 
         <main class="flex-1 flex flex-col w-full min-w-0">
-            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 sticky top-0 z-10 w-full">
+            <header class="bg-white shadow-sm border-b border-gray-200 px-4 md:px-6 py-4 sticky top-0 z-10 w-full mobile-header">
                 <div class="flex items-center justify-between w-full">
-                    <div>
-                        <h1 id="main-title" class="text-2xl font-display font-bold text-heading-text"></h1>
-                        <p id="main-subtitle" class="text-subtle-text mt-1"></p>
-                    </div>
+                    <!-- Mobile Menu Button -->
                     <div class="flex items-center space-x-4">
+                        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors mobile-touch-target">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        
+                        <div class="flex-1">
+                            <h1 id="main-title" class="text-xl md:text-2xl font-display font-bold text-heading-text"></h1>
+                            <p id="main-subtitle" class="text-subtle-text mt-1 text-sm md:text-base hidden sm:block"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 md:space-x-4">
                         <!-- Theme Selector -->
-                        <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors mobile-touch-target">
                             <svg id="theme-icon" class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
@@ -627,7 +827,7 @@
 
                         <!-- Notifications -->
                         <div class="relative">
-                            <button id="notifications-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                            <button id="notifications-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative mobile-touch-target">
                                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                                 </svg>
@@ -635,7 +835,7 @@
                             </button>
                             
                             <!-- Notifications Dropdown -->
-                            <div id="notifications-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
+                            <div id="notifications-dropdown" class="absolute right-0 mt-2 w-80 md:w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
                                 <div class="p-4 border-b border-gray-200">
                                     <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
                                 </div>
@@ -676,21 +876,21 @@
 
                         <!-- User Profile/Login -->
                         <div class="relative">
-                            <button id="user-menu-btn" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <button id="user-menu-btn" class="flex items-center space-x-2 md:space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors mobile-touch-target">
                                 <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                                     <span class="text-white text-sm font-semibold">AS</span>
                                 </div>
-                                <div class="text-left">
+                                <div class="text-left hidden sm:block">
                                     <div class="text-sm font-medium text-gray-900">Amit Singh</div>
                                     <div class="text-xs text-gray-500">Administrator</div>
                                 </div>
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
                             
                             <!-- User Dropdown -->
-                            <div id="user-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
+                            <div id="user-dropdown" class="absolute right-0 mt-2 w-56 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
                                 <div class="p-4 border-b border-gray-200">
                                     <div class="flex items-center space-x-3">
                                         <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -717,12 +917,12 @@
                 </div>
             </header>
 
-            <div class="flex-1 overflow-auto p-6 w-full">
+            <div class="flex-1 overflow-auto p-4 md:p-6 w-full mobile-content">
                 
                 <div id="dashboard-content" class="content-panel">
                     <section>
-                      <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Key Metrics</h2>
-                      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                      <h2 class="font-display text-lg md:text-xl font-semibold text-heading-text mb-4 md:mb-6">Key Metrics</h2>
+                      <div class="grid grid-cols-1 gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                           <div class="metric-card stagger-item rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                               <div class="flex items-center justify-between mb-3">
                                   <p class="text-sm font-medium text-subtle-text">Total Queries Today</p>
@@ -790,39 +990,39 @@
                       </div>
                     </section>
 
-                    <section class="mt-12">
-                      <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Visual Insights</h2>
-                      <div class="space-y-8">
+                    <section class="mt-8 md:mt-12">
+                      <h2 class="font-display text-lg md:text-xl font-semibold text-heading-text mb-4 md:mb-6">Visual Insights</h2>
+                      <div class="space-y-6 md:space-y-8">
                         <!-- Query Volume Trend -->
-                        <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
-                          <div class="flex items-center justify-between mb-6">
+                        <div class="rounded-2xl bg-card-bg p-4 md:p-8 shadow-card border border-border-color mobile-card">
+                          <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 space-y-3 md:space-y-0">
                               <div>
-                                  <p class="font-display text-lg font-semibold text-heading-text">Query Volume Trend</p>
-                                  <p class="text-sm text-subtle-text mt-1">Daily query patterns and growth metrics</p>
+                                  <p class="font-display text-base md:text-lg font-semibold text-heading-text">Query Volume Trend</p>
+                                  <p class="text-xs md:text-sm text-subtle-text mt-1">Daily query patterns and growth metrics</p>
                               </div>
-                              <div class="text-right">
-                                  <p class="text-2xl font-bold text-heading-text">+15%</p>
-                                  <p class="text-sm font-medium text-success-green">↗ Growth rate</p>
+                              <div class="text-left md:text-right">
+                                  <p class="text-xl md:text-2xl font-bold text-heading-text">+15%</p>
+                                  <p class="text-xs md:text-sm font-medium text-success-green">↗ Growth rate</p>
                               </div>
                           </div>
-                          <div class="h-64 bg-white rounded-xl flex items-center justify-center">
+                          <div class="h-48 md:h-64 bg-white rounded-xl flex items-center justify-center mobile-chart-container">
                               <canvas id="queryVolumeChart" width="400" height="200"></canvas>
                           </div>
                         </div>
                         
                         <!-- Human Handoff Trend -->
-                        <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
-                          <div class="flex items-center justify-between mb-6">
+                        <div class="rounded-2xl bg-card-bg p-4 md:p-8 shadow-card border border-border-color mobile-card">
+                          <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 space-y-3 md:space-y-0">
                               <div>
-                                  <p class="font-display text-lg font-semibold text-heading-text">Human Handoff Trend</p>
-                                  <p class="text-sm text-subtle-text mt-1">Cases requiring human intervention</p>
+                                  <p class="font-display text-base md:text-lg font-semibold text-heading-text">Human Handoff Trend</p>
+                                  <p class="text-xs md:text-sm text-subtle-text mt-1">Cases requiring human intervention</p>
                               </div>
-                              <div class="text-right">
-                                  <p class="text-2xl font-bold text-heading-text">20%</p>
-                                  <p class="text-sm font-medium text-error-red">↓ -5% decrease</p>
+                              <div class="text-left md:text-right">
+                                  <p class="text-xl md:text-2xl font-bold text-heading-text">20%</p>
+                                  <p class="text-xs md:text-sm font-medium text-error-red">↓ -5% decrease</p>
                               </div>
                           </div>
-                          <div class="h-64 bg-white rounded-xl flex items-center justify-center">
+                          <div class="h-48 md:h-64 bg-white rounded-xl flex items-center justify-center mobile-chart-container">
                               <canvas id="handoffTrendChart" width="400" height="200"></canvas>
                           </div>
                         </div>
@@ -846,15 +1046,15 @@
                       </div>
                     </section>
 
-                    <section class="mt-12">
-                      <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Confusion Hotspots</h2>
-                      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <section class="mt-8 md:mt-12">
+                      <h2 class="font-display text-lg md:text-xl font-semibold text-heading-text mb-4 md:mb-6">Confusion Hotspots</h2>
+                      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                         <!-- Table Section -->
                         <div class="lg:col-span-2">
-                          <div class="table-responsive rounded-2xl bg-card-bg shadow-card border border-border-color overflow-hidden">
-                            <div class="px-6 py-4 border-b border-border-color">
-                                <h3 class="font-medium text-heading-text">Most Problematic Topics</h3>
-                                <p class="text-sm text-subtle-text mt-1">Areas where the bot struggles most</p>
+                          <div class="table-responsive rounded-2xl bg-card-bg shadow-card border border-border-color overflow-hidden mobile-card">
+                            <div class="px-4 md:px-6 py-4 border-b border-border-color">
+                                <h3 class="font-medium text-heading-text text-sm md:text-base">Most Problematic Topics</h3>
+                                <p class="text-xs md:text-sm text-subtle-text mt-1">Areas where the bot struggles most</p>
                             </div>
                             <table class="min-w-full text-left">
                               <thead class="bg-gray-50">
@@ -1001,7 +1201,7 @@
 
                 <div id="queries-content" class="content-panel hidden">
                     <!-- Query Statistics Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
                         <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -1405,8 +1605,8 @@
 
                 <div id="knowledge-base-content" class="content-panel hidden">
             <!-- Overview Stats -->
-            <section class="mb-8">
-              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <section class="mb-6 md:mb-8">
+              <div class="grid grid-cols-1 gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-4">
                   <div class="metric-card rounded-2xl bg-card-bg p-6 shadow-card border border-border-color">
                       <div class="flex items-center justify-between mb-3">
                           <p class="text-sm font-medium text-subtle-text">Total Documents</p>
@@ -1740,13 +1940,13 @@
               </div>
             </section>
             <!-- Document Upload Section -->
-            <section class="mt-12">
-                <h2 class="font-display text-xl font-semibold text-heading-text mb-6">Upload Documents</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <section class="mt-8 md:mt-12">
+                <h2 class="font-display text-lg md:text-xl font-semibold text-heading-text mb-4 md:mb-6">Upload Documents</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                     <!-- File Upload -->
-                    <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-medium text-heading-text">File Upload</h3>
+                    <div class="rounded-2xl bg-card-bg p-4 md:p-8 shadow-card border border-border-color mobile-card">
+                        <div class="flex items-center justify-between mb-4 md:mb-6">
+                            <h3 class="font-medium text-heading-text text-sm md:text-base">File Upload</h3>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-accent-blue" viewBox="0 0 256 256">
                                 <path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/>
                             </svg>
@@ -1774,9 +1974,9 @@
                     </div>
 
                     <!-- Web Crawling -->
-                    <div class="rounded-2xl bg-card-bg p-8 shadow-card border border-border-color">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-medium text-heading-text">Web Content Import</h3>
+                    <div class="rounded-2xl bg-card-bg p-4 md:p-8 shadow-card border border-border-color mobile-card">
+                        <div class="flex items-center justify-between mb-4 md:mb-6">
+                            <h3 class="font-medium text-heading-text text-sm md:text-base">Web Content Import</h3>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success-green" viewBox="0 0 256 256">
                                 <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,152H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,152Zm-3.9-16H140.5a140.81,140.81,0,0,1,0-32H98.1a140.81,140.81,0,0,1,0,32ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128Z"/>
                             </svg>
@@ -2223,6 +2423,11 @@
             const contentPanels = document.querySelectorAll('.content-panel');
             const mainTitle = document.getElementById('main-title');
             const mainSubtitle = document.getElementById('main-subtitle');
+            
+            // Mobile Menu Elements
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileSidebar = document.getElementById('mobile-sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
 
             // Loading state animation
             function showLoadingState() {
@@ -2275,12 +2480,51 @@
                 }, 200);
             }
 
+            // Mobile Menu Functionality
+            function toggleMobileMenu() {
+                const isOpen = mobileSidebar.classList.contains('mobile-nav-open');
+                
+                if (isOpen) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            }
+            
+            function openMobileMenu() {
+                mobileSidebar.classList.add('mobile-nav-open');
+                mobileSidebar.classList.remove('mobile-nav-closed');
+                mobileOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+            
+            function closeMobileMenu() {
+                mobileSidebar.classList.remove('mobile-nav-open');
+                mobileSidebar.classList.add('mobile-nav-closed');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+
+            // Mobile menu event listeners
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+            
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', closeMobileMenu);
+            }
+
             // Add click event listeners to nav links
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.dataset.target;
                     showPanel(targetId);
+                    
+                    // Close mobile menu when navigation item is clicked
+                    if (window.innerWidth < 768) {
+                        closeMobileMenu();
+                    }
                 });
             });
 
@@ -2314,9 +2558,9 @@
                 }, 5000);
             };
 
-            // Keyboard shortcuts
+            // Keyboard shortcuts (only for desktop)
             document.addEventListener('keydown', function(e) {
-                if (!e.altKey) return;
+                if (!e.altKey || window.innerWidth < 768) return; // Disable shortcuts on mobile
                 
                 const shortcuts = {
                     '1': { panel: 'dashboard', name: 'Dashboard' },
@@ -2334,16 +2578,64 @@
                 }
             });
 
+            // Touch gesture support for mobile
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            });
+            
+            document.addEventListener('touchend', function(e) {
+                if (window.innerWidth >= 768) return; // Only for mobile
+                
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                
+                // Swipe right to open menu (from left edge)
+                if (deltaX > 50 && Math.abs(deltaY) < 100 && touchStartX < 50) {
+                    openMobileMenu();
+                }
+                
+                // Swipe left to close menu (when menu is open)
+                if (deltaX < -50 && Math.abs(deltaY) < 100 && mobileSidebar.classList.contains('mobile-nav-open')) {
+                    closeMobileMenu();
+                }
+            });
+
             // --- Page-Specific Initializations ---
             initializeDashboardCharts();
             initializeQueriesPage();
             initializeKnowledgeBasePage();
 
+            // Handle window resize for mobile responsiveness
+            function handleResize() {
+                if (window.innerWidth >= 768) {
+                    // Desktop: ensure mobile menu is closed and reset sidebar
+                    closeMobileMenu();
+                    mobileSidebar.classList.remove('mobile-nav-open', 'mobile-nav-closed');
+                } else {
+                    // Mobile: ensure sidebar is properly positioned
+                    if (!mobileSidebar.classList.contains('mobile-nav-open')) {
+                        mobileSidebar.classList.add('mobile-nav-closed');
+                    }
+                }
+            }
+
+            // Add resize listener
+            window.addEventListener('resize', handleResize);
+            
+            // Initialize responsive state
+            handleResize();
+
             // Initialize default view (Dashboard)
             showPanel('dashboard');
 
             console.log('🚀 Shiksha Saathi Admin Panel loaded successfully!');
-            setTimeout(() => showNotification('Welcome to Shiksha Saathi Admin Panel! Use Alt+1-5 for quick navigation.', 'success'), 500);
+            setTimeout(() => showNotification('Welcome to Shiksha Saathi Admin Panel! Mobile-responsive interface ready!', 'success'), 500);
         });
 
         // --- Header Components Logic ---
