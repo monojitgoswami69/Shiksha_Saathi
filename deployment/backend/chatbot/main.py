@@ -117,7 +117,7 @@ if not gemini_api_key:
 else:
     genai.configure(api_key=gemini_api_key)
     model = genai.GenerativeModel(
-        "gemini-1.5-flash-latest",
+        "gemini-2.5-flash-lite",
         system_instruction=persona_instruction
     )
 
